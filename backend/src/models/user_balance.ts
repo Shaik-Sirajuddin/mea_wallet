@@ -1,27 +1,28 @@
-import { DataTypes, Model, Optional, Sequelize } from "sequelize";
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  Sequelize,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface UserBalanceAttributes {
-  id: number;
-  userId: number;
-  tokenId: number;
-  amount: string;
-  lockedAmount: string;
-  created_at: Date;
-  updated_at: Date;
+//sequelize recommended approach starting 6.14+
+class UserBalance extends Model<
+  InferAttributes<UserBalance>,
+  InferCreationAttributes<UserBalance>
+> {
+  declare id: CreationOptional<number>;
+  declare userId: number;
+  declare tokenId: number;
+  declare amount: string;
+  declare lockedAmount: string;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-interface UserBalanceCreationAttributes
-  extends Optional<UserBalanceAttributes, "id" | "created_at" | "updated_at"> {}
-
-type UserBalanceModel = Model<
-  UserBalanceAttributes,
-  UserBalanceCreationAttributes
-> &
-  UserBalanceAttributes;
-
-const UserBalance = sequelize.define<UserBalanceModel>(
-  "UserBalance",
+UserBalance.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -60,6 +61,7 @@ const UserBalance = sequelize.define<UserBalanceModel>(
     },
   },
   {
+    sequelize,
     timestamps: false,
   }
 );

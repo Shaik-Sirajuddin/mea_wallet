@@ -10,6 +10,8 @@ import User from "../models/user";
 import { getRandomInt } from "../utils/helper";
 import { responseHandler } from "../utils/responseHandler";
 import jwt from "jsonwebtoken";
+import Token from "../models/token";
+import UserBalance from "../models/user_balance";
 const passwordSchema = new passValidator();
 passwordSchema
   .is()
@@ -47,6 +49,32 @@ const generateUserName = async () => {
     }
   } while (name! == null);
   return name;
+};
+
+/**
+ * Validate :
+ * Throw error on invalid or expired hash
+ */
+const validateResetHash = async (hash: string) => {
+  if (!hash) {
+    throw "Missing or Invalid field";
+  }
+  let user = await User.findOne({
+    attributes: ["id", "email", "resetHashExpiryTime"],
+    where: {
+      resetHash: hash,
+    },
+  });
+  if (!user) {
+    throw "Invalid Token";
+  }
+  if (
+    !user.dataValues.resetHashExpiryTime ||
+    user.dataValues.resetHashExpiryTime.getTime() <= Date.now()
+  ) {
+    throw "Token Expired";
+  }
+  return user;
 };
 
 export default {
@@ -116,11 +144,25 @@ export default {
 
       let hashedPassword = await encryptPassword(password);
       let username = await generateUserName();
+
       user = await User.create({
         email,
         password: hashedPassword,
         username,
       });
+      let tokens = await Token.findAll({
+        attributes: ["id"],
+        where: {},
+      });
+      //bulk create user balances for user
+      await UserBalance.bulkCreate(
+        tokens.map((token) => {
+          return {
+            tokenId: token.dataValues.id,
+            userId: user.dataValues.id,
+          };
+        })
+      );
       const token = jwt.sign(
         { userId: user.dataValues.id },
         process.env.JWT_TOKEN,
@@ -180,21 +222,10 @@ export default {
   veiryResetToken: async (req: Request, res: Response) => {
     try {
       let hash = req.query["hash"];
-      if (!hash || typeof hash !== "string") {
-        throw "Missing or Invalid field";
+      if (typeof hash !== "string") {
+        throw " Invalid Value";
       }
-      let user = await User.findOne({
-        attributes: ["id", "email"],
-        where: {
-          resetHash: hash,
-        },
-      });
-      if (!user) {
-        throw "Invalid Token";
-      }
-      if (user.dataValues.resetHashExpiryTime.getTime() <= Date.now()) {
-        throw "Token Expired";
-      }
+      let user = await validateResetHash(hash);
       responseHandler.success(res, "Success", {
         email: user.dataValues.email,
       });
@@ -202,8 +233,33 @@ export default {
       responseHandler.error(res, error);
     }
   },
-  resetPassword: async (req: Request, res: Response) => {
+  confirmReset: async (req: Request, res: Response) => {
     try {
+      let { hash, newPassword } = req.body;
+      if (typeof hash !== "string") {
+        throw " Invalid Value";
+      }
+      let user = await validateResetHash(hash);
+      let isSematicallyValid = passwordSchema.validate(newPassword);
+      if (!isSematicallyValid) {
+        throw "Enter a valid a password";
+      }
+
+      let hashedPassword = await encryptPassword(newPassword);
+      await User.update(
+        {
+          password: hashedPassword,
+          resetHash: null,
+          resetHashExpiryTime: null,
+        },
+        {
+          where: {
+            id: user.dataValues.id,
+          },
+        }
+      );
+      //todo : terminate remaining sessions if password has been reset
+      responseHandler.success(res, "Reset Successful");
     } catch (error) {
       responseHandler.error(res, error);
     }
