@@ -10,13 +10,15 @@ interface UserAttributes {
   email_verified: boolean;
   twofa_completed: boolean;
   emoji: string;
+  resetHash: string | null;
+  resetHashExpiryTime: Date | null;
   created_at: Date;
   updated_at: Date;
 }
 
 type UserCreationAttributes = Omit<
   UserAttributes,
-  "id" | "created_at" | "updated_at"
+  "id" | "created_at" | "updated_at" | "resetHash" | "resetHashExpiryTime"
 >;
 
 const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
@@ -60,12 +62,24 @@ const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
       allowNull: false,
       defaultValue: "😀",
     },
+    resetHash: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    resetHashExpiryTime: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+    },
     created_at: {
       type: DataTypes.DATE,
+      allowNull: false,
       defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
     },
     updated_at: {
       type: DataTypes.DATE,
+      allowNull: false,
       defaultValue: Sequelize.literal(
         "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
       ),
@@ -73,7 +87,6 @@ const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
   },
   {
     timestamps: false,
-    tableName: "users",
   }
 );
 

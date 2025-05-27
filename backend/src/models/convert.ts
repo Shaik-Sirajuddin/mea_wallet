@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { sequelize } from "../database/connection";
 
-class Convert extends Model {
-  declare id: number;
+interface ConvertAttributes {
+  id: number;
   from_amount: number;
   to_amount: number;
   from_balance_id: number;
@@ -10,11 +10,19 @@ class Convert extends Model {
   from_token_id: number;
   to_token_id: number;
   user_id: number;
-  declare created_at: Date;
-  declare updated_at: Date;
+  created_at: Date;
+  updated_at: Date;
 }
 
-Convert.init(
+type ConvertCreationAttributes = Omit<
+  ConvertAttributes,
+  "id" | "created_at" | "updated_at"
+>;
+
+const Convert = sequelize.define<
+  Model<ConvertAttributes, ConvertCreationAttributes>
+>(
+  "Convert",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -63,7 +71,7 @@ Convert.init(
     },
   },
   {
-    sequelize,
+    tableName: "converts", // optional but recommended
     timestamps: false,
   }
 );

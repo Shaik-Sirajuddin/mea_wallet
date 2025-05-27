@@ -1,18 +1,26 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { sequelize } from "../database/connection";
 
-class TokenData extends Model {
-  declare id: number;
+interface TokenDataAttributes {
+  id: number;
   token_id: number;
   circulating_suppy: number;
   total_supply: number;
   price: number;
-  swap_price: number; //todo : decide whether to use exchange price
-  declare created_at: Date;
-  declare updated_at: Date;
+  swap_price: number;
+  created_at: Date;
+  updated_at: Date;
 }
 
-TokenData.init(
+type TokenDataCreationAttributes = Omit<
+  TokenDataAttributes,
+  "id" | "created_at" | "updated_at"
+>;
+
+const TokenData = sequelize.define<
+  Model<TokenDataAttributes, TokenDataCreationAttributes>
+>(
+  "TokenData",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -52,6 +60,9 @@ TokenData.init(
       ),
     },
   },
-  { sequelize, timestamps: false }
+  {
+    timestamps: false,
+  }
 );
+
 export default TokenData;

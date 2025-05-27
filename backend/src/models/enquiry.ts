@@ -1,61 +1,54 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface TokenTransferAttributes {
+interface EnquiryAttributes {
   id: number;
-  from_user_id: number;
-  to_user_id: number;
-  token_id: number;
-  amount: number;
-  fee: number;
+  userId: number;
+  content: string;
+  read: boolean;
+  resolved: boolean;
   created_at: Date;
   updated_at: Date;
 }
 
-type TokenTransferCreationAttributes = Omit<
-  TokenTransferAttributes,
+type EnquiryCreationAttributes = Omit<
+  EnquiryAttributes,
   "id" | "created_at" | "updated_at"
 >;
 
-const TokenTransfer = sequelize.define<
-  Model<TokenTransferAttributes, TokenTransferCreationAttributes>
+const Enquiry = sequelize.define<
+  Model<EnquiryAttributes, EnquiryCreationAttributes>
 >(
-  "TokenTransfer",
+  "Enquiry",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    from_user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      unique: true,
     },
-    to_user_id: {
-      type: DataTypes.INTEGER,
+    content: {
+      type: DataTypes.STRING(1000),
       allowNull: false,
     },
-    token_id: {
-      type: DataTypes.INTEGER,
+    read: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    amount: {
-      type: DataTypes.DECIMAL(32, 18),
+    resolved: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-    },
-    fee: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: false,
-      defaultValue: 0,
     },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: Sequelize.literal(
         "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
       ),
@@ -66,4 +59,4 @@ const TokenTransfer = sequelize.define<
   }
 );
 
-export default TokenTransfer;
+export default Enquiry;

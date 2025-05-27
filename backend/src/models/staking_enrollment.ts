@@ -1,20 +1,38 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 import { sequelize } from "../database/connection";
 
-class StakingEnrollment extends Model {
-  declare id: number;
+interface StakingEnrollmentAttributes {
+  id: number;
   user_id: number;
   plan_id: number;
-  amount: number;
+  amount: string; // DECIMAL as string for precision
   enroll_time: Date;
-  close_time: Date;
-  acc_interest: number;
-  withdrawn_amount: number;
-  declare created_at: Date;
-  declare updated_at: Date;
+  close_time: Date | null;
+  acc_interest: string | null;
+  withdrawn_amount: string | null;
+  created_at: Date;
+  updated_at: Date;
 }
 
-StakingEnrollment.init(
+interface StakingEnrollmentCreationAttributes
+  extends Optional<
+    StakingEnrollmentAttributes,
+    | "id"
+    | "close_time"
+    | "acc_interest"
+    | "withdrawn_amount"
+    | "created_at"
+    | "updated_at"
+  > {}
+
+type StakingEnrollmentModel = Model<
+  StakingEnrollmentAttributes,
+  StakingEnrollmentCreationAttributes
+> &
+  StakingEnrollmentAttributes;
+
+const StakingEnrollment = sequelize.define<StakingEnrollmentModel>(
+  "StakingEnrollment",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -39,7 +57,7 @@ StakingEnrollment.init(
     },
     close_time: {
       type: DataTypes.DATE,
-      allowNull: true, // allow null if still active
+      allowNull: true,
       defaultValue: null,
     },
     acc_interest: {
@@ -66,8 +84,8 @@ StakingEnrollment.init(
     },
   },
   {
-    sequelize,
     timestamps: false,
+    tableName: "staking_enrollments",
   }
 );
 

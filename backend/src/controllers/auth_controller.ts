@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { logger } from "../utils/logger";
 import passValidator from "password-validator";
-import { encryptPassword } from "../lib/encryption";
+import {
+  comparePassword,
+  encryptData,
+  encryptPassword,
+} from "../lib/encryption";
 import User from "../models/user";
 import { getRandomInt } from "../utils/helper";
 import { responseHandler } from "../utils/responseHandler";
@@ -49,6 +53,44 @@ export default {
   login: async (req: Request, res: Response) => {
     try {
       let { email, password } = req.body;
+      //Todo : implement encryption of password midway
+      let user = await User.findOne({
+        attributes: ["id", "password"],
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        throw "Email not found";
+      }
+
+      let validPassword = await comparePassword(
+        password,
+        user.dataValues.password
+      );
+      if (!validPassword) {
+        throw "Invalid Password";
+      }
+
+      const token = jwt.sign(
+        { userId: user.dataValues.id },
+        process.env.JWT_TOKEN,
+        {
+          expiresIn: "30d",
+        }
+      );
+      //TODO : implement passkeys for mobile , for better differentiation of mobile , web sessions
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      });
+
+      //TODO : implement additionaly encryption to be only be decodable via key from mobile app
+      responseHandler.success(res, "Success", {
+        token: token,
+      });
     } catch (error) {
       responseHandler.error(res, error);
       logger.error(error);
@@ -100,6 +142,69 @@ export default {
       });
     } catch (error) {
       logger.error(error);
+      responseHandler.error(res, error);
+    }
+  },
+  requestPasswordReset: async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      let user = await User.findOne({
+        attributes: ["id", "password"],
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        throw "Email not found";
+      }
+      let resetHash = await encryptData(user.dataValues.email);
+      let expiryTime = new Date(Date.now() + 15 * 60 * 1000); //15 minutes
+      await User.update(
+        {
+          resetHash: resetHash,
+          resetHashExpiryTime: expiryTime,
+        },
+        {
+          where: {
+            email: email,
+          },
+        }
+      );
+      //todo : send email
+      responseHandler.success(res, "Email sent");
+    } catch (error) {
+      logger.error(error);
+      responseHandler.error(res, error);
+    }
+  },
+  veiryResetToken: async (req: Request, res: Response) => {
+    try {
+      let hash = req.query["hash"];
+      if (!hash || typeof hash !== "string") {
+        throw "Missing or Invalid field";
+      }
+      let user = await User.findOne({
+        attributes: ["id", "email"],
+        where: {
+          resetHash: hash,
+        },
+      });
+      if (!user) {
+        throw "Invalid Token";
+      }
+      if (user.dataValues.resetHashExpiryTime.getTime() <= Date.now()) {
+        throw "Token Expired";
+      }
+      responseHandler.success(res, "Success", {
+        email: user.dataValues.email,
+      });
+    } catch (error) {
+      responseHandler.error(res, error);
+    }
+  },
+  resetPassword: async (req: Request, res: Response) => {
+    try {
+    } catch (error) {
       responseHandler.error(res, error);
     }
   },

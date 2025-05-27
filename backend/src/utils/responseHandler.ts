@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 
+/**
+ *  Implment use of http codes for better error differentiation
+ */
 const success = function (res: Response, message = "", body = {}) {
   return res.status(200).json({
     success: true,
