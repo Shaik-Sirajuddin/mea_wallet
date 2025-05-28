@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface StakingEnrollmentAttributes {
+interface StakingDepositAttributes {
   id: number;
   user_id: number;
   plan_id: number;
@@ -14,9 +14,9 @@ interface StakingEnrollmentAttributes {
   updated_at: Date;
 }
 
-interface StakingEnrollmentCreationAttributes
+interface StakingDepositCreationAttributes
   extends Optional<
-    StakingEnrollmentAttributes,
+    StakingDepositAttributes,
     | "id"
     | "close_time"
     | "acc_interest"
@@ -25,14 +25,14 @@ interface StakingEnrollmentCreationAttributes
     | "updated_at"
   > {}
 
-type StakingEnrollmentModel = Model<
-  StakingEnrollmentAttributes,
-  StakingEnrollmentCreationAttributes
+type StakingDepositModel = Model<
+  StakingDepositAttributes,
+  StakingDepositCreationAttributes
 > &
-  StakingEnrollmentAttributes;
+  StakingDepositAttributes;
 
-const StakingEnrollment = sequelize.define<StakingEnrollmentModel>(
-  "StakingEnrollment",
+const StakingDeposit = sequelize.define<StakingDepositModel>(
+  "StakingDeposit",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -89,4 +89,4 @@ const StakingEnrollment = sequelize.define<StakingEnrollmentModel>(
   }
 );
 
-export default StakingEnrollment;
+export default StakingDeposit;

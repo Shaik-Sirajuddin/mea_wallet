@@ -1,17 +1,11 @@
 import express from "express";
 import authController from "../controllers/auth_controller";
 import rateLimit from "express-rate-limit";
-//login -> 2fa
-
-//sign up
-
-//login 2fa complete
-//verify 2fa account
-//request withdraw
-//....
-
 /***
- *
+ * TODO :
+ * 2fa :
+ * verify 2fa account
+ * login 2fa complete
  */
 
 const authRouter = express.Router();

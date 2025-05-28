@@ -1,64 +1,65 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface StakingEnrollmentAttributes {
-  id: number;
-  user_id: number;
-  plan_id: number;
-  amount: number;
-  enroll_time: Date;
-  close_time: Date | null;
-  acc_interest: number | null;
-  withdrawn_amount: number | null;
-  created_at: Date;
-  updated_at: Date;
+class StakingPlan extends Model<
+  InferAttributes<StakingPlan>,
+  InferCreationAttributes<StakingPlan>
+> {
+  declare id: CreationOptional<number>;
+  declare tokenId: number;
+  declare lockDays: number;
+  declare apy: number;
+  declare min_deposit: number;
+  declare max_deposit: number;
+  declare earlyPenaltyPercent: number;
+  declare paused: boolean;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-type StakingEnrollmentCreationAttributes = Omit<
-  StakingEnrollmentAttributes,
-  "id" | "created_at" | "updated_at"
->;
-
-const StakingEnrollment = sequelize.define<
-  Model<StakingEnrollmentAttributes, StakingEnrollmentCreationAttributes>
->(
-  "StakingEnrollment",
+StakingPlan.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    tokenId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    plan_id: {
+    lockDays: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    amount: {
+    apy: {
+      type: DataTypes.DECIMAL(5, 2),
+      allowNull: false,
+    },
+    min_deposit: {
+      type: DataTypes.DECIMAL(32, 18),
+      allowNull: false,
+      defaultValue: 1,
+    },
+    max_deposit: {
       type: DataTypes.DECIMAL(32, 18),
       allowNull: false,
     },
-    enroll_time: {
-      type: DataTypes.DATE,
+    earlyPenaltyPercent: {
+      type: DataTypes.DECIMAL(5, 2),
       allowNull: false,
     },
-    close_time: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: null,
-    },
-    acc_interest: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: true,
-      defaultValue: null,
-    },
-    withdrawn_amount: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: true,
-      defaultValue: null,
+    paused: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -74,9 +75,9 @@ const StakingEnrollment = sequelize.define<
     },
   },
   {
-    tableName: "staking_enrollments", // optional but good for clarity
+    sequelize,
     timestamps: false,
   }
 );
 
-export default StakingEnrollment;
+export default StakingPlan;
