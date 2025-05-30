@@ -5,7 +5,7 @@ import StakingDeposit from "../models/staking_deposit";
 import UserBalance from "../models/user_balance";
 import { deci } from "../utils/decimal";
 import { sequelize } from "../database/connection";
-import { ADMIN_USER_ID } from "../utils/global";
+import { ADMIN } from "../utils/global";
 
 export default {
   fetchPlans: async (req: Request, res: Response) => {
@@ -92,7 +92,7 @@ export default {
         transaction: tx,
       });
 
-      await StakingDeposit.create(
+      let deposit = await StakingDeposit.create(
         {
           amount: amount,
           enroll_time: enrollTime,
@@ -103,13 +103,71 @@ export default {
       );
 
       //TODO : add entry into balance flow table
-      //TODO :  increase admin balance
 
-      let adminBalance = await UserBalance.findOne({
+      //increase admin balance
+      await UserBalance.increment("amount", {
+        by: amount,
         where: {
-            userId : ADMIN_USER_ID
+          userId: ADMIN.USER_ID,
+          tokenId: plan.tokenId,
         },
+        transaction: tx,
       });
+      await tx.commit();
+      responseHandler.success(res, "Staking Successful", {
+        id: deposit.id,
+      });
+    } catch (error) {
+      responseHandler.error(res, error);
+    }
+  },
+  closeStaking: async (req: Request, res: Response) => {
+    try {
+      let { deposit_id } = req.body;
+      let staking = await StakingDeposit.findOne({
+        where: {
+          id: deposit_id,
+          user_id: req.userId,
+        },
+        //TODO : test include , relations
+        include: [
+          {
+            model: StakingPlan,
+          },
+        ],
+      });
+      if (!staking) {
+        throw "A Deposit doesn't exist with given id";
+      }
+
+      if (staking.dataValues.close_time !== null) {
+        throw "Deposit already claimed";
+      }
+      //TODO : find names for staking deposit
+
+      let closeTime = new Date();
+      let stakingPlan = staking.plan!;
+
+      let fullPeriodMs =
+        new Date(staking.enroll_time).setFullYear(
+          staking.enroll_time.getFullYear() + 1
+        ) - staking.enroll_time.getTime();
+
+      let maxStakePeriodMs = stakingPlan.lockDays * 86400 * 1000;
+
+      let eligibleStakePeriodMs = Math.min(
+        closeTime.getTime() - staking.enroll_time.getTime(),
+        maxStakePeriodMs
+      );
+
+      let interestFactor = deci(eligibleStakePeriodMs).div(fullPeriodMs);
+
+      let interestAccumulated = deci(staking.amount)
+        .mul(stakingPlan.apy)
+        .mul(interestFactor)
+        .div(100);
+
+      //todoo continue
     } catch (error) {
       responseHandler.error(res, error);
     }

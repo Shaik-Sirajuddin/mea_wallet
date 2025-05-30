@@ -1,38 +1,33 @@
-import { DataTypes, Model, Optional, Sequelize } from "sequelize";
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  NonAttribute,
+  Sequelize,
+} from "sequelize";
 import { sequelize } from "../database/connection";
+import StakingPlan from "./staking_plan";
 
-interface StakingDepositAttributes {
-  id: number;
-  user_id: number;
-  plan_id: number;
-  amount: string; // DECIMAL as string for precision
-  enroll_time: Date;
-  close_time: Date | null;
-  acc_interest: string | null;
-  withdrawn_amount: string | null;
-  created_at: Date;
-  updated_at: Date;
+class StakingDeposit extends Model<
+  InferAttributes<StakingDeposit>,
+  InferCreationAttributes<StakingDeposit>
+> {
+  declare id: CreationOptional<number>;
+  declare user_id: number;
+  declare plan_id: number;
+  declare amount: string;
+  declare enroll_time: Date;
+  declare close_time: CreationOptional<Date | null>;
+  declare acc_interest: CreationOptional<string | null>;
+  declare withdrawn_amount: CreationOptional<string | null>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
+  declare plan?: NonAttribute<StakingPlan>;
 }
 
-interface StakingDepositCreationAttributes
-  extends Optional<
-    StakingDepositAttributes,
-    | "id"
-    | "close_time"
-    | "acc_interest"
-    | "withdrawn_amount"
-    | "created_at"
-    | "updated_at"
-  > {}
-
-type StakingDepositModel = Model<
-  StakingDepositAttributes,
-  StakingDepositCreationAttributes
-> &
-  StakingDepositAttributes;
-
-const StakingDeposit = sequelize.define<StakingDepositModel>(
-  "StakingDeposit",
+StakingDeposit.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -84,8 +79,8 @@ const StakingDeposit = sequelize.define<StakingDepositModel>(
     },
   },
   {
+    sequelize,
     timestamps: false,
-    tableName: "staking_enrollments",
   }
 );
 

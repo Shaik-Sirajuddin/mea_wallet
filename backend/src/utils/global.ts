@@ -3,4 +3,8 @@ export const COOKIE_ID = {
 };
 
 //admin user defaults created
-export const ADMIN_USER_ID = 1;
+export const ADMIN = {
+  USER_ID: 1,
+  EMAIL: "admin@wallet",
+  USERNAME: "admin",
+};

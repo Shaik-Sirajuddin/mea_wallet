@@ -1,14 +1,20 @@
 import Token from "../models/token";
 import User from "../models/user";
 import UserBalance from "../models/user_balance";
-import { ADMIN_USER_ID } from "../utils/global";
+import { ADMIN } from "../utils/global";
 
 const seedDatabase = async () => {
-  //
+  /**
+   * Tokens 
+   * Settings
+   * Staking Plans
+   * Admin User
+   * Admin User Balances
+   */
   const adminEmail = "admin@wallet";
   let admin = await User.findOrCreate({
     where: {
-      id: ADMIN_USER_ID,
+      id: ADMIN.USER_ID,
     },
     defaults: {
       email: adminEmail,

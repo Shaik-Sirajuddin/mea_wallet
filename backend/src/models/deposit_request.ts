@@ -8,51 +8,32 @@ import {
 } from "sequelize";
 import { sequelize } from "../database/connection";
 
-class Convert extends Model<
-  InferAttributes<Convert>,
-  InferCreationAttributes<Convert>
+class DepositRequest extends Model<
+  InferAttributes<DepositRequest>,
+  InferCreationAttributes<DepositRequest>
 > {
   declare id: CreationOptional<number>;
-  declare from_amount: string; // Stored as DECIMAL => use string
-  declare to_amount: string;
-  declare from_balance_id: number;
-  declare to_balance_id: number;
-  declare from_token_id: number;
-  declare to_token_id: number;
+  declare hash: string;
   declare user_id: number;
+  declare status: number;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }
 
-Convert.init(
+DepositRequest.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    from_amount: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: false,
-    },
-    to_amount: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: false,
-    },
-    from_balance_id: {
+    status: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: DepositStatus.PENDING,
     },
-    to_balance_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    from_token_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    to_token_id: {
-      type: DataTypes.INTEGER,
+    hash: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     user_id: {
@@ -79,4 +60,4 @@ Convert.init(
   }
 );
 
-export default Convert;
+export default DepositRequest;
