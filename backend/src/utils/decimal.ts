@@ -30,3 +30,25 @@ export const deciNZ = (value: Decimal.Value) => {
     return null;
   }
 };
+
+function removeTrailingZeros(str: string) {
+  // Check if the string contains a decimal point
+  if (!str.includes(".")) return str;
+
+  // Remove trailing zeros after the decimal point
+  let [integerPart, decimalPart] = str.split(".");
+
+  // Remove trailing zeros from the decimal part
+  decimalPart = decimalPart.replace(/0+$/, "");
+
+  // Reassemble the number, only if decimal part is not empty
+  return decimalPart.length > 0 ? `${integerPart}.${decimalPart}` : integerPart;
+}
+
+export const fixedOf = (value: Decimal.Value) => {
+  let decimal = deci(value);
+  if (decimal == null) {
+    return 0;
+  }
+  return removeTrailingZeros(decimal.toFixed(18));
+};

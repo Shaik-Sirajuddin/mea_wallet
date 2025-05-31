@@ -8,50 +8,63 @@ import {
 } from "sequelize";
 import { sequelize } from "../database/connection";
 
-//sequelize recommended approach starting 6.14+
-class UserBalance extends Model<
-  InferAttributes<UserBalance>,
-  InferCreationAttributes<UserBalance>
+class BalanceFlow extends Model<
+  InferAttributes<BalanceFlow>,
+  InferCreationAttributes<BalanceFlow>
 > {
   declare id: CreationOptional<number>;
-  declare userId: number;
-  declare tokenId: number;
-  declare amount: string;
-  declare lockedAmount: string;
-  declare sequence_no: number;
+  declare type: number;
+  declare ref_type_id: number; //the row id of the corresponding table that bought change in balance
+  declare balance_id: number;
+  declare prev_amount: string;
+  declare change_amount: string; //amount of change + or -
+  declare balance_seq_no: number;
+  declare isLockedBalance: CreationOptional<boolean>;
+  declare isAdminUser: CreationOptional<boolean>;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }
 
-UserBalance.init(
+BalanceFlow.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
+    type: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    tokenId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    amount: {
+    change_amount: {
       type: DataTypes.DECIMAL(32, 18),
       allowNull: false,
-      defaultValue: "0",
     },
-    lockedAmount: {
-      type: DataTypes.DECIMAL(32, 18),
-      allowNull: false,
-      defaultValue: "0",
-    },
-    sequence_no: {
+    balance_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0,
+    },
+    prev_amount: {
+      type: DataTypes.DECIMAL(32, 18),
+      allowNull: false,
+    },
+    ref_type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    balance_seq_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    isAdminUser: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    isLockedBalance: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -72,4 +85,4 @@ UserBalance.init(
   }
 );
 
-export default UserBalance;
+export default BalanceFlow;

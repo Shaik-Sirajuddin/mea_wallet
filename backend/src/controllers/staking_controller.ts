@@ -6,6 +6,7 @@ import UserBalance from "../models/user_balance";
 import { deci } from "../utils/decimal";
 import { sequelize } from "../database/connection";
 import { ADMIN } from "../utils/global";
+import BalanceFlow from "../models/balance_flow";
 
 export default {
   fetchPlans: async (req: Request, res: Response) => {
@@ -69,7 +70,7 @@ export default {
       }
 
       let tx = await sequelize.transaction();
-      //TODO : implment transaction
+      //TODO : implment transaction lock
       let userBalance = await UserBalance.findOne({
         where: {
           userId: req.userId,
@@ -84,13 +85,21 @@ export default {
 
       let enrollTime = new Date();
 
-      await UserBalance.decrement("amount", {
-        by: amount,
-        where: {
-          id: userBalance.id,
+      //update amount
+      await UserBalance.update(
+        {
+          amount: deci(userBalance.dataValues.amount).sub(amount).toString(),
+          lockedAmount: deci(userBalance.dataValues.amount)
+            .add(amount)
+            .toString(),
+          sequence_no: userBalance.sequence_no + 2,
         },
-        transaction: tx,
-      });
+        {
+          where: {
+            id: userBalance.id,
+          },
+        }
+      );
 
       let deposit = await StakingDeposit.create(
         {
@@ -103,16 +112,38 @@ export default {
       );
 
       //TODO : add entry into balance flow table
-
-      //increase admin balance
-      await UserBalance.increment("amount", {
-        by: amount,
-        where: {
-          userId: ADMIN.USER_ID,
-          tokenId: plan.tokenId,
+      await BalanceFlow.create(
+        {
+          balance_id: userBalance.id,
+          balance_seq_no: userBalance.dataValues.sequence_no,
+          change_amount: deci(amount).mul(-1).toString(),
+          isAdminUser: false,
+          isLockedBalance: false,
+          prev_amount: userBalance.dataValues.amount,
+          ref_type_id: deposit.id,
+          type: BalanceFlowType.Stake,
         },
-        transaction: tx,
-      });
+        {
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: userBalance.id,
+          balance_seq_no: userBalance.dataValues.sequence_no + 1,
+          change_amount: deci(amount).toString(),
+          isAdminUser: false,
+          isLockedBalance: true,
+          prev_amount: userBalance.dataValues.lockedAmount,
+          ref_type_id: deposit.id,
+          type: BalanceFlowType.Stake,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
       await tx.commit();
       responseHandler.success(res, "Staking Successful", {
         id: deposit.id,
@@ -122,8 +153,10 @@ export default {
     }
   },
   closeStaking: async (req: Request, res: Response) => {
+    const tx = await sequelize.transaction();
     try {
       let { deposit_id } = req.body;
+
       let staking = await StakingDeposit.findOne({
         where: {
           id: deposit_id,
@@ -135,6 +168,7 @@ export default {
             model: StakingPlan,
           },
         ],
+        transaction: tx,
       });
       if (!staking) {
         throw "A Deposit doesn't exist with given id";
@@ -143,7 +177,6 @@ export default {
       if (staking.dataValues.close_time !== null) {
         throw "Deposit already claimed";
       }
-      //TODO : find names for staking deposit
 
       let closeTime = new Date();
       let stakingPlan = staking.plan!;
@@ -160,6 +193,7 @@ export default {
         maxStakePeriodMs
       );
 
+      //
       let interestFactor = deci(eligibleStakePeriodMs).div(fullPeriodMs);
 
       let interestAccumulated = deci(staking.amount)
@@ -167,8 +201,139 @@ export default {
         .mul(interestFactor)
         .div(100);
 
-      //todoo continue
+      let maturityDate = new Date(
+        new Date(staking.enroll_time).getTime() +
+          stakingPlan.lockDays * 86400 * 1000
+      );
+
+      let isPreMatureWithdrawl = closeTime.getTime() < maturityDate.getTime();
+      let totalWithdrawAmount = deci(staking.amount).add(interestAccumulated);
+
+      let earlyPenalty = deci(staking.amount)
+        .mul(stakingPlan.earlyPenaltyPercent)
+        .div(100);
+
+      if (isPreMatureWithdrawl) {
+        interestAccumulated = deci(0);
+        totalWithdrawAmount = deci(staking.amount).sub(earlyPenalty);
+      }
+
+      await StakingDeposit.update(
+        {
+          acc_interest: interestAccumulated.toString(),
+          close_time: closeTime,
+          withdrawn_amount: totalWithdrawAmount.toString(),
+        },
+        {
+          where: {
+            id: staking.id,
+          },
+          transaction: tx,
+        }
+      );
+
+      let userBalance = await UserBalance.findOne({
+        where: {
+          tokenId: stakingPlan.tokenId,
+          userId: req.userId,
+        },
+        transaction: tx,
+      });
+
+      await UserBalance.update(
+        {
+          amount: deci(userBalance.amount).add(totalWithdrawAmount).toString(),
+          lockedAmount: deci(userBalance.lockedAmount)
+            .sub(staking.amount)
+            .toString(),
+          sequence_no: userBalance.sequence_no + 2,
+        },
+        {
+          where: {
+            id: userBalance.id,
+          },
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: userBalance.id,
+          balance_seq_no: userBalance.sequence_no,
+          change_amount: totalWithdrawAmount.toString(),
+          isAdminUser: false,
+          isLockedBalance: false,
+          prev_amount: userBalance.amount,
+          ref_type_id: staking.id,
+          type: BalanceFlowType.Stake,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: userBalance.id,
+          balance_seq_no: userBalance.sequence_no + 1,
+          change_amount: deci(staking.amount).mul(-1).toString(),
+          isAdminUser: false,
+          isLockedBalance: true,
+          prev_amount: userBalance.amount,
+          ref_type_id: staking.id,
+          type: BalanceFlowType.Stake,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      //decrease admin balance for interest interest
+      let adminBalanceChange = isPreMatureWithdrawl
+        ? earlyPenalty
+        : interestAccumulated.mul(-1);
+
+      //TODO : no locking for admin balance
+      let adminBalance = await UserBalance.findOne({
+        where: {
+          userId: ADMIN.USER_ID,
+          tokenId: stakingPlan.tokenId,
+        },
+        transaction: tx,
+      });
+
+      await UserBalance.update(
+        {
+          amount: deci(adminBalance.amount).add(adminBalanceChange).toString(),
+          sequence_no: adminBalance.sequence_no + 1,
+        },
+        {
+          where: {
+            id: adminBalance.id,
+          },
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: adminBalance.id,
+          balance_seq_no: adminBalance.sequence_no + 1,
+          change_amount: adminBalanceChange.toString(),
+          isAdminUser: true,
+          isLockedBalance: false,
+          prev_amount: adminBalance.amount,
+          ref_type_id: staking.id,
+          type: BalanceFlowType.Stake,
+        },
+        {
+          transaction: tx,
+        }
+      );
+      await tx.commit();
+      responseHandler.success(res, "Staking Closed");
     } catch (error) {
+      await tx.rollback();
       responseHandler.error(res, error);
     }
   },
