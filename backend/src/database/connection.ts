@@ -3,8 +3,8 @@ import fs from "fs";
 import path from "path";
 
 export const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
+  process.env.DB_NAME!,
+  process.env.DB_USER!,
   process.env.DB_USER_PASS,
   {
     host: "localhost",
@@ -13,7 +13,7 @@ export const sequelize = new Sequelize(
 );
 
 async function syncModels(models = path.join(process.cwd(), "models")) {
-  const db = {};
+  const db: Record<string, any> = {};
 
   fs.readdirSync(models).forEach(async function (fileOrDir) {
     const fullPath = path.join(models, fileOrDir);

@@ -6,7 +6,7 @@ import Token from "../src/models/token";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface: QueryInterface, Sequelize) {
+  async up(queryInterface: QueryInterface, _Sequelize: any) {
     /**
      * Add seed commands here.
      *
@@ -33,6 +33,7 @@ module.exports = {
       tokens.map((item) => {
         return {
           user_id: ADMIN.USER_ID,
+          //@ts-ignore this
           token_id: item["id"],
           amount: 0,
           lockedAmount: 0,
@@ -41,7 +42,7 @@ module.exports = {
     );
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(_queryInterface: any, _Sequelize: any) {
     /**
      * Add commands to revert seed here.
      *

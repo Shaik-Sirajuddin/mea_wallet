@@ -7,7 +7,7 @@ import Token from "../models/token";
 export default {
   fetchProfile: async (req: Request, res: Response) => {
     try {
-      let user = await User.findByPk(req.userId, {
+      let user = (await User.findByPk(req.userId, {
         attributes: {
           exclude: [
             "id",
@@ -19,8 +19,8 @@ export default {
             "updated_at",
           ],
         },
-      });
-      responseHandler.success(res, "Fetched", user.toJSON());
+      }))!;
+      responseHandler.success(res, user.toJSON());
     } catch (error) {
       responseHandler.error(res, error);
     }
@@ -41,7 +41,7 @@ export default {
           },
         ],
       });
-      responseHandler.success(res, "Fetched", userBalance);
+      responseHandler.success(res, userBalance);
     } catch (error) {
       responseHandler.error(res, error);
     }

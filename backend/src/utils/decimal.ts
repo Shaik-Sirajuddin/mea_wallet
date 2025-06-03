@@ -1,11 +1,11 @@
 import Decimal from "decimal.js";
 
 export const deci = (value: Decimal.Value) => {
-  try {
-    return new Decimal(value);
-  } catch (e) {
-    return null;
-  }
+  // try {
+  return new Decimal(value);
+  // } catch (e) {
+  // return null;
+  // }
 };
 
 export const isValidDeci = (value: Decimal.Value) => {

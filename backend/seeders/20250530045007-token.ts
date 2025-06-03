@@ -1,12 +1,10 @@
 "use strict";
 
 import { QueryInterface } from "sequelize";
-import { ADMIN } from "../src/utils/global";
-import Token from "../src/models/token";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface: QueryInterface, Sequelize) {
+  async up(queryInterface: QueryInterface, _Sequelize: any) {
     /**
      * Add seed commands here.
      *
@@ -44,7 +42,7 @@ module.exports = {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(_queryInterface: any, _Sequelize: any) {
     /**
      * Add commands to revert seed here.
      *

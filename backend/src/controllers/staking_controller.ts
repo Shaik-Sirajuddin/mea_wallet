@@ -20,7 +20,7 @@ export default {
           paused: false,
         },
       });
-      responseHandler.success(res, "Fetched", plans);
+      responseHandler.success(res, plans);
     } catch (error) {
       responseHandler.error(res, error);
     }
@@ -42,7 +42,7 @@ export default {
         ],
       });
       //TODO : associate stakingdeposit , staking plan models
-      responseHandler.success(res, "Fetched", stakingDeposits);
+      responseHandler.success(res, stakingDeposits);
     } catch (error) {
       responseHandler.error(res, error);
     }
@@ -72,7 +72,7 @@ export default {
 
       let tx = await sequelize.transaction();
       //TODO : implment transaction lock
-      let userBalance = await UserBalance.findOne({
+      let userBalance = (await UserBalance.findOne({
         where: {
           userId: req.userId,
           tokenId: plan.tokenId,
@@ -82,7 +82,7 @@ export default {
           of: UserBalance,
         },
         transaction: tx,
-      });
+      }))!;
 
       if (deci(userBalance.amount).lessThan(amount)) {
         throw "Insufficient balance";
@@ -150,7 +150,7 @@ export default {
       );
 
       await tx.commit();
-      responseHandler.success(res, "Staking Successful", {
+      responseHandler.success(res, {
         id: deposit.id,
       });
     } catch (error) {
@@ -237,7 +237,7 @@ export default {
         }
       );
 
-      let userBalance = await UserBalance.findOne({
+      let userBalance = (await UserBalance.findOne({
         where: {
           tokenId: stakingPlan.tokenId,
           userId: req.userId,
@@ -247,7 +247,7 @@ export default {
           of: UserBalance,
         },
         transaction: tx,
-      });
+      }))!;
 
       await UserBalance.update(
         {
@@ -304,7 +304,7 @@ export default {
 
       //TODO : implementing locking for admin balance could limit concurrency
       //i.e slow down api queries
-      let adminBalance = await UserBalance.findOne({
+      let adminBalance = (await UserBalance.findOne({
         where: {
           userId: ADMIN.USER_ID,
           tokenId: stakingPlan.tokenId,
@@ -314,7 +314,7 @@ export default {
           of: UserBalance,
         },
         transaction: tx,
-      });
+      }))!;
 
       await UserBalance.update(
         {
@@ -345,7 +345,7 @@ export default {
         }
       );
       await tx.commit();
-      responseHandler.success(res, "Staking Closed");
+      responseHandler.success(res);
     } catch (error) {
       await tx.rollback();
       responseHandler.error(res, error);

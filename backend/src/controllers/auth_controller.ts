@@ -118,7 +118,7 @@ export default {
       });
 
       //TODO : implement additionaly encryption to be only be decodable via key from mobile app
-      responseHandler.success(res, "Success", {
+      responseHandler.success(res, {
         token: token,
       });
     } catch (error) {
@@ -185,7 +185,7 @@ export default {
       });
 
       //TODO : implement additionaly encryption to be only be decodable via key from mobile app
-      responseHandler.success(res, "Success", {
+      responseHandler.success(res, {
         token: token,
       });
     } catch (error) {
@@ -220,7 +220,7 @@ export default {
         }
       );
       //todo : send email
-      responseHandler.success(res, "Email sent");
+      responseHandler.success(res);
     } catch (error) {
       logger.error(error);
       responseHandler.error(res, error);
@@ -233,7 +233,7 @@ export default {
         throw " Invalid Value";
       }
       let user = await validateResetHash(hash);
-      responseHandler.success(res, "Success", {
+      responseHandler.success(res, {
         email: user.dataValues.email,
       });
     } catch (error) {
@@ -266,7 +266,7 @@ export default {
         }
       );
       //todo : terminate remaining sessions if password has been reset
-      responseHandler.success(res, "Reset Successful");
+      responseHandler.success(res);
     } catch (error) {
       responseHandler.error(res, error);
     }

@@ -23,7 +23,7 @@ export default {
           user_id: req.userId,
         },
       });
-      responseHandler.success(res, "Fetched", convertHistory);
+      responseHandler.success(res, convertHistory);
     } catch (error) {
       responseHandler.error(res, error);
     }
