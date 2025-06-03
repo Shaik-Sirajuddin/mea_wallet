@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:focus-visible {
+    outline: -webkit-focus-ring-color auto 0px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.amount-input{
+
+}
+
+/* select {
+    background-image: url(../assets/images/droparrow.svg);
+    background-repeat: no-repeat;
+    background-position: right 32px center;
+} */
