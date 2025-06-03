@@ -7,6 +7,7 @@ import { deci } from "../utils/decimal";
 import { sequelize } from "../database/connection";
 import { ADMIN } from "../utils/global";
 import BalanceFlow from "../models/balance_flow";
+import { LOCK } from "sequelize";
 
 export default {
   fetchPlans: async (req: Request, res: Response) => {
@@ -75,6 +76,10 @@ export default {
         where: {
           userId: req.userId,
           tokenId: plan.tokenId,
+        },
+        lock: {
+          level: LOCK.UPDATE,
+          of: UserBalance,
         },
         transaction: tx,
       });
@@ -237,6 +242,10 @@ export default {
           tokenId: stakingPlan.tokenId,
           userId: req.userId,
         },
+        lock: {
+          level: LOCK.UPDATE,
+          of: UserBalance,
+        },
         transaction: tx,
       });
 
@@ -293,11 +302,16 @@ export default {
         ? earlyPenalty
         : interestAccumulated.mul(-1);
 
-      //TODO : no locking for admin balance
+      //TODO : implementing locking for admin balance could limit concurrency
+      //i.e slow down api queries
       let adminBalance = await UserBalance.findOne({
         where: {
           userId: ADMIN.USER_ID,
           tokenId: stakingPlan.tokenId,
+        },
+        lock: {
+          level: LOCK.UPDATE,
+          of: UserBalance,
         },
         transaction: tx,
       });

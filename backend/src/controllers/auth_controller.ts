@@ -12,6 +12,8 @@ import { responseHandler } from "../utils/responseHandler";
 import jwt from "jsonwebtoken";
 import Token from "../models/token";
 import UserBalance from "../models/user_balance";
+import { sequelize } from "../database/connection";
+import { Transaction } from "sequelize";
 const passwordSchema = new passValidator();
 passwordSchema
   .is()
@@ -29,7 +31,7 @@ passwordSchema
   .spaces(); // Should not have spaces
 
 const generateUserName = async () => {
-  let name: string = null;
+  let name: string | null = null;
   let rounds = 0;
   do {
     rounds++;
@@ -48,7 +50,7 @@ const generateUserName = async () => {
       break;
     }
   } while (name! == null);
-  return name;
+  return name!;
 };
 
 /**
@@ -102,7 +104,7 @@ export default {
 
       const token = jwt.sign(
         { userId: user.dataValues.id },
-        process.env.JWT_TOKEN,
+        process.env.JWT_TOKEN!,
         {
           expiresIn: "30d",
         }
@@ -125,7 +127,9 @@ export default {
     }
   },
   signUp: async (req: Request, res: Response) => {
+    let tx: Transaction | null = null;
     try {
+      tx = await sequelize.transaction();
       let { email, password } = req.body;
       //check if user exits
       let user = await User.findOne({
@@ -133,6 +137,7 @@ export default {
         where: {
           email: email,
         },
+        transaction: tx,
       });
       if (user) {
         throw "Email already in use";
@@ -149,6 +154,7 @@ export default {
         email,
         password: hashedPassword,
         username,
+        totp_secret: "",
       });
       let tokens = await Token.findAll({
         attributes: ["id"],
@@ -165,7 +171,7 @@ export default {
       );
       const token = jwt.sign(
         { userId: user.dataValues.id },
-        process.env.JWT_TOKEN,
+        process.env.JWT_TOKEN!,
         {
           expiresIn: "30d",
         }
@@ -183,6 +189,7 @@ export default {
         token: token,
       });
     } catch (error) {
+      await tx?.rollback();
       logger.error(error);
       responseHandler.error(res, error);
     }

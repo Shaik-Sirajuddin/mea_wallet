@@ -2,7 +2,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 import server, { app } from "./config/server";
-import { makeConnection } from "./database/connection";
 import Decimal from "decimal.js";
 Decimal.set({
   precision: 32,

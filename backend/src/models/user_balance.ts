@@ -16,9 +16,9 @@ class UserBalance extends Model<
   declare id: CreationOptional<number>;
   declare userId: number;
   declare tokenId: number;
-  declare amount: string;
-  declare lockedAmount: string;
-  declare sequence_no: number;
+  declare amount: CreationOptional<string>;
+  declare lockedAmount: CreationOptional<string>;
+  declare sequence_no: CreationOptional<number>;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }

@@ -1,28 +1,29 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  Sequelize,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface UserAttributes {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-  totp_secret: string;
-  email_verified: boolean;
-  twofa_completed: boolean;
-  emoji: string;
-  resetHash: string | null;
-  resetHashExpiryTime: Date | null;
-  created_at: Date;
-  updated_at: Date;
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>;
+  declare username: string;
+  declare email: string;
+  declare password: string;
+  declare totp_secret: string;
+  declare email_verified: CreationOptional<boolean>;
+  declare twofa_completed: CreationOptional<boolean>;
+  declare emoji: CreationOptional<string>;
+  declare resetHash: CreationOptional<string | null>;
+  declare resetHashExpiryTime: CreationOptional<Date | null>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-type UserCreationAttributes = Omit<
-  UserAttributes,
-  "id" | "created_at" | "updated_at" | "resetHash" | "resetHashExpiryTime"
->;
-
-const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
-  "User",
+User.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -86,6 +87,8 @@ const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
     },
   },
   {
+    sequelize,
+    modelName: "User",
     timestamps: false,
   }
 );
