@@ -198,7 +198,7 @@ export default {
     try {
       const { email } = req.body;
       let user = await User.findOne({
-        attributes: ["id", "password"],
+        attributes: ["id", "password", "email"],
         where: {
           email: email,
         },

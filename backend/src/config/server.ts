@@ -1,13 +1,14 @@
 import express from "express";
 import { createServer } from "http";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { authorized } from "../middleware/auth_middleware";
 import userRouter from "../router/user_router";
 import authRouter from "../router/auth_router";
 import stakeRouter from "../router/stake_router";
 const app = express();
 app.use(bodyParser.json());
-
+app.use(cookieParser());
 app.use("/user", authorized, userRouter);
 app.use("/auth", authRouter);
 app.use("/stake", stakeRouter);

@@ -34,12 +34,12 @@ export default {
         where: {
           userId: req.userId,
         },
-        include: [
-          {
-            model: Token,
-            attributes: ["id", "name", "symbol", "decimals"],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: Token,
+        //     attributes: ["id", "name", "symbol", "decimals"],
+        //   },
+        // ],
       });
       responseHandler.success(res, userBalance);
     } catch (error) {

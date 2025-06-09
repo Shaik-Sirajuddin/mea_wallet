@@ -12,7 +12,7 @@ export const sequelize = new Sequelize(
   }
 );
 
-async function syncModels(models = path.join(process.cwd(), "models")) {
+async function syncModels(models = path.join(process.cwd(), "src/models")) {
   const db: Record<string, any> = {};
 
   fs.readdirSync(models).forEach(async function (fileOrDir) {
@@ -22,8 +22,8 @@ async function syncModels(models = path.join(process.cwd(), "models")) {
     if (stat.isDirectory()) {
       syncModels(fullPath);
     } else if (
-      (fileOrDir.indexOf(".") !== 0 && fileOrDir.slice(-3) === ".js") ||
-      fileOrDir.slice(-3) === ".ts"
+      (fileOrDir.indexOf(".") !== 0 && fileOrDir.slice(-3) === ".js") 
+      // fileOrDir.slice(-3) === ".ts"
     ) {
       const model = await import(fullPath);
       const modelInstance = model.default;

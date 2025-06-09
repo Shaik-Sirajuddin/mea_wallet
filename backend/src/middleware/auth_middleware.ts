@@ -6,6 +6,7 @@ import { JWT_PAYLOAD } from "../types/jwt_payload";
 
 export const authorized = (req: Request, res: Response, next: NextFunction) => {
   try {
+    // console.log(req.headers)
     const token = req.cookies[COOKIE_ID.AUTH];
     let user = jwt.verify(token, process.env.JWT_TOKEN!) as JWT_PAYLOAD;
     if (!user.userId) {

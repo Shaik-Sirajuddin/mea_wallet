@@ -14,17 +14,11 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("Token", [
+    await queryInterface.bulkInsert("Tokens", [
       {
         name: "Recon",
         symbol: "RECON",
         description: "RWA on-chain",
-        decimals: 6,
-      },
-      {
-        name: "Mecca",
-        symbol: "MEA",
-        description: "Real Value Ecosystem ",
         decimals: 6,
       },
       {

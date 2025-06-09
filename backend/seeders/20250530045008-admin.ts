@@ -16,7 +16,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("User", [
+    await queryInterface.bulkInsert("Users", [
       {
         id: ADMIN.USER_ID,
         username: ADMIN.USERNAME,
@@ -25,16 +25,16 @@ module.exports = {
         totp_secret: "",
       },
     ]);
-    let tokens = await queryInterface.select(Token, "Token", {
+    let tokens = await queryInterface.select(Token, "Tokens", {
       where: {},
     });
     await queryInterface.bulkInsert(
-      "UserBalance",
+      "UserBalances",
       tokens.map((item) => {
         return {
-          user_id: ADMIN.USER_ID,
+          userId: ADMIN.USER_ID,
           //@ts-ignore this
-          token_id: item["id"],
+          tokenId: item["id"],
           amount: 0,
           lockedAmount: 0,
         };
