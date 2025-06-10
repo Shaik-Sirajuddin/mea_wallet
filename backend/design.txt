@@ -1,1 +1,10 @@
 Intermediate table for balance flow 
+
+Chart Data : 
+
+
+frontend makes request to endpoint based on token 
+frontend caches request until app close 
+
+coingecko public endpoint for sol , mea 
+

@@ -4,6 +4,9 @@ dotenv.config();
 import server, { app } from "./config/server";
 import Decimal from "decimal.js";
 import { makeConnection } from "./database/connection";
+import BirdEyeProvider from "./lib/chart_provider/birdeye";
+import bingx from "./lib/price_provider/bingx";
+import coinstore from "./lib/price_provider/coinstore";
 Decimal.set({
   precision: 32,
 });
@@ -13,7 +16,12 @@ app.get("/", (req, res) => {
   res.send("Hi");
 });
 
+const test = async () => {
+  let price = await coinstore.getPrice('RECON');
+  console.log(price)
+};
 server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   makeConnection();
+  test();
 });

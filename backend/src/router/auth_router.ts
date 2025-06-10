@@ -13,7 +13,7 @@ const authRouter = express.Router();
 authRouter.post("/sign-up", authController.signUp);
 authRouter.post("/login", authController.login);
 authRouter.post("/reset-pass", authController.requestPasswordReset);
-authRouter.post("/verify-reset-hash", authController.veiryResetToken);
+authRouter.post("/verify-reset-hash", authController.verifyResetToken);
 authRouter.post("/confirm-pass-reset", authController.confirmReset);
 
 export const passwordResetLimiter = rateLimit({

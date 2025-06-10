@@ -9,6 +9,7 @@ export const sequelize = new Sequelize(
   {
     host: "localhost",
     dialect: "postgres",
+    logging: false,
   }
 );
 
@@ -22,7 +23,8 @@ async function syncModels(models = path.join(process.cwd(), "src/models")) {
     if (stat.isDirectory()) {
       syncModels(fullPath);
     } else if (
-      (fileOrDir.indexOf(".") !== 0 && fileOrDir.slice(-3) === ".js") 
+      fileOrDir.indexOf(".") !== 0 &&
+      fileOrDir.slice(-3) === ".js"
       // fileOrDir.slice(-3) === ".ts"
     ) {
       const model = await import(fullPath);

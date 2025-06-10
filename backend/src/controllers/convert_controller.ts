@@ -31,6 +31,11 @@ export default {
 };
 
 /**
+ * App -> chart data
+ * Live Price -> backend sync
+ *
+ */
+/**
  * Price Fetching
  * fetch price
  * perform swap

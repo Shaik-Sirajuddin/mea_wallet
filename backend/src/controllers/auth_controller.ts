@@ -226,7 +226,7 @@ export default {
       responseHandler.error(res, error);
     }
   },
-  veiryResetToken: async (req: Request, res: Response) => {
+  verifyResetToken: async (req: Request, res: Response) => {
     try {
       let hash = req.query["hash"];
       if (typeof hash !== "string") {
