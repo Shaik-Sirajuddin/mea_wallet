@@ -38,10 +38,6 @@ const getMarketQuote = async (pair: string) => {
 };
 export default {
   getPrice: async (symbol: string) => {
-    if (symbol !== "RECON") {
-      throw "Invalid Symbol";
-    }
-    symbol = "RECONUSDT";
     return await getMarketQuote(symbol);
   },
 };

@@ -13,6 +13,7 @@ import WithdrawlRequest from "../models/withdrawl_request";
 import User from "../models/user";
 import OTPAuth, { Secret } from "otpauth";
 import { decryptSym } from "../lib/encryption";
+import { WithdrawStatus } from "../enums/WithdrawStatus";
 
 export default {
   deposit: async (req: Request, res: Response) => {
@@ -180,6 +181,7 @@ export default {
           id: id,
           user_id: req.userId,
         },
+        transaction: tx,
       });
 
       if (!request) {

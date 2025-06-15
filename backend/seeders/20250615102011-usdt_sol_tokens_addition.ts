@@ -1,6 +1,8 @@
 "use strict";
 
-import { QueryInterface } from "sequelize";
+import { Op, QueryInterface } from "sequelize";
+import Token from "../src/models/token";
+import { ADMIN } from "../src/utils/global";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -14,25 +16,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("Tokens", [
-      {
-        name: "Recon",
-        symbol: "RECON",
-        description: "RWA on-chain",
-        decimals: 6,
-      },
-      {
-        name: "Mecca",
-        symbol: "MEA",
-        description: "Real Value Ecosystem ",
-        decimals: 6,
-      },
-      {
-        name: "FOX9",
-        symbol: "FOX9",
-        description: "Korean Fox Master",
-        decimals: 6,
-      },
+    const tokens = [
       {
         name: "USDT",
         symbol: "USDT",
@@ -45,7 +29,29 @@ module.exports = {
         description: "Solana native coin",
         decimals: 9,
       },
-    ]);
+    ];
+    await queryInterface.bulkInsert("Tokens", tokens);
+
+    let createdTokens = await queryInterface.select(Token, "Tokens", {
+      where: {
+        symbol: {
+          [Op.in]: tokens.map((token) => token.symbol),
+        },
+      },
+    });
+    
+    await queryInterface.bulkInsert(
+      "UserBalances",
+      createdTokens.map((item) => {
+        return {
+          userId: ADMIN.USER_ID,
+          //@ts-ignore this
+          tokenId: item["id"],
+          amount: 0,
+          lockedAmount: 0,
+        };
+      })
+    );
   },
 
   async down(_queryInterface: any, _Sequelize: any) {

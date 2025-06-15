@@ -1,4 +1,4 @@
-enum DepositStatus {
+export enum DepositStatus {
   PENDING,
   APPROVED,
   REJECTED,

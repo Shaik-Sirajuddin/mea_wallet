@@ -1,26 +1,28 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface TokenDataAttributes {
-  id: number;
-  token_id: number;
-  circulating_suppy: number;
-  total_supply: number;
-  price: number;
-  swap_price: number;
-  created_at: Date;
-  updated_at: Date;
+class TokenData extends Model<
+  InferAttributes<TokenData>,
+  InferCreationAttributes<TokenData>
+> {
+  declare id: CreationOptional<number>;
+  declare token_id: number;
+  declare circulating_suppy: number;
+  declare total_supply: number;
+  declare price: number;
+  declare swap_price: number;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-type TokenDataCreationAttributes = Omit<
-  TokenDataAttributes,
-  "id" | "created_at" | "updated_at"
->;
-
-const TokenData = sequelize.define<
-  Model<TokenDataAttributes, TokenDataCreationAttributes>
->(
-  "TokenData",
+TokenData.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -59,6 +61,7 @@ const TokenData = sequelize.define<
     },
   },
   {
+    sequelize,
     timestamps: false,
   }
 );

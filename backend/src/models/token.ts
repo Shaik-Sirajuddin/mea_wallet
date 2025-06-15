@@ -1,24 +1,27 @@
-import { DataTypes, Model, Sequelize, Optional } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-// Interface for all Token attributes
-interface TokenAttributes {
-  id: number;
-  name: string;
-  symbol: string;
-  description: string;
-  decimals: number;
-  created_at: Date;
-  updated_at: Date;
+class Token extends Model<
+  InferAttributes<Token>,
+  InferCreationAttributes<Token>
+> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare symbol: string;
+  declare description: string;
+  declare decimals: number;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-// Interface for attributes required when creating a Token
-interface TokenCreationAttributes
-  extends Optional<TokenAttributes, "id" | "created_at" | "updated_at"> {}
-
-// Define the model with explicit typing
-const Token = sequelize.define<Model<TokenAttributes, TokenCreationAttributes>>(
-  "Token",
+Token.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -54,6 +57,7 @@ const Token = sequelize.define<Model<TokenAttributes, TokenCreationAttributes>>(
     },
   },
   {
+    sequelize,
     timestamps: false,
   }
 );

@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from "sequelize";
 import { sequelize } from "../database/connection";
+import { DepositStatus } from "../enums/DepositStatus";
 
 class DepositRequest extends Model<
   InferAttributes<DepositRequest>,

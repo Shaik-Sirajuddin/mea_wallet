@@ -8,3 +8,11 @@ export const ADMIN = {
   EMAIL: "admin@wallet",
   USERNAME: "admin",
 };
+
+export const TOKEN = {
+  USDT: "USDT",
+  FOX9: "FOX9",
+  MEA : "MEA",
+  RECON : "RECON",
+  SOL : "SOL",
+};

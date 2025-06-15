@@ -1,4 +1,4 @@
-enum WithdrawStatus {
+export enum WithdrawStatus {
   PENDING_VERIFICATION,
   PENDING_PROCESSING,
   APPROVED,

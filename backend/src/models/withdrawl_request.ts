@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from "sequelize";
 import { sequelize } from "../database/connection";
+import { WithdrawStatus } from "../enums/WithdrawStatus";
 
 class WithdrawlRequest extends Model<
   InferAttributes<WithdrawlRequest>,
