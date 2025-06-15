@@ -3,6 +3,7 @@ import { responseHandler } from "../utils/responseHandler";
 import { COOKIE_ID } from "../utils/global";
 import jwt from "jsonwebtoken";
 import { JWT_PAYLOAD } from "../types/jwt_payload";
+import { logger } from "../utils/logger";
 
 export const authorized = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,6 +16,7 @@ export const authorized = (req: Request, res: Response, next: NextFunction) => {
     req.userId = user.userId;
     next();
   } catch (error) {
+    logger.error(error);
     responseHandler.error(res, error);
   }
 };

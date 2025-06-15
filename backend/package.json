@@ -17,6 +17,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/speakeasy": "^2.0.10",
     "babel-plugin-module-resolver": "^5.0.2",
     "nodemon": "^3.1.10",
     "typescript": "^5.8.3"
@@ -33,11 +34,14 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
+    "hi-base32": "^0.5.1",
     "jsonwebtoken": "^9.0.2",
+    "otpauth": "^9.4.0",
     "password-validator": "^5.3.0",
     "pg": "^8.16.0",
     "pg-hstore": "^2.3.4",
     "redis": "^5.1.0",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "speakeasy": "^2.0.0"
   }
 }

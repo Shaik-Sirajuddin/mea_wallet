@@ -8,19 +8,23 @@ import {
 } from "sequelize";
 import { sequelize } from "../database/connection";
 
-class DepositRequest extends Model<
-  InferAttributes<DepositRequest>,
-  InferCreationAttributes<DepositRequest>
+class WithdrawlRequest extends Model<
+  InferAttributes<WithdrawlRequest>,
+  InferCreationAttributes<WithdrawlRequest>
 > {
   declare id: CreationOptional<number>;
   declare hash: string;
   declare user_id: number;
+  declare token_id: number;
+  declare amount: string;
   declare status: number;
+  //admin approved or rejected time ,
+  declare processed_at: CreationOptional<Date>;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }
 
-DepositRequest.init(
+WithdrawlRequest.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -34,6 +38,20 @@ DepositRequest.init(
     },
     hash: {
       type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    amount: {
+      type: DataTypes.DECIMAL(32, 18),
+      allowNull: false,
+    },
+    processed_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+    },
+    token_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     user_id: {
@@ -57,4 +75,4 @@ DepositRequest.init(
   }
 );
 
-export default DepositRequest;
+export default WithdrawlRequest;

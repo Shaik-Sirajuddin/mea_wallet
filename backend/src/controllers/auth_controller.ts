@@ -5,6 +5,8 @@ import {
   comparePassword,
   encryptData,
   encryptPassword,
+  encryptSym,
+  generateTOTPSecret,
 } from "../lib/encryption";
 import User from "../models/user";
 import { getRandomInt } from "../utils/helper";
@@ -14,6 +16,9 @@ import Token from "../models/token";
 import UserBalance from "../models/user_balance";
 import { sequelize } from "../database/connection";
 import { Transaction } from "sequelize";
+import { randomBytes } from "crypto";
+import speakeasy from "speakeasy";
+
 const passwordSchema = new passValidator();
 passwordSchema
   .is()
@@ -149,12 +154,17 @@ export default {
 
       let hashedPassword = await encryptPassword(password);
       let username = await generateUserName();
-
+      let randomIV = randomBytes(parseInt(process.env.IV_LENGTH!)).toString(
+        "base64"
+      );
+      const totpSecret = generateTOTPSecret();
+      const encodedTOTPSecret = encryptSym(totpSecret, randomIV);
       user = await User.create({
         email,
         password: hashedPassword,
         username,
-        totp_secret: "",
+        totp_secret: encodedTOTPSecret,
+        user_iv: randomIV,
       });
       let tokens = await Token.findAll({
         attributes: ["id"],

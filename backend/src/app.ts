@@ -16,12 +16,8 @@ app.get("/", (req, res) => {
   res.send("Hi");
 });
 
-const test = async () => {
-  let price = await coinstore.getPrice('RECON');
-  console.log(price)
-};
 server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   makeConnection();
-  test();
+  // test();
 });

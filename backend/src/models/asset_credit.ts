@@ -56,7 +56,6 @@ AssetCredit.init(
   },
   {
     sequelize,
-    tableName: "converts",
     timestamps: false,
   }
 );

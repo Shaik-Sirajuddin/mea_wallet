@@ -14,6 +14,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare email: string;
   declare password: string;
   declare totp_secret: string;
+  declare user_iv: string;
   declare email_verified: CreationOptional<boolean>;
   declare twofa_completed: CreationOptional<boolean>;
   declare emoji: CreationOptional<string>;
@@ -41,6 +42,10 @@ User.init(
       unique: true,
     },
     password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_iv: {
       type: DataTypes.STRING,
       allowNull: false,
     },
