@@ -13,11 +13,11 @@ class WithdrawlRequest extends Model<
   InferCreationAttributes<WithdrawlRequest>
 > {
   declare id: CreationOptional<number>;
-  declare hash: string;
+  declare hash?: string;
   declare user_id: number;
   declare token_id: number;
   declare amount: string;
-  declare status: number;
+  declare status: CreationOptional<number>;
   //admin approved or rejected time ,
   declare processed_at: CreationOptional<Date>;
   declare created_at: CreationOptional<Date>;
@@ -34,7 +34,7 @@ WithdrawlRequest.init(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: DepositStatus.PENDING,
+      defaultValue: WithdrawStatus.PENDING_VERIFICATION,
     },
     hash: {
       type: DataTypes.STRING,

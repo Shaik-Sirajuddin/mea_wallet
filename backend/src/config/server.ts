@@ -7,11 +7,14 @@ import { authorized } from "../middleware/auth_middleware";
 import userRouter from "../router/user_router";
 import authRouter from "../router/auth_router";
 import stakeRouter from "../router/stake_router";
+import assetRouter from "../router/asset_router";
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/user", authorized, userRouter);
 app.use("/auth", authRouter);
+app.use("/asset", assetRouter);
 app.use("/stake", stakeRouter);
 const corsOptions = {
   origin: (_origin: any, callback: (arg0: null, arg1: boolean) => void) => {

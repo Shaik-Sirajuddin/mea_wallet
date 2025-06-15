@@ -15,7 +15,7 @@ class DepositRequest extends Model<
   declare id: CreationOptional<number>;
   declare hash: string;
   declare user_id: number;
-  declare status: number;
+  declare status: CreationOptional<number>;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }

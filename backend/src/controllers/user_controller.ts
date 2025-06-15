@@ -2,11 +2,9 @@ import { Request, Response } from "express";
 import { responseHandler } from "../utils/responseHandler";
 import User from "../models/user";
 import UserBalance from "../models/user_balance";
-import Token from "../models/token";
 import { logger } from "../utils/logger";
 import { decryptSym } from "../lib/encryption";
 import OTPAuth, { Secret } from "otpauth";
-import { decode, encode } from "hi-base32";
 export default {
   fetchProfile: async (req: Request, res: Response) => {
     try {
