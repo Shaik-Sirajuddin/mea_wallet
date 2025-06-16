@@ -4,4 +4,5 @@ enum BalanceFlowType {
   Stake,
   Deposit,
   Withdrawl,
+  CANCEL_WITHDRAWL
 }

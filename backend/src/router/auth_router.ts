@@ -15,7 +15,7 @@ authRouter.post("/login", authController.login);
 authRouter.post("/reset-pass", authController.requestPasswordReset);
 authRouter.post("/verify-reset-hash", authController.verifyResetToken);
 authRouter.post("/confirm-pass-reset", authController.confirmReset);
- 
+
 export const passwordResetLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute window
   max: 1, // limit 1 request per windowMs

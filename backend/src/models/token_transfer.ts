@@ -1,26 +1,28 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 import { sequelize } from "../database/connection";
 
-interface TokenTransferAttributes {
-  id: number;
-  from_user_id: number;
-  to_user_id: number;
-  token_id: number;
-  amount: number;
-  fee: number;
-  created_at: Date;
-  updated_at: Date;
+class TokenTransfer extends Model<
+  InferAttributes<TokenTransfer>,
+  InferCreationAttributes<TokenTransfer>
+> {
+  declare id: CreationOptional<number>;
+  declare from_user_id: number;
+  declare to_user_id: number;
+  declare token_id: number;
+  declare amount: number;
+  declare fee: CreationOptional<number>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
-type TokenTransferCreationAttributes = Omit<
-  TokenTransferAttributes,
-  "id" | "created_at" | "updated_at"
->;
-
-const TokenTransfer = sequelize.define<
-  Model<TokenTransferAttributes, TokenTransferCreationAttributes>
->(
-  "TokenTransfer",
+TokenTransfer.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -60,6 +62,7 @@ const TokenTransfer = sequelize.define<
     },
   },
   {
+    sequelize,
     timestamps: false,
   }
 );

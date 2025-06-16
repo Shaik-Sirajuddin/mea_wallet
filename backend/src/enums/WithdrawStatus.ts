@@ -3,4 +3,5 @@ export enum WithdrawStatus {
   PENDING_PROCESSING,
   APPROVED,
   REJECTED,
+  CANCELLED,
 }
