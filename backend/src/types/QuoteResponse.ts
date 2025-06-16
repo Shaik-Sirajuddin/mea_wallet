@@ -4,6 +4,7 @@ interface QuoteResponse {
     inputAmount: string;
     outputAmount: string;
     priceImpactPct: number;
+    fee: number;
   };
   message?: string;
 }

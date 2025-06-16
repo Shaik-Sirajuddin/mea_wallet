@@ -12,7 +12,7 @@ export const ADMIN = {
 export const TOKEN = {
   USDT: "USDT",
   FOX9: "FOX9",
-  MEA : "MEA",
-  RECON : "RECON",
-  SOL : "SOL",
+  MEA: "MEA",
+  RECON: "RECON",
+  SOL: "SOL",
 };

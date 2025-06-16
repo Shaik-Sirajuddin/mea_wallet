@@ -72,6 +72,7 @@ export default {
             .div(10 ** toDecimals)
             .toFixed(toDecimals),
           priceImpactPct: swapResponse.data.priceImpactPct,
+          fee: 0,
         },
       };
     } else {
