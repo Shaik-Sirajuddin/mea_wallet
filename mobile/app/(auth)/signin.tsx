@@ -1,52 +1,72 @@
-import EyeIcon from '@/assets/images/eye-icon.svg';
-import Logo from '@/assets/images/logo-small.svg';
-import { Link, router } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import EyeIcon from "@/assets/images/eye-icon.svg";
+import Logo from "@/assets/images/logo-small.svg";
+import { Link, router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import PrimaryButton from "../components/PrimaryButton";
+import useAuth from "@/hooks/useAuth";
+import utils from "@/utils";
 
-function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+enum ErrorType {
+  INVALID_EMAIL,
+  INVALID_PASSWORD,
 }
-
 const Signin: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   // Validation state
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
-  const handleSignIn = () => {
+  const validateForm = () => {
     let valid = true;
 
     // Email validation
     if (!email) {
-      setEmailError('Email is required');
-      valid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email');
-      valid = false;
-    } else {
-      setEmailError(null);
+      setInputError("Email is required");
+      setErrorType(ErrorType.INVALID_EMAIL);
+      return;
+    }
+    if (!utils.validateEmail(email)) {
+      setInputError("Please enter a valid email");
+      setErrorType(ErrorType.INVALID_EMAIL);
+      return;
     }
 
-    // Password validation
     if (!password) {
-      setPasswordError('Password is required');
-      valid = false;
-    } else if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-      valid = false;
-    } else {
-      setPasswordError(null);
+      setErrorType(ErrorType.INVALID_PASSWORD);
+      setInputError("Password is required");
+      return;
     }
-
-    if (valid) {
-      Alert.alert('Login...');
-      // Place your login logic here
+    if (password.length < 6) {
+      setErrorType(ErrorType.INVALID_PASSWORD);
+      setInputError("Password must be at least 6 characters");
+      return;
     }
+    return true;
   };
+  const handleSignIn = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    let result = await useAuth.login(email, password);
+    //sign up failed
+    if (typeof result === "string") {
+      Alert.alert("Login Error", result);
+      return;
+    }
+    //save data to database
+    Alert.alert("Register Successfully...");
+    router.push("/success-page");
+  };
+
+  useEffect(() => {
+    if (inputError) {
+      Alert.alert("Invalid Input", inputError);
+    }
+  }, [inputError]);
 
   return (
     <View className="flex-1 bg-black-1000">
@@ -55,16 +75,18 @@ const Signin: React.FC = () => {
           <View className="items-center">
             <Logo width={125} height={30} />
           </View>
-          
+
           <View className="flex-row items-center gap-4 mt-12">
-          <TouchableOpacity onPress={() => router.replace('/signin')}>
-          <Text className="text-xl font-semibold text-white">Sign In</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.replace('/signup')}>
-          <Text className="text-xl font-semibold text-gray-400">Sign Up</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.replace("/signin")}>
+              <Text className="text-xl font-semibold text-white">Sign In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.replace("/signup")}>
+              <Text className="text-xl font-semibold text-gray-400">
+                Sign Up
+              </Text>
+            </TouchableOpacity>
           </View>
-          
+
           {/* Email Field */}
           <View className="mt-3 mb-2">
             <View className="flex-row items-center gap-2 mb-3">
@@ -75,9 +97,11 @@ const Signin: React.FC = () => {
             </View>
             <TextInput
               value={email}
-              onChangeText={text => {
+              onChangeText={(text) => {
                 setEmail(text);
-                if (emailError) setEmailError(null);
+                if (inputError && errorType === ErrorType.INVALID_EMAIL) {
+                  setInputError(null);
+                }
               }}
               placeholder="Enter Email Address"
               placeholderTextColor="#FFFFFF"
@@ -85,12 +109,14 @@ const Signin: React.FC = () => {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            {emailError ? (
-              <Text className="text-red-500 text-xs mt-1 ml-2">{emailError}</Text>
+            {inputError && errorType === ErrorType.INVALID_EMAIL ? (
+              <Text className="text-red-500 text-xs mt-1 ml-2">
+                {inputError}
+              </Text>
             ) : null}
           </View>
 
-            {/* Password Field */}
+          {/* Password Field */}
           <View className="mb-2">
             <View className="flex-row items-center gap-2 mb-3">
               <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
@@ -101,9 +127,11 @@ const Signin: React.FC = () => {
             <View className="relative">
               <TextInput
                 value={password}
-                onChangeText={text => {
+                onChangeText={(text) => {
                   setPassword(text);
-                  if (passwordError) setPasswordError(null);
+                  if (inputError && errorType === ErrorType.INVALID_PASSWORD) {
+                    setInputError(null);
+                  }
                 }}
                 secureTextEntry={!showPassword}
                 placeholder="Enter Password"
@@ -112,38 +140,38 @@ const Signin: React.FC = () => {
               />
               <TouchableOpacity
                 onPress={() => setShowPassword((prev) => !prev)}
-                className="absolute p-2 top-1/2 right-4 -translate-y-1/2">
+                className="absolute p-2 top-1/2 right-4 -translate-y-1/2"
+              >
                 <EyeIcon />
               </TouchableOpacity>
             </View>
-            {passwordError ? (
-              <Text className="text-red-500 text-xs mt-1 ml-2">{passwordError}</Text>
+            {inputError && errorType === ErrorType.INVALID_PASSWORD ? (
+              <Text className="text-red-500 text-xs mt-1 ml-2">
+                {inputError}
+              </Text>
             ) : null}
           </View>
-          
         </View>
 
         {/* Bottom Links */}
         <View className="items-center mt-6">
-          <TouchableOpacity 
-            activeOpacity={1}
+          <PrimaryButton
             onPress={handleSignIn}
-            className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center">
-            <Text className="text-base group-active:text-pink-1100 text-white font-semibold">Sign In</Text>
-          </TouchableOpacity>
-          <View  className='mt-5 mb-4'>
-          <Link href="/forget-password">
-            <Text className="text-[15px] text-gray-400">Forgot Password</Text>
-          </Link>
-          
+            className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
+            text="Sign In"
+            disabled={inputError !== null}
+          />
+          <View className="mt-5 mb-4">
+            <Link href="/forget-password">
+              <Text className="text-[15px] text-gray-400">Forgot Password</Text>
+            </Link>
           </View>
-            <View>
-          <TouchableOpacity onPress={() => router.replace('/signup')}>
-          <Text className="text-[15px] text-pink-1100">Sign Up</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity onPress={() => router.replace("/signup")}>
+              <Text className="text-[15px] text-pink-1100">Sign Up</Text>
+            </TouchableOpacity>
           </View>
         </View>
-
       </View>
     </View>
   );

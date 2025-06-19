@@ -9,7 +9,7 @@ import {
   CheckIcon,
 } from "@gluestack-ui/themed";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Pressable,
@@ -19,69 +19,122 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import PopupModalFade from "../components/ModelFade";
+import PopupModalFade from "../components/InfoAlert";
+import { isValidPublicKey } from "@/utils/web3";
+import useAuth from "@/hooks/useAuth";
+import PrimaryButton from "../components/PrimaryButton";
 
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+enum ErrorType {
+  INVALID_EMAIL,
+  INVALID_PASSWORD,
+  INVALID_ADDRESS,
+  MISMATCH_PASSWORD,
+}
+
 const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [wallet, setWallet] = useState("");
-  const [Cpassword, setCPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showCPassword, setShowCPassword] = useState(false);
+  const [showVerifyPassword, setShowVerifyPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [checkEmailPopup, setCheckEmailPopup] = useState(false);
   const [checkWalletPopup, setCheckWalletPopup] = useState(false);
 
   // Validation state
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [walletError, setWalletError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
-  const handleSignup = () => {
-    let valid = true;
-
+  const validateForm = () => {
     // Email validation
     if (!email) {
-      setEmailError("Email is required");
-      valid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email");
-      valid = false;
-    } else {
-      setEmailError(null);
+      setInputError("Email is required");
+      setErrorType(ErrorType.INVALID_EMAIL);
+      return;
+    }
+    if (!validateEmail(email)) {
+      setInputError("Please enter a valid email");
+      setErrorType(ErrorType.INVALID_EMAIL);
+      return;
     }
 
     // Wallet Validation
     if (!wallet) {
-      setWalletError("Wallet is required");
-      valid = false;
-    } else {
-      setEmailError(null);
+      setInputError("Wallet is required");
+      setErrorType(ErrorType.INVALID_ADDRESS);
+      return;
+    }
+    if (!isValidPublicKey(wallet)) {
+      setInputError("Invalid PublicKey");
+      setErrorType(ErrorType.INVALID_ADDRESS);
+      return;
     }
 
     // Password validation
     if (!password) {
-      setPasswordError("Password is required");
-      valid = false;
-    } else if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
-      valid = false;
-    } else {
-      setPasswordError(null);
+      setErrorType(ErrorType.INVALID_PASSWORD);
+      setInputError("Password is required");
+      return;
+    }
+    if (password.length < 6) {
+      setErrorType(ErrorType.INVALID_PASSWORD);
+      setInputError("Password must be at least 6 characters");
+      return;
     }
 
-    if (true) {
-      Alert.alert("Register Successfully...");
-      router.push("/success-page");
-      // Place your signup logic here
+    if (password !== verifyPassword) {
+      setErrorType(ErrorType.MISMATCH_PASSWORD);
+      setInputError("Password mismatch");
+      return;
     }
+    return true;
   };
+  const handleSignup = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    let result = await useAuth.signUp(email, password);
+    //sign up failed
+    if (typeof result === "string") {
+      Alert.alert("SignUp Error", result);
+      return;
+    }
+    //save data to database
+    Alert.alert("Register Successfully...");
+    router.push("/success-page");
+  };
+  useEffect(() => {
+    if (inputError) {
+      Alert.alert("Invalid Input", inputError);
+    }
+  }, [inputError]);
 
+  useEffect(() => {
+    if (inputError && errorType === ErrorType.INVALID_EMAIL) {
+      setInputError(null);
+    }
+  }, [email]);
+  useEffect(() => {
+    if (inputError && errorType === ErrorType.INVALID_PASSWORD) {
+      setInputError(null);
+    }
+  }, [password]);
+  useEffect(() => {
+    if (inputError && errorType === ErrorType.MISMATCH_PASSWORD) {
+      setInputError(null);
+    }
+  }, [verifyPassword]);
+  useEffect(() => {
+    if (inputError && errorType === ErrorType.INVALID_ADDRESS) {
+      setInputError(null);
+    }
+  }, [wallet]);
   return (
     <View className="flex-1 bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto justify-between">
@@ -117,7 +170,6 @@ const Signup: React.FC = () => {
                   value={email}
                   onChangeText={(text) => {
                     setEmail(text);
-                    if (emailError) setEmailError(null);
                   }}
                   placeholder="Enter Email Address"
                   placeholderTextColor="#FFFFFF"
@@ -125,18 +177,18 @@ const Signup: React.FC = () => {
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     setCheckEmailPopup(true);
                   }}
                   className="text-white block font-medium leading-[22px] py-1 px-3 bg-pink-1100 absolute top-1/2 -translate-y-1/2 right-4 rounded-2xl"
                 >
                   <Text className="text-white text-[17px]">Check</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
-              {emailError ? (
+              {inputError && errorType === ErrorType.INVALID_EMAIL ? (
                 <Text className="text-red-500 text-xs mt-1 ml-2">
-                  {emailError}
+                  {inputError}
                 </Text>
               ) : null}
             </View>
@@ -154,7 +206,6 @@ const Signup: React.FC = () => {
                   value={password}
                   onChangeText={(text) => {
                     setPassword(text);
-                    if (passwordError) setPasswordError(null);
                   }}
                   secureTextEntry={!showPassword}
                   placeholder="Enter Password"
@@ -168,9 +219,9 @@ const Signup: React.FC = () => {
                   <EyeIcon />
                 </TouchableOpacity>
               </View>
-              {passwordError ? (
+              {inputError && errorType === ErrorType.INVALID_PASSWORD ? (
                 <Text className="text-red-500 text-xs mt-1 ml-2">
-                  {passwordError}
+                  {inputError}
                 </Text>
               ) : null}
               <Text className="text-[15px] mt-2 font-medium leading-[22px] text-gray-1200 px-8">
@@ -189,26 +240,25 @@ const Signup: React.FC = () => {
               </View>
               <View className="relative">
                 <TextInput
-                  value={Cpassword}
+                  value={verifyPassword}
                   onChangeText={(text) => {
-                    setCPassword(text);
-                    if (passwordError) setPasswordError(null);
+                    setVerifyPassword(text);
                   }}
-                  secureTextEntry={!showCPassword}
+                  secureTextEntry={!showVerifyPassword}
                   placeholder="Enter Password"
                   placeholderTextColor="#FFFFFF"
                   className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
                 <TouchableOpacity
-                  onPress={() => setShowCPassword((prev) => !prev)}
+                  onPress={() => setShowVerifyPassword((prev) => !prev)}
                   className="absolute p-2 top-1/2 right-4 -translate-y-1/2"
                 >
                   <EyeIcon />
                 </TouchableOpacity>
               </View>
-              {passwordError ? (
+              {inputError && errorType === ErrorType.MISMATCH_PASSWORD ? (
                 <Text className="text-red-500 text-xs mt-1 ml-2">
-                  {passwordError}
+                  {inputError}
                 </Text>
               ) : null}
             </View>
@@ -226,28 +276,29 @@ const Signup: React.FC = () => {
                   value={wallet}
                   onChangeText={(text) => {
                     setWallet(text);
-                    if (walletError) setWalletError(null);
                   }}
                   placeholder="Wallet Address"
                   placeholderTextColor="#FFFFFF"
-                  className="text-[17px] text-white font-medium pl-8 pr-28 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                  className="text-[17px] text-white font-medium pl-8 pr-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     setCheckWalletPopup(true);
                   }}
                   className="text-white block font-medium leading-[22px] py-1 px-3 bg-pink-1100 absolute top-1/2 -translate-y-1/2 right-4 rounded-2xl"
                 >
                   <Text className="text-white text-[17px]">Check</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
-              {emailError ? (
+
+              {inputError && errorType === ErrorType.INVALID_ADDRESS ? (
                 <Text className="text-red-500 text-xs mt-1 ml-2">
-                  {emailError}
+                  {inputError}
                 </Text>
               ) : null}
+
               <Text className="text-[15px] mt-2 font-medium leading-[22px] text-gray-1200 px-8">
                 Please enter your Solana network wallet address.
               </Text>
@@ -331,15 +382,12 @@ const Signup: React.FC = () => {
 
           {/* Bottom Links */}
           <View className="items-center mt-6 mb-16">
-            <TouchableOpacity
-              activeOpacity={1}
+            <PrimaryButton
               onPress={handleSignup}
               className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
-            >
-              <Text className="text-base group-active:text-pink-1100 text-white font-semibold">
-                Sign Up
-              </Text>
-            </TouchableOpacity>
+              text="Sign Up"
+              disabled={inputError !== null}
+            />
           </View>
         </ScrollView>
       </View>
