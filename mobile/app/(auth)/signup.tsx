@@ -12,17 +12,16 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
-  Pressable,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import PopupModalFade from "../components/InfoAlert";
 import { isValidPublicKey } from "@/utils/web3";
 import useAuth from "@/hooks/useAuth";
 import PrimaryButton from "../components/PrimaryButton";
+import InfoAlert from "../components/InfoAlert";
 
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -44,12 +43,11 @@ const Signup: React.FC = () => {
   const [showVerifyPassword, setShowVerifyPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const [checkEmailPopup, setCheckEmailPopup] = useState(false);
-  const [checkWalletPopup, setCheckWalletPopup] = useState(false);
 
   // Validation state
   const [inputError, setInputError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<ErrorType | null>(null);
+  const [popupVisible, setPopUPVisible] = useState(false);
 
   const validateForm = () => {
     // Email validation
@@ -96,6 +94,8 @@ const Signup: React.FC = () => {
     return true;
   };
   const handleSignup = async () => {
+    router.push("/success-page");
+    return;
     if (!validateForm()) {
       return;
     }
@@ -111,7 +111,8 @@ const Signup: React.FC = () => {
   };
   useEffect(() => {
     if (inputError) {
-      Alert.alert("Invalid Input", inputError);
+      // Alert.alert("Invalid Input", inputError);
+      setPopUPVisible(true);
     }
   }, [inputError]);
 
@@ -150,7 +151,7 @@ const Signup: React.FC = () => {
                   Sign In
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.replace("/signup")}>
+              <TouchableOpacity>
                 <Text className="text-xl font-semibold text-white">
                   Sign Up
                 </Text>
@@ -391,46 +392,11 @@ const Signup: React.FC = () => {
           </View>
         </ScrollView>
       </View>
-      <PopupModalFade visible={checkEmailPopup} setVisible={setCheckEmailPopup}>
-        <View className="px-4">
-          <Text className="text-[17px] text-center text-white">
-            Wrong approach!
-          </Text>
-          <Text className="text-[17px] text-center text-white mb-4">
-            Please check your Email Address
-          </Text>
-          <Pressable
-            className="text-center group  py-2.5 bg-pink-1100 border border-pink-1100 rounded-[15px] flex items-center justify-center active:bg-transparent active:text-pink-1100 hover:text-pink-1100 hover:bg-transparent"
-            onPress={() => setCheckEmailPopup(false)}
-          >
-            <Text className="text-base text-white group-active:text-pink-1100 font-semibold">
-              Ok
-            </Text>
-          </Pressable>
-        </View>
-      </PopupModalFade>
-
-      <PopupModalFade
-        visible={checkWalletPopup}
-        setVisible={setCheckWalletPopup}
-      >
-        <View className="px-4">
-          <Text className="text-[17px] text-center text-white">
-            Wrong approach!
-          </Text>
-          <Text className="text-[17px] text-center text-white mb-4">
-            Please check your Wallet Address
-          </Text>
-          <Pressable
-            className="text-center group  py-2.5 bg-pink-1100 border border-pink-1100 rounded-[15px] flex items-center justify-center active:bg-transparent active:text-pink-1100 hover:text-pink-1100 hover:bg-transparent"
-            onPress={() => setCheckWalletPopup(false)}
-          >
-            <Text className="text-base text-white group-active:text-pink-1100 font-semibold">
-              Ok
-            </Text>
-          </Pressable>
-        </View>
-      </PopupModalFade>
+      <InfoAlert
+        visible={popupVisible}
+        setVisible={setPopUPVisible}
+        text={inputError ?? ""}
+      />
     </View>
   );
 };

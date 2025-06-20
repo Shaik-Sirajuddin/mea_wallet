@@ -23,6 +23,7 @@
     "@react-navigation/bottom-tabs": "^7.3.13",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@reduxjs/toolkit": "^2.8.2",
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "@solana/web3.js": "^1.98.2",

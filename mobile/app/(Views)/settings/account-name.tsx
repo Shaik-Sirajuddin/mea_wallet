@@ -9,7 +9,7 @@ const AccountName = () => {
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
+      <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10">
       <View className="w-full">
         <View className="items-center relative">
           <Pressable 

@@ -1,35 +1,43 @@
-import SvgIcon from '@/app/components/SvgIcon';
-import { useNavigation } from 'expo-router';
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import SvgIcon from "@/app/components/SvgIcon";
+import { useNavigation } from "expo-router";
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 const ContactForm = () => {
   const navigation = useNavigation();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const maxLength = 500;
 
   const handleSend = () => {
-    if (message.trim() === '') return;
+    if (message.trim() === "") return;
     // Your send logic here
-    console.log('Sending message:', message);
-    setMessage('');
+    console.log("Sending message:", message);
+    setMessage("");
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 px-4 bg-black-1000 pt-8 pb-10"
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      className="flex-1  bg-black-1000 pt-8 pb-10"
     >
-
-        <View className="items-center relative">
-          <Pressable
-            onPress={() => navigation.goBack()}
-            className="absolute -left-2 top-0 z-10 p-2"
-          >
-            <SvgIcon name="leftArrow" width="21" height="21" />
-          </Pressable>
-          <Text className="text-lg font-semibold text-white">Customer Support</Text>
-        </View>
+      <View className="items-center relative">
+        <Pressable
+          onPress={() => navigation.goBack()}
+          className="absolute -left-2 top-0 z-10 p-2"
+        >
+          <SvgIcon name="leftArrow" width="21" height="21" />
+        </Pressable>
+        <Text className="text-lg font-semibold text-white">
+          Customer Support
+        </Text>
+      </View>
       <View className="relative mt-6">
         <TextInput
           value={message}
@@ -49,17 +57,17 @@ const ContactForm = () => {
 
       <Pressable
         onPress={handleSend}
-        disabled={message.trim() === ''}
+        disabled={message.trim() === ""}
         className={`mt-6 h-[45px] rounded-[15px] w-full items-center justify-center border transition-all duration-500 ${
-          message.trim() === ''
-            ? 'bg-pink-1100/50 border-pink-1100/50'
-            : 'bg-pink-1100 border-pink-1100'
+          message.trim() === ""
+            ? "bg-pink-1100/50 border-pink-1100/50"
+            : "bg-pink-1100 border-pink-1100"
         }`}
       >
         {({ pressed }) => (
           <Text
             className={`text-base font-semibold ${
-              pressed || message.trim() === '' ? 'text-white/60' : 'text-white'
+              pressed || message.trim() === "" ? "text-white/60" : "text-white"
             }`}
           >
             Send

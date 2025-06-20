@@ -4,47 +4,38 @@ import {
   View,
   TouchableWithoutFeedback,
   StyleSheet,
+  Text,
+  Pressable,
 } from "react-native";
+import SvgIcon from "./SvgIcon";
+import PrimaryButton from "./PrimaryButton";
 
 interface Props {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  children: React.ReactNode;
+  text: string;
 }
 
-const InfoAlert = ({ visible, setVisible, children }: Props) => {
+const InfoAlert = ({ visible, setVisible, text }: Props) => {
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={() => setVisible(false)}
-    >
-      <TouchableWithoutFeedback onPress={() => setVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modalContent}>{children}</View>
-          </TouchableWithoutFeedback>
+    <>
+      {visible && (
+        <View className="flex-1 flex items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full">
+          <View className="bg-[#191919] rounded-[16px] px-4 pb-8 pt-10 text-center w-full">
+            <View className="flex gap-4">
+              <Text className="text-white text-center text-lg">{text}</Text>
+              <PrimaryButton
+                text="OK"
+                onPress={() => {
+                  setVisible(false);
+                }}
+              />
+            </View>
+          </View>
         </View>
-      </TouchableWithoutFeedback>
-    </Modal>
+      )}
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "85%",
-    maxWidth: 400,
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 15,
-  },
-});
 
 export default InfoAlert;

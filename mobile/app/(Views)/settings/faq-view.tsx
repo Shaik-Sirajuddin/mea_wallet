@@ -1,15 +1,15 @@
-import { useNavigation } from 'expo-router';
-import React from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
-import SvgIcon from '../../components/SvgIcon';
-import FAQList from '../faq/faqs-list';
+import { useNavigation } from "expo-router";
+import React from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
+import SvgIcon from "../../components/SvgIcon";
+import FAQList from "../faq/faqs-list";
 
 const FaqView = () => {
   const navigation = useNavigation();
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
+      <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10">
         <View className="w-full">
           <View className="items-center relative">
             <Pressable
@@ -30,19 +30,16 @@ const FaqView = () => {
                 className="text-[17px] font-medium leading-[22px] w-full text-white pl-10 bg-black-1200  rounded-[10px]"
               />
               <View className="absolute top-1/2 -translate-y-1/2 left-2 w-5 h-5">
-              <SvgIcon name='searchIcon'  />
+                <SvgIcon name="searchIcon" />
               </View>
-            
             </View>
 
             {/* Image */}
             <View className="items-center my-20">
-              <SvgIcon name='faqMain' width='172' height='100' />
+              <SvgIcon name="faqMain" width="172" height="100" />
             </View>
 
-            <FAQList/>
-          
-
+            <FAQList />
           </View>
         </View>
       </View>

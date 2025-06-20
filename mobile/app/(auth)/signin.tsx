@@ -6,6 +6,7 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import useAuth from "@/hooks/useAuth";
 import utils from "@/utils";
+import InfoAlert from "../components/InfoAlert";
 
 enum ErrorType {
   INVALID_EMAIL,
@@ -19,6 +20,7 @@ const Signin: React.FC = () => {
   // Validation state
   const [inputError, setInputError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<ErrorType | null>(null);
+  const [popUpVisible, setPopUpVisible] = useState(false);
 
   const validateForm = () => {
     let valid = true;
@@ -48,6 +50,8 @@ const Signin: React.FC = () => {
     return true;
   };
   const handleSignIn = async () => {
+    router.push("/success-page");
+    return;
     if (!validateForm()) {
       return;
     }
@@ -64,7 +68,7 @@ const Signin: React.FC = () => {
 
   useEffect(() => {
     if (inputError) {
-      Alert.alert("Invalid Input", inputError);
+      setPopUpVisible(true);
     }
   }, [inputError]);
 
@@ -77,7 +81,7 @@ const Signin: React.FC = () => {
           </View>
 
           <View className="flex-row items-center gap-4 mt-12">
-            <TouchableOpacity onPress={() => router.replace("/signin")}>
+            <TouchableOpacity>
               <Text className="text-xl font-semibold text-white">Sign In</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.replace("/signup")}>
@@ -173,6 +177,11 @@ const Signin: React.FC = () => {
           </View>
         </View>
       </View>
+      <InfoAlert
+        visible={popUpVisible}
+        setVisible={setPopUpVisible}
+        text={inputError ?? ""}
+      />
     </View>
   );
 };

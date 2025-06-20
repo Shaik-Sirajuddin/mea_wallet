@@ -14,11 +14,14 @@ import "@/i18n/index";
 import Signup from "./(auth)/signup";
 import Signin from "./(auth)/signin";
 import ForgetPassword from "./(auth)/forget-password";
+import SuccessPage from "./(auth)/success-page";
 
+import Home from "./(Tabs)/home";
 export default function HomeScreen() {
   return (
     <View className="flex-1 h-full font-pretendard">
-      <ForgetPassword />
+      <GetStarted />
+      {/* <ForgetPassword /> */}
       {/* <EditProfile /> */}
       {/* <SelectAvatar/> */}
       {/* <AccountName/> */}
