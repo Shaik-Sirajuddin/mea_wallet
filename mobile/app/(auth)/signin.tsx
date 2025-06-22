@@ -1,8 +1,14 @@
 import EyeIcon from "@/assets/images/eye-icon.svg";
-import Logo from "@/assets/images/logo-small.svg";
 import { Link, router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import useAuth from "@/hooks/useAuth";
 import utils from "@/utils";
@@ -50,8 +56,8 @@ const Signin: React.FC = () => {
     return true;
   };
   const handleSignIn = async () => {
-    router.push("/success-page");
-    return;
+    // router.push("/success-page");
+    // return;
     if (!validateForm()) {
       return;
     }
@@ -62,6 +68,7 @@ const Signin: React.FC = () => {
       return;
     }
     //save data to database
+    
     Alert.alert("Register Successfully...");
     router.push("/success-page");
   };
@@ -77,7 +84,24 @@ const Signin: React.FC = () => {
       <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10 justify-between">
         <View>
           <View className="items-center">
-            <Logo width={125} height={30} />
+            <View
+              style={{
+                width: 77,
+                height: 38,
+              }}
+            >
+              <Image
+                style={{
+                  flex: 1,
+                  width: null,
+                  height: null,
+                  resizeMode: "contain",
+                }}
+                source={require("../../assets/images/logo.png")}
+              />
+            </View>
+
+            {/* <Logo width={125} height={30} /> */}
           </View>
 
           <View className="flex-row items-center gap-4 mt-12">

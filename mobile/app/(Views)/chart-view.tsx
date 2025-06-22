@@ -24,7 +24,7 @@ const ChartView = () => {
 
         <View className="-mx-4 w-full">
           <Image
-            source={require("../../assets/images/grapgh.png")}
+            source={require("../../assets/images/graph.png")}
             className="w-full h-auto resize-contain"
             alt="Graph"
           />

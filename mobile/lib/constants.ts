@@ -1,7 +1,7 @@
-import { Token } from "@/types/Token";
+import { DefaultToken } from "@/types/DefaultToken";
 
-export const apiBaseUrl = `http://localhost:8080`;
-export const tokenList: Token[] = [
+export const apiBaseUrl = `http://192.168.109.78:8080`;
+export const defaultTokenList: DefaultToken[] = [
   {
     symbol: "MEA",
     chartProvider: "coingecko",

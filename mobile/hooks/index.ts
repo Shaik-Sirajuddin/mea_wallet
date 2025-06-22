@@ -1,7 +1,11 @@
+import storage from "@/storage";
+import { STORAGE_KEYS } from "@/storage/keys";
+
 /**
  * Wrapper around fetch
  * Performs fetch request and returns parsed response
  */
+
 /**
  * internal server error ,
  * custom server messages ,
@@ -12,7 +16,15 @@ export const networkRequest = async <T>(
   init?: RequestInit
 ): Promise<string | T> => {
   try {
-    const response = await fetch(input, init);
+    let headers = init?.headers;
+    headers = {
+      authorization: (await storage.retreive(STORAGE_KEYS.AUTH.TOKEN)) ?? "",
+      ...headers,
+    };
+    const response = await fetch(input, {
+      ...init,
+      headers: headers,
+    });
     let res = await response.json();
     if (!response.ok) {
       return res.error as string;

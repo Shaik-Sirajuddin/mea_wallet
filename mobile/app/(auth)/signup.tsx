@@ -1,6 +1,5 @@
 import EyeIcon from "@/assets/images/eye-icon.svg";
 import InforIcon from "@/assets/images/info-icon.svg";
-import Logo from "@/assets/images/logo-small.svg";
 import {
   Checkbox,
   CheckboxIcon,
@@ -12,6 +11,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   ScrollView,
   Text,
   TextInput,
@@ -142,7 +142,22 @@ const Signup: React.FC = () => {
         <ScrollView className="flex-1 px-4 pt-8 pb-10">
           <View>
             <View className="items-center">
-              <Logo width={125} height={30} />
+              <View
+                style={{
+                  width: 77,
+                  height: 38,
+                }}
+              >
+                <Image
+                  style={{
+                    flex: 1,
+                    width: null,
+                    height: null,
+                    resizeMode: "contain",
+                  }}
+                  source={require("../../assets/images/logo.png")}
+                />
+              </View>
             </View>
 
             <View className="flex-row items-center gap-4 mt-12">

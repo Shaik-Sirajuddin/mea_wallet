@@ -1,4 +1,4 @@
-export interface Token {
+  export interface DefaultToken {
   symbol: string;
   chartProvider: string;
 }

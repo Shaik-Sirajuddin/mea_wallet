@@ -1,13 +1,6 @@
-import Logo from "@/assets/images/logo-small.svg";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import {
-  Pressable,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import utils from "@/utils/index";
 import PrimaryButton from "../components/PrimaryButton";
@@ -36,7 +29,22 @@ const ForgetPassword: React.FC = () => {
         <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10 justify-between">
           <View>
             <View className="items-center">
-              <Logo width={125} height={30} />
+              <View
+                style={{
+                  width: 77,
+                  height: 38,
+                }}
+              >
+                <Image
+                  style={{
+                    flex: 1,
+                    width: null,
+                    height: null,
+                    resizeMode: "contain",
+                  }}
+                  source={require("../../assets/images/logo.png")}
+                />
+              </View>
             </View>
 
             <Text className="text-xl font-semibold text-white mt-12">
