@@ -13,6 +13,45 @@ import UserBalance from "../models/user_balance";
 import { sequelize } from "../database/connection";
 import BalanceFlow from "../models/balance_flow";
 import { LOCK } from "sequelize";
+import { getCacheData, setCacheData } from "../config/redis";
+import { CacheKey } from "../types/cache_keys";
+//is run when module is first loaded into memory
+enum PROVIDER {
+  BINGX,
+  COINSTORE,
+}
+const PROVIDER_MAP = new Map<number, typeof coinstore>();
+PROVIDER_MAP.set(PROVIDER.BINGX, bingx);
+PROVIDER_MAP.set(PROVIDER.COINSTORE, coinstore);
+
+const getTradingPairPrice = async (base: string, quote: string) => {
+  let provider: PROVIDER;
+
+  if (base === TOKEN.MEA) {
+    provider = PROVIDER.BINGX;
+  } else if (base === TOKEN.SOL) {
+    provider = PROVIDER.BINGX;
+  } else if (base === TOKEN.RECON) {
+    provider = PROVIDER.COINSTORE;
+  } else {
+    throw "Unsupported base symbol";
+  }
+
+  if (quote !== "USDT") {
+    throw "Unsupported quote symbol";
+  }
+
+  let pair = provider === PROVIDER.BINGX ? base + "_" + quote : base + quote;
+  //fetch from cache
+  let price = await getCacheData<number>(CacheKey.symbolPrice(pair));
+  if (!price) {
+    //todo : limit concurrency for fetch to one request from api
+    price = await PROVIDER_MAP.get(provider)!.getPrice(pair);
+    await setCacheData(CacheKey.symbolPrice(pair), price, 1);
+  }
+  return price!;
+};
+
 const getQuote = async (
   from: Token,
   to: Token,

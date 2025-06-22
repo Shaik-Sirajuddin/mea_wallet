@@ -39,5 +39,5 @@ const getMarketQuote = async (pair: string) => {
 export default {
   getPrice: async (symbol: string) => {
     return await getMarketQuote(symbol);
-  },
+  },  
 };

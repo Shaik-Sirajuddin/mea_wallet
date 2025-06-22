@@ -23,10 +23,10 @@ export const setCacheData = async (
 };
 
 // Function to get cached data
-export const getCacheData = async (key: string) => {
+export const getCacheData = async <T>(key: string) => {
   let data = (await redisClient.get(key)) as string;
   let result = data ? JSON.parse(data) : null;
-  return result ? result.data : null;
+  return result ? (result.data as T) : null;    
 };
 
 export const setCacheDataWithoutExpiration = async (key: string, data: any) => {
