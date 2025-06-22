@@ -5,6 +5,7 @@ import UserBalance from "../models/user_balance";
 import { logger } from "../utils/logger";
 import { decryptSym } from "../lib/encryption";
 import OTPAuth, { Secret } from "otpauth";
+import Token from "../models/token";
 export default {
   fetchProfile: async (req: Request, res: Response) => {
     try {
@@ -18,6 +19,7 @@ export default {
             "resetHashExpiryTime",
             "created_at",
             "updated_at",
+            "user_iv",
           ],
         },
       }))!;
@@ -35,14 +37,24 @@ export default {
         where: {
           userId: req.userId,
         },
-        // include: [
-        //   {
-        //     model: Token,
-        //     attributes: ["id", "name", "symbol", "decimals"],
-        //   },
-        // ],
+        include: [
+          {
+            model: Token,
+            attributes: ["name", "symbol", "decimals"],
+            as: "token",
+          },
+        ],
       });
-      responseHandler.success(res, userBalance);
+      let parsedBalances = userBalance.map((balance) => {
+        let result = {
+          ...balance.dataValues,
+          ...balance.token?.dataValues,
+        };
+        //@ts-expect-error hear \
+        delete result.token;
+        return result;
+      });
+      responseHandler.success(res, parsedBalances);
     } catch (error) {
       logger.error(error);
       responseHandler.error(res, error);
@@ -111,7 +123,7 @@ export default {
       }
 
       responseHandler.success(res, {
-        sucess: result !== null,
+        success: result !== null,
       });
     } catch (error) {
       logger.error(error);

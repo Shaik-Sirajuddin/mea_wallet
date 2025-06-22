@@ -13,7 +13,10 @@ export const sequelize = new Sequelize(
   }
 );
 
-async function syncModels(models = path.join(process.cwd(), "src/models")) {
+// /dist/src/models for ts project
+async function syncModels(
+  models = path.join(process.cwd(), "dist/src/models")
+) {
   const db: Record<string, any> = {};
 
   fs.readdirSync(models).forEach(async function (fileOrDir) {
@@ -22,11 +25,7 @@ async function syncModels(models = path.join(process.cwd(), "src/models")) {
 
     if (stat.isDirectory()) {
       syncModels(fullPath);
-    } else if (
-      fileOrDir.indexOf(".") !== 0 &&
-      fileOrDir.slice(-3) === ".js"
-      // fileOrDir.slice(-3) === ".ts"
-    ) {
+    } else if (fileOrDir.indexOf(".") !== 0 && fileOrDir.slice(-3) === ".js") {
       const model = await import(fullPath);
       const modelInstance = model.default;
       db[modelInstance.name] = modelInstance;
@@ -43,6 +42,6 @@ async function syncModels(models = path.join(process.cwd(), "src/models")) {
 export const makeConnection = async () => {
   await syncModels();
   await sequelize.authenticate();
-  await sequelize.sync({ alter: true, force: false });
+  await sequelize.sync({ alter: false, force: false });
   console.log("Conneted to Database");
 };

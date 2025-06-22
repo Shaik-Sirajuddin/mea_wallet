@@ -38,10 +38,10 @@ export default {
             attributes: {
               exclude: ["created_at", "updated_at"],
             },
+            as: "plan",
           },
         ],
       });
-      //TODO : associate stakingdeposit , staking plan models
       responseHandler.success(res, stakingDeposits);
     } catch (error) {
       responseHandler.error(res, error);

@@ -10,6 +10,6 @@ const userRouter = express.Router();
 userRouter.get("/profile", user_controller.fetchProfile);
 userRouter.get("/assets", user_controller.fetchAssets);
 userRouter.get("/totp_secret", user_controller.get2FASecret);
-userRouter.get("/initiate-2fa-setup", user_controller.initiate2FASetup);
+userRouter.post("/initiate-2fa-setup", user_controller.initiate2FASetup);
 
 export default userRouter;

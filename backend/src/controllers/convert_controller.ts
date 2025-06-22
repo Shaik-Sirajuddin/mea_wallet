@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { responseHandler } from "../utils/responseHandler";
 import Convert from "../models/convert";
 import Token from "../models/token";
-import { TOKEN } from "../utils/global";
+import { ADMIN, TOKEN } from "../utils/global";
 import raydium from "../lib/quote_provider/raydium";
 import Decimal from "decimal.js";
 import { deci } from "../utils/decimal";
@@ -11,7 +11,8 @@ import coinstore from "../lib/price_provider/coinstore";
 import { logger } from "../utils/logger";
 import UserBalance from "../models/user_balance";
 import { sequelize } from "../database/connection";
-import { transformTxToBase64 } from "@raydium-io/raydium-sdk-v2";
+import BalanceFlow from "../models/balance_flow";
+import { LOCK } from "sequelize";
 const getQuote = async (
   from: Token,
   to: Token,
@@ -168,7 +169,8 @@ export default {
       }
 
       expectedAmount = deci(expectedAmount).toFixed(to.decimals);
-      let parsedAmount = deci(deci(amount).toFixed(from.decimals));
+      amount = deci(amount).toFixed(from.decimals);
+      let parsedAmount = deci(amount);
       let quote = await getQuote(from, to, parsedAmount);
       if (!quote.routeAvailable || !quote.data) {
         throw "Quote not available";
@@ -189,6 +191,7 @@ export default {
           userId: req.userId,
         },
         transaction: tx,
+        lock: LOCK.UPDATE,
       }))!;
 
       let outputBalance = (await UserBalance.findOne({
@@ -197,6 +200,7 @@ export default {
           userId: req.userId,
         },
         transaction: tx,
+        lock: LOCK.UPDATE,
       }))!;
 
       await UserBalance.update(
@@ -228,8 +232,91 @@ export default {
           transaction: tx,
         }
       );
-      
+
+      let adminBalance = (await UserBalance.findOne({
+        where: {
+          userId: ADMIN.USER_ID,
+          tokenId: toId,
+        },
+        lock: LOCK.UPDATE,
+        transaction: tx,
+      }))!;
+
+      await UserBalance.update(
+        {
+          amount: deci(adminBalance.amount).add(quote.data.fee).toString(),
+          sequence_no: adminBalance.sequence_no + 1,
+        },
+        {
+          where: {
+            id: adminBalance.id,
+          },
+          transaction: tx,
+        }
+      );
+
+      let convert = await Convert.create(
+        {
+          from_amount: amount,
+          from_balance_id: inputBalance.id,
+          from_token_id: fromId,
+          to_amount: quote.data.outputAmount,
+          to_balance_id: outputBalance.id,
+          to_token_id: toId,
+          user_id: req.userId,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: inputBalance.id,
+          balance_seq_no: inputBalance.sequence_no,
+          change_amount: quote.data.inputAmount,
+          prev_amount: inputBalance.amount,
+          ref_type_id: convert.id,
+          type: BalanceFlowType.Convert,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: outputBalance.id,
+          balance_seq_no: outputBalance.sequence_no,
+          change_amount: quote.data.outputAmount,
+          prev_amount: outputBalance.amount,
+          ref_type_id: convert.id,
+          type: BalanceFlowType.Convert,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      await BalanceFlow.create(
+        {
+          balance_id: adminBalance.id,
+          balance_seq_no: adminBalance.sequence_no,
+          change_amount: quote.data.fee.toString(),
+          prev_amount: adminBalance.amount,
+          ref_type_id: convert.id,
+          type: BalanceFlowType.Convert,
+          isAdminUser: true,
+        },
+        {
+          transaction: tx,
+        }
+      );
+
+      await tx.commit();
+      responseHandler.success(res);
     } catch (error) {
+      await tx.rollback();
       logger.error(error);
       responseHandler.error(res, error);
     }

@@ -15,7 +15,6 @@ class Token extends Model<
   declare id: CreationOptional<number>;
   declare name: string;
   declare symbol: string;
-  declare description: string;
   declare decimals: number;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
@@ -36,10 +35,6 @@ Token.init(
       type: DataTypes.STRING(10),
       allowNull: false,
       unique: true,
-    },
-    description: {
-      type: DataTypes.STRING(1000),
-      allowNull: false,
     },
     decimals: {
       type: DataTypes.INTEGER,

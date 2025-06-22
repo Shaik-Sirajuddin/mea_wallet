@@ -7,9 +7,9 @@ import { logger } from "../utils/logger";
 
 export const authorized = (req: Request, res: Response, next: NextFunction) => {
   try {
-    // console.log(req.headers)
-    const token = req.cookies[COOKIE_ID.AUTH];
-    let user = jwt.verify(token, process.env.JWT_TOKEN!) as JWT_PAYLOAD;
+    //if no cookie , fallbaqk to authorization header
+    let authToken = req.cookies[COOKIE_ID.AUTH] ?? req.headers["authorization"];
+    let user = jwt.verify(authToken, process.env.JWT_TOKEN!) as JWT_PAYLOAD;
     if (!user.userId) {
       throw "Invalid session";
     }

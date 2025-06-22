@@ -8,6 +8,7 @@ import BirdEyeProvider from "./lib/chart_provider/birdeye";
 import bingx from "./lib/price_provider/bingx";
 import coinstore from "./lib/price_provider/coinstore";
 import raydium from "./lib/quote_provider/raydium";
+import { defineAssoiciations } from "./database/associations";
 Decimal.set({
   precision: 32,
 });
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 const test = async () => {};
 server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-  makeConnection();
+  await makeConnection();
+  await defineAssoiciations()
   test();
 });

@@ -18,6 +18,7 @@ class TokenData extends Model<
   declare total_supply: number;
   declare price: number;
   declare swap_price: number;
+  declare description: string;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
 }
@@ -43,6 +44,10 @@ TokenData.init(
     },
     price: {
       type: DataTypes.DECIMAL(32, 18),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING(1000),
       allowNull: false,
     },
     swap_price: {

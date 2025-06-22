@@ -4,9 +4,11 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
   Sequelize,
 } from "sequelize";
 import { sequelize } from "../database/connection";
+import Token from "./token";
 
 //sequelize recommended approach starting 6.14+
 class UserBalance extends Model<
@@ -21,6 +23,7 @@ class UserBalance extends Model<
   declare sequence_no: CreationOptional<number>;
   declare created_at: CreationOptional<Date>;
   declare updated_at: CreationOptional<Date>;
+  declare token?: NonAttribute<Token>;
 }
 
 UserBalance.init(
