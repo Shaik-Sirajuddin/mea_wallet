@@ -1,8 +1,8 @@
-enum BalanceFlowType {
+export enum BalanceFlowType {
   Convert,
   Transfer,
   Stake,
   Deposit,
   Withdrawl,
-  CANCEL_WITHDRAWL
+  CANCEL_WITHDRAWL,
 }

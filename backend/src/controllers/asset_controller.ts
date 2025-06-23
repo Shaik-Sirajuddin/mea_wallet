@@ -17,6 +17,7 @@ import { WithdrawStatus } from "../enums/WithdrawStatus";
 import TokenTransfer from "../models/token_transfer";
 import BalanceFlow from "../models/balance_flow";
 import { PriceProvider } from "../types/Provider";
+import { BalanceFlowType } from "../enums/BalanceFlowType";
 
 export default {
   deposit: async (req: Request, res: Response) => {
@@ -115,7 +116,7 @@ export default {
           userId: req.userId,
           tokenId: token_id,
         },
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
         transaction: tx,
       }))!;
 
@@ -284,7 +285,7 @@ export default {
           userId: req.userId,
         },
         transaction: tx,
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
       }))!;
 
       await UserBalance.update(
@@ -383,7 +384,7 @@ export default {
           tokenId: token_id,
         },
         transaction: tx,
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
       }))!;
 
       if (deci(senderBalance.amount).lessThan(amount)) {
@@ -396,7 +397,7 @@ export default {
           tokenId: token_id,
         },
         transaction: tx,
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
       }))!;
 
       await UserBalance.update(

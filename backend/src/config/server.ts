@@ -8,14 +8,16 @@ import userRouter from "../router/user_router";
 import authRouter from "../router/auth_router";
 import stakeRouter from "../router/stake_router";
 import assetRouter from "../router/asset_router";
+import convertRouter from "../router/convert_router";
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/user", authorized, userRouter);
 app.use("/auth", authRouter);
-app.use("/asset", assetRouter);
-app.use("/stake", stakeRouter);
+app.use("/asset", authorized, assetRouter);
+app.use("/stake", authorized, stakeRouter);
+app.use("/convert", authorized, convertRouter);
 const corsOptions = {
   origin: (_origin: any, callback: (arg0: null, arg1: boolean) => void) => {
     // Check if the origin is in the list of allowed origins

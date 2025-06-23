@@ -10,11 +10,12 @@ import { logger } from "../utils/logger";
 import UserBalance from "../models/user_balance";
 import { sequelize } from "../database/connection";
 import BalanceFlow from "../models/balance_flow";
-import { LOCK } from "sequelize";
 import { getCacheData, setCacheData } from "../config/redis";
 import { CacheKey } from "../types/cache_keys";
 import { PriceProvider } from "../types/Provider";
 import { PairPrice } from "../types/PairPrice";
+import { LOCK } from "sequelize";
+import { BalanceFlowType } from "../enums/BalanceFlowType";
 //is run when module is first loaded into memory
 const getQuote = async (
   from: Token,
@@ -89,17 +90,6 @@ const getQuote = async (
 };
 
 export default {
-  getPrice: async (req: Request, res: Response) => {
-    try {
-      /**
-       * MEA , RECON , FOX9 , SOL
-       * cex , cex , dex , cex,
-       * MEA <-> RECON
-       */
-    } catch (error) {
-      responseHandler.error(res, error);
-    }
-  },
   getHistory: async (req: Request, res: Response) => {
     try {
       let convertHistory = await Convert.findAll({
@@ -144,7 +134,6 @@ export default {
       responseHandler.error(res, error);
     }
   },
-
   executeQuote: async (req: Request, res: Response) => {
     const tx = await sequelize.transaction();
     try {
@@ -194,16 +183,19 @@ export default {
           userId: req.userId,
         },
         transaction: tx,
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
       }))!;
 
+      if (deci(inputBalance.amount).lessThan(amount)) {
+        throw "Insufficient Balance";
+      }
       let outputBalance = (await UserBalance.findOne({
         where: {
           tokenId: toId,
           userId: req.userId,
         },
         transaction: tx,
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
       }))!;
 
       await UserBalance.update(
@@ -241,7 +233,7 @@ export default {
           userId: ADMIN.USER_ID,
           tokenId: toId,
         },
-        lock: LOCK.UPDATE,
+        lock: tx.LOCK.UPDATE,
         transaction: tx,
       }))!;
 

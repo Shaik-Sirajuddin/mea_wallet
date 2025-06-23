@@ -8,6 +8,7 @@ import { sequelize } from "../database/connection";
 import { ADMIN } from "../utils/global";
 import BalanceFlow from "../models/balance_flow";
 import { LOCK } from "sequelize";
+import { BalanceFlowType } from "../enums/BalanceFlowType";
 
 export default {
   fetchPlans: async (req: Request, res: Response) => {
@@ -78,7 +79,7 @@ export default {
           tokenId: plan.tokenId,
         },
         lock: {
-          level: LOCK.UPDATE,
+          level: tx.LOCK.UPDATE,
           of: UserBalance,
         },
         transaction: tx,
@@ -243,7 +244,7 @@ export default {
           userId: req.userId,
         },
         lock: {
-          level: LOCK.UPDATE,
+          level: tx.LOCK.UPDATE,
           of: UserBalance,
         },
         transaction: tx,
@@ -310,7 +311,7 @@ export default {
           tokenId: stakingPlan.tokenId,
         },
         lock: {
-          level: LOCK.UPDATE,
+          level: tx.LOCK.UPDATE,
           of: UserBalance,
         },
         transaction: tx,
