@@ -12,26 +12,21 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.removeColumn("Tokens", "description");
-    await queryInterface.addColumn("TokenData", "description", {
-      type: DataTypes.STRING,
-      allowNull: false,
-    });
     let tokens = (await queryInterface.select(Token, "Tokens", {
       where: {},
     })) as Token[];
-    await queryInterface.bulkInsert("TokenData", [
+    await queryInterface.bulkInsert("TokenData", 
       tokens.map((token) => {
         return {
           token_id: token.id,
-          circulating_suppy: 0,
-          total_supply: 0,
-          price: 1,
-          swap_price: 1,
+          circulating_suppy: '0',
+          total_supply: '0',
+          price: '1',
+          swap_price: '1',
           description: '',
         };
       }),
-    ]);
+    );
   },
 
   async down(_queryInterface: any, _Sequelize: any) {

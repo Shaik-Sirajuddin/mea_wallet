@@ -42,6 +42,6 @@ async function syncModels(
 export const makeConnection = async () => {
   await syncModels();
   await sequelize.authenticate();
-  await sequelize.sync({ alter: false, force: false });
+  await sequelize.sync({ alter: true, force: false });
   console.log("Conneted to Database");
 };

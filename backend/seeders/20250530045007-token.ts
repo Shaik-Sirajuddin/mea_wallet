@@ -18,31 +18,26 @@ module.exports = {
       {
         name: "Recon",
         symbol: "RECON",
-        description: "RWA on-chain",
         decimals: 6,
       },
       {
         name: "Mecca",
         symbol: "MEA",
-        description: "Real Value Ecosystem ",
         decimals: 6,
       },
       {
         name: "FOX9",
         symbol: "FOX9",
-        description: "Korean Fox Master",
         decimals: 6,
       },
       {
         name: "USDT",
         symbol: "USDT",
-        description: "Stablecoin pegged to US Dollar",
         decimals: 6,
       },
       {
         name: "Solana",
         symbol: "SOL",
-        description: "Solana native coin",
         decimals: 9,
       },
     ]);

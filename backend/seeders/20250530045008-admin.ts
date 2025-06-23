@@ -22,6 +22,7 @@ module.exports = {
         username: ADMIN.USERNAME,
         email: ADMIN.EMAIL,
         password: "",
+        user_iv : "",
         totp_secret: "",
       },
     ]);
