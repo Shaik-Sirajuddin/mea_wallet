@@ -16,6 +16,7 @@ import { decryptSym } from "../lib/encryption";
 import { WithdrawStatus } from "../enums/WithdrawStatus";
 import TokenTransfer from "../models/token_transfer";
 import BalanceFlow from "../models/balance_flow";
+import { PriceProvider } from "../types/Provider";
 
 export default {
   deposit: async (req: Request, res: Response) => {
@@ -472,6 +473,24 @@ export default {
       });
     } catch (error) {
       await tx.rollback();
+      logger.error(error);
+      responseHandler.error(res, error);
+    }
+  },
+  price: async (req: Request, res: Response) => {
+    try {
+      let { symbol } = req.query;
+      if (typeof symbol !== "string") {
+        throw "Invalid query parameters";
+      }
+      let priceData = await PriceProvider.getTokenPrice(symbol);
+      if (!priceData) {
+        throw "Price not found";
+      }
+      responseHandler.success(res, {
+        price: priceData.price,
+      });
+    } catch (error) {
       logger.error(error);
       responseHandler.error(res, error);
     }

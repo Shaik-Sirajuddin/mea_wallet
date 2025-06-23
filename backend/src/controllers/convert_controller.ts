@@ -6,8 +6,6 @@ import { ADMIN, TOKEN } from "../utils/global";
 import raydium from "../lib/quote_provider/raydium";
 import Decimal from "decimal.js";
 import { deci } from "../utils/decimal";
-import bingx from "../lib/price_provider/bingx";
-import coinstore from "../lib/price_provider/coinstore";
 import { logger } from "../utils/logger";
 import UserBalance from "../models/user_balance";
 import { sequelize } from "../database/connection";
@@ -15,47 +13,14 @@ import BalanceFlow from "../models/balance_flow";
 import { LOCK } from "sequelize";
 import { getCacheData, setCacheData } from "../config/redis";
 import { CacheKey } from "../types/cache_keys";
+import { PriceProvider } from "../types/Provider";
+import { PairPrice } from "../types/PairPrice";
 //is run when module is first loaded into memory
-enum PROVIDER {
-  BINGX,
-  COINSTORE,
-}
-const PROVIDER_MAP = new Map<number, typeof coinstore>();
-PROVIDER_MAP.set(PROVIDER.BINGX, bingx);
-PROVIDER_MAP.set(PROVIDER.COINSTORE, coinstore);
-
-const getTradingPairPrice = async (base: string, quote: string) => {
-  let provider: PROVIDER;
-
-  if (base === TOKEN.MEA) {
-    provider = PROVIDER.BINGX;
-  } else if (base === TOKEN.SOL) {
-    provider = PROVIDER.BINGX;
-  } else if (base === TOKEN.RECON) {
-    provider = PROVIDER.COINSTORE;
-  } else {
-    throw "Unsupported base symbol";
-  }
-
-  if (quote !== "USDT") {
-    throw "Unsupported quote symbol";
-  }
-
-  let pair = provider === PROVIDER.BINGX ? base + "_" + quote : base + quote;
-  //fetch from cache
-  let price = await getCacheData<number>(CacheKey.symbolPrice(pair));
-  if (!price) {
-    //todo : limit concurrency for fetch to one request from api
-    price = await PROVIDER_MAP.get(provider)!.getPrice(pair);
-    await setCacheData(CacheKey.symbolPrice(pair), price, 1);
-  }
-  return price!;
-};
-
 const getQuote = async (
   from: Token,
   to: Token,
-  amount: Decimal
+  amount: Decimal,
+  threshouldSeconds: number | null = null
 ): Promise<QuoteResponse> => {
   /**
    * All tokens
@@ -76,20 +41,17 @@ const getQuote = async (
     }
 
     //todo : change to provider implentation from database
-    //todo : use intermediate cache for price
-    let price: number = 0;
-
-    if (from.symbol === TOKEN.MEA || to.symbol === TOKEN.MEA) {
-      price = await bingx.getPrice("MEA_USDT");
+    let priceData = await PriceProvider.getTokenPrice(
+      isSourceUSDT ? to.symbol : from.symbol
+    );
+    if (!priceData) {
+      throw "Price Data Unavailable";
     }
-
-    if (from.symbol === TOKEN.SOL || to.symbol === TOKEN.SOL) {
-      price = await bingx.getPrice("SOL_USDT");
+    let syncedAgoSeconds = (Date.now() - priceData.syncedAt) / 1000;
+    if (threshouldSeconds && syncedAgoSeconds > threshouldSeconds) {
+      throw "Price not available in threshould range";
     }
-
-    if (from.symbol === TOKEN.RECON || to.symbol === TOKEN.RECON) {
-      price = await coinstore.getPrice("RECONUSDT");
-    }
+    let price = priceData.price;
 
     if (isSourceUSDT) {
       price = deci(1).div(price).toNumber();
@@ -210,7 +172,9 @@ export default {
       expectedAmount = deci(expectedAmount).toFixed(to.decimals);
       amount = deci(amount).toFixed(from.decimals);
       let parsedAmount = deci(amount);
-      let quote = await getQuote(from, to, parsedAmount);
+      //2 second threshould for price data
+      ///todo : improve the timewindow calculation accuracy
+      let quote = await getQuote(from, to, parsedAmount, 2);
       if (!quote.routeAvailable || !quote.data) {
         throw "Quote not available";
       }

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import axios from "axios";
+import { IPriceProvider, staticImplements } from ".";
 
 const apiURL = "https://api.coinstore.com/api";
 
@@ -36,8 +37,10 @@ const getMarketQuote = async (pair: string) => {
   });
   return parseFloat(result.data.data[0].price);
 };
-export default {
-  getPrice: async (symbol: string) => {
-    return await getMarketQuote(symbol);
-  },  
-};
+
+@staticImplements<IPriceProvider>()
+export class CoinStoreProvider {
+  static async getPrice(pair: string) {
+    return await getMarketQuote(pair);
+  }
+}

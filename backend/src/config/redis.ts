@@ -2,6 +2,7 @@ import { createClient } from "redis";
 
 const redisClient = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
+  database: Number(process.env.REDIS_DB_NO ?? 1),
 });
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
 export const redisConnect = async () => {
@@ -26,7 +27,7 @@ export const setCacheData = async (
 export const getCacheData = async <T>(key: string) => {
   let data = (await redisClient.get(key)) as string;
   let result = data ? JSON.parse(data) : null;
-  return result ? (result.data as T) : null;    
+  return result ? (result.data as T) : null;
 };
 
 export const setCacheDataWithoutExpiration = async (key: string, data: any) => {

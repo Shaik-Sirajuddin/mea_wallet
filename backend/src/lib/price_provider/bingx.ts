@@ -1,6 +1,10 @@
+import { IPriceProvider, staticImplements } from ".";
+
 const apiURL = "https://open-api.bingx.com";
-export default {
-  getPrice: async (pair: string) => {
+
+@staticImplements<IPriceProvider>()
+export class BingXProvider {
+  static async getPrice(pair: string) {
     if (pair !== "MEA_USDT" && pair !== "SOL_USDT") {
       throw "Unsupported Pair";
     }
@@ -17,5 +21,5 @@ export default {
     }
     let price = result.data[0].trades[0].price;
     return parseFloat(price);
-  },
-};
+  }
+}

@@ -7,5 +7,5 @@ assetRouter.post("/initiate-withdrawl", asset_controller.withdraw);
 assetRouter.post("/confirm-withdrawl", asset_controller.verifyWithdrawlRequest);
 assetRouter.post("/cancel-withdrawl", asset_controller.cancelWithdrawlRequest);
 assetRouter.post("/transfer", asset_controller.transfer);
-
+assetRouter.get("/price", asset_controller.price);
 export default assetRouter;
