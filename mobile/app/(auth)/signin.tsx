@@ -13,6 +13,8 @@ import PrimaryButton from "../components/PrimaryButton";
 import useAuth from "@/hooks/useAuth";
 import utils from "@/utils";
 import InfoAlert from "../components/InfoAlert";
+import storage from "@/storage";
+import { STORAGE_KEYS } from "@/storage/keys";
 
 enum ErrorType {
   INVALID_EMAIL,
@@ -56,8 +58,6 @@ const Signin: React.FC = () => {
     return true;
   };
   const handleSignIn = async () => {
-    // router.push("/success-page");
-    // return;
     if (!validateForm()) {
       return;
     }
@@ -67,9 +67,6 @@ const Signin: React.FC = () => {
       Alert.alert("Login Error", result);
       return;
     }
-    //save data to database
-    
-    Alert.alert("Register Successfully...");
     router.push("/success-page");
   };
 

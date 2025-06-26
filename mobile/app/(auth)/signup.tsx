@@ -35,10 +35,12 @@ enum ErrorType {
 }
 
 const Signup: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [wallet, setWallet] = useState("");
-  const [password, setPassword] = useState("");
-  const [verifyPassword, setVerifyPassword] = useState("");
+  const [email, setEmail] = useState("test1@gmail.com");
+  const [wallet, setWallet] = useState(
+    "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo"
+  );
+  const [password, setPassword] = useState("test1@gmail.com");
+  const [verifyPassword, setVerifyPassword] = useState("test1@gmail.com");
   const [showPassword, setShowPassword] = useState(false);
   const [showVerifyPassword, setShowVerifyPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -94,19 +96,17 @@ const Signup: React.FC = () => {
     return true;
   };
   const handleSignup = async () => {
-    router.push("/success-page");
-    return;
     if (!validateForm()) {
       return;
     }
-    let result = await useAuth.signUp(email, password);
+    let result = await useAuth.signUp(email, password, wallet);
     //sign up failed
+    console.log("sign up response", result);
     if (typeof result === "string") {
       Alert.alert("SignUp Error", result);
       return;
     }
-    //save data to database
-    Alert.alert("Register Successfully...");
+    Alert.alert("Registered Successfully");
     router.push("/success-page");
   };
   useEffect(() => {

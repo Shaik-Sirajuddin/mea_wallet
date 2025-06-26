@@ -8,5 +8,7 @@ export default {
     let result = await SecureStore.getItemAsync(key);
     return result;
   },
+  delete: async (key: string) => {
+    await SecureStore.deleteItemAsync(key);
+  },
 };
-  
