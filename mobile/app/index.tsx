@@ -18,7 +18,7 @@ export default function HomeScreen() {
   }, []);
   return (
     <View className="flex-1 h-full font-pretendard">
-      <Home />
+      <GetStarted />
       {/* {sessionTokenExists ? <Home /> : <GetStarted />} */}
     </View>
   );
