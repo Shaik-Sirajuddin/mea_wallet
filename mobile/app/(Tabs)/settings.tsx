@@ -1,11 +1,23 @@
 import { router, useNavigation } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
+import DialogAlert from "../components/DialogAlert";
+import useAuth from "@/hooks/useAuth";
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
+  const [popupVisible, setPopUpVisible] = useState(false);
 
+  const performLogout = async () => {
+    let result = await useAuth.logout();
+    if (typeof result === "string") {
+      //show error dialog
+      console.log("failed to logout", result);
+      return;
+    }
+    router.replace("/signin");
+  };
   return (
     <View className="bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
@@ -85,7 +97,12 @@ export default function SettingsScreen() {
                 </Text>
               </Pressable>
 
-              <Pressable className="flex-row items-center gap-3 px-3 py-5 mb-2 rounded-2xl border-2 border-transparent active:border-pink-1200 bg-black-1200 transition-all duration-500">
+              <Pressable
+                className="flex-row items-center gap-3 px-3 py-5 mb-2 rounded-2xl border-2 border-transparent active:border-pink-1200 bg-black-1200 transition-all duration-500"
+                onPress={() => {
+                  setPopUpVisible(true);
+                }}
+              >
                 <View className="w-8 h-8 rounded-full bg-gray-1500 flex items-center justify-center">
                   <SvgIcon name="logoutIcon1" width="16" />
                 </View>
@@ -97,6 +114,12 @@ export default function SettingsScreen() {
           </View>
         </View>
       </View>
+      <DialogAlert
+        visible={popupVisible}
+        setVisible={setPopUpVisible}
+        onConfirm={performLogout}
+        text="Are you sure want to logout?"
+      />
     </View>
   );
 }

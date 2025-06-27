@@ -1,10 +1,19 @@
-// https://docs.expo.dev/guides/using-eslint/
-const { defineConfig } = require('eslint/config');
-const expoConfig = require('eslint-config-expo/flat');
+// eslint.config.js
+const { defineConfig } = require("eslint/config");
+const expoConfig = require("eslint-config-expo/flat");
 
 module.exports = defineConfig([
-  expoConfig,
+  ...expoConfig,
   {
-    ignores: ['dist/*'],
+    ignores: ["dist/**"],
+    rules: {
+      "react-hooks/exhaustive-deps": [
+        "warn",
+        {
+          additionalHooks: "(useCallback|useEffect|useMemo)",
+          exclude: ["dispatch"], // ✅ Ignore dispatch from dependency warnings
+        },
+      ],
+    },
   },
 ]);

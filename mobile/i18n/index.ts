@@ -12,7 +12,7 @@ const resources = {
 
 const initI18n = async () => {
   const userDefaultLang =
-    storage.getString("default.language") ??
+    (await storage.retreive("default.language")) ??
     Localization.getLocales()[0].languageCode!;
 
   i18n.use(initReactI18next).init({
@@ -28,6 +28,6 @@ const initI18n = async () => {
 initI18n();
 export const setDefaultLangauge = (lng: string) => {
   i18n.changeLanguage(lng);
-  storage.set("default.language", lng);
+  storage.save("default.language", lng);
 };
 export default i18n;

@@ -1,14 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import {
-  Modal,
   View,
-  TouchableWithoutFeedback,
-  StyleSheet,
   Text,
-  Pressable,
   Animated,
 } from "react-native";
-import SvgIcon from "./SvgIcon";
 import PrimaryButton from "./PrimaryButton";
 
 interface Props {

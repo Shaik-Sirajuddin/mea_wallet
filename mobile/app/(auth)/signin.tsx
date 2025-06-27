@@ -17,7 +17,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 
 enum ErrorType {
-  INVALID_EMAIL,
+  INVALID_EMAIL,  
   INVALID_PASSWORD,
 }
 const Signin: React.FC = () => {
@@ -31,7 +31,6 @@ const Signin: React.FC = () => {
   const [popUpVisible, setPopUpVisible] = useState(false);
 
   const validateForm = () => {
-    let valid = true;
 
     // Email validation
     if (!email) {
@@ -39,22 +38,22 @@ const Signin: React.FC = () => {
       setErrorType(ErrorType.INVALID_EMAIL);
       return;
     }
-    if (!utils.validateEmail(email)) {
-      setInputError("Please enter a valid email");
-      setErrorType(ErrorType.INVALID_EMAIL);
-      return;
-    }
+    // if (!utils.validateEmail(email)) {
+    //   setInputError("Please enter a valid email");
+    //   setErrorType(ErrorType.INVALID_EMAIL);
+    //   return;
+    // }
 
     if (!password) {
       setErrorType(ErrorType.INVALID_PASSWORD);
       setInputError("Password is required");
       return;
     }
-    if (password.length < 6) {
-      setErrorType(ErrorType.INVALID_PASSWORD);
-      setInputError("Password must be at least 6 characters");
-      return;
-    }
+    // if (password.length < 6) {
+    //   setErrorType(ErrorType.INVALID_PASSWORD);
+    //   setInputError("Password must be at least 6 characters");
+    //   return;
+    // }
     return true;
   };
   const handleSignIn = async () => {

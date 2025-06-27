@@ -20,16 +20,19 @@ import {
   setFreeBalances,
   setLockupBalances,
 } from "@/src/features/balance/balanceSlice";
-import tokenImageMap from "@/utils/web3";
+import { tokenImageMap, trimTrailingZeros } from "@/utils/ui";
+import { setQuotes } from "@/src/features/token/tokenSlice";
+import Decimal from "decimal.js";
 
 export default function HomeScreen() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
+  const [showLokcupBalance, setShowLockUpBalance] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
+  const quotes = useSelector((state: RootState) => state.token.quotes || {});
   const freeBalance = useSelector(
     (state: RootState) => state.balance.free || {}
   );
@@ -37,25 +40,63 @@ export default function HomeScreen() {
     (state: RootState) => state.balance.lockup || {}
   );
 
-  const fetchBalance = useCallback(async () => {
-    setLoading(true);
-    const res = await useUser.getBalance();
-    if (typeof res !== "string") {
-      dispatch(setFreeBalances(res.free));
-      dispatch(setLockupBalances(res.lockup));
-    }
-    setLoading(false);
-  }, [dispatch]);
-
-  const onRefresh = useCallback(async () => {
+  const syncData = async () => {
     setRefreshing(true);
-    await fetchBalance();
+    await Promise.all([fetchBalance(), fetchQuotes()]);
     setRefreshing(false);
-  }, [fetchBalance]);
+  };
+
+  const fetchQuotes = async () => {
+    const res = await useUser.getQuotes();
+    if (typeof res === "string") {
+      console.log(res, "fetch quotes");
+      return;
+    }
+    dispatch(setQuotes(res));
+  };
+
+  const fetchBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
+      return;
+    }
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
+  };
+
+  const onRefresh = async () => {
+    syncData();
+  };
 
   useEffect(() => {
-    fetchBalance();
-  }, [fetchBalance]);
+    syncData();
+  }, []);
+
+  const totalAssetValue = () => {
+    let totalValue = new Decimal(0);
+    for (let [token, amount] of Object.entries(freeBalance)) {
+      //@ts-expect-error here
+      totalValue = totalValue.add(new Decimal(amount).mul(quotes[token]));
+    }
+    for (let [token, amount] of Object.entries(lockedBalance)) {
+      //@ts-expect-error here
+      totalValue = totalValue.add(new Decimal(amount).mul(quotes[token]));
+    }
+    return trimTrailingZeros(totalValue.toFixed(2));
+  };
+  const getPrice = (token: string) => {
+    totalAssetValue();
+    //@ts-expect-error here
+    return quotes[token];
+  };
+
+  const getTokensValue = (token: string, balance: string) => {
+    return trimTrailingZeros(
+      //@ts-expect-error here
+      new Decimal(quotes[token]).mul(balance).toFixed(2)
+    );
+  };
 
   const getTokenImage = (token: string) => {
     const key = token.toLowerCase();
@@ -89,7 +130,7 @@ export default function HomeScreen() {
             <View className="items-center mt-[46px] mb-10">
               <SvgIcon name="spaceman" width="74" height="74" />
               <Text className="text-white text-[37px] mt-2 font-semibold">
-                ${parseFloat(freeBalance.mea || "0") * 1.0}
+                ${totalAssetValue()}
               </Text>
               <View className="flex-row items-center justify-center gap-1.5">
                 <Text className="text-base font-medium text-pink-1200">
@@ -135,20 +176,38 @@ export default function HomeScreen() {
             </View>
 
             <View className="flex-row items-center gap-[17px] my-5">
-              <TouchableOpacity>
-                <Text className="text-xl font-semibold leading-[33px] text-white">
+              <TouchableOpacity
+                onPress={() => {
+                  setShowLockUpBalance(false);
+                }}
+              >
+                <Text
+                  className={`text-xl font-semibold leading-[33px] ${
+                    !showLokcupBalance ? "text-white" : "text-gray-1000"
+                  }`}
+                >
                   Native
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <Text className="text-xl font-semibold leading-[33px] text-gray-1000">
+              <TouchableOpacity
+                onPress={() => {
+                  setShowLockUpBalance(true);
+                }}
+              >
+                <Text
+                  className={`text-xl font-semibold leading-[33px] ${
+                    showLokcupBalance ? "text-white" : "text-gray-1000"
+                  }`}
+                >
                   Lock up
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View className="w-full">
-              {Object.entries(freeBalance).map(([token, amount]) => (
+              {Object.entries(
+                showLokcupBalance ? lockedBalance : freeBalance
+              ).map(([token, amount]) => (
                 <View
                   key={token}
                   className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3"
@@ -169,16 +228,16 @@ export default function HomeScreen() {
                   </View>
                   <View>
                     <Text className="text-[17px] font-medium leading-5 text-white text-right">
-                      $0.00
+                      ${getTokensValue(token, amount)}
                     </Text>
                     <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
-                      $0.00
+                      ${getPrice(token)}
                     </Text>
                   </View>
                 </View>
               ))}
             </View>
-
+            {/* 
             <View className="mt-[31px]">
               <Text className="text-xl font-semibold leading-8 text-white mb-2.5">
                 Recent Activities
@@ -214,7 +273,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
               ))}
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>
