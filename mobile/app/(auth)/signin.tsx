@@ -17,7 +17,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 
 enum ErrorType {
-  INVALID_EMAIL,  
+  INVALID_EMAIL,
   INVALID_PASSWORD,
 }
 const Signin: React.FC = () => {
@@ -31,7 +31,6 @@ const Signin: React.FC = () => {
   const [popUpVisible, setPopUpVisible] = useState(false);
 
   const validateForm = () => {
-
     // Email validation
     if (!email) {
       setInputError("Email is required");
@@ -66,6 +65,7 @@ const Signin: React.FC = () => {
       Alert.alert("Login Error", result);
       return;
     }
+    await storage.save(STORAGE_KEYS.AUTH.TOKEN, result.token);
     router.push("/success-page");
   };
 

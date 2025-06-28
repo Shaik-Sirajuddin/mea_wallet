@@ -6,11 +6,12 @@ import {
   LoginStatusResponse,
   LogoutResponse,
   ForgetPasswordResponse,
+  AuthResponse,
 } from "@/src/api/types/auth";
 
 export default {
   login: async (email: string, password: string) => {
-    return await networkRequest<StatusResponse>(
+    return await networkRequest<AuthResponse>(
       `${apiBaseUrl}/api/login-check`,
       {
         method: "POST",
@@ -23,7 +24,7 @@ export default {
   },
 
   signUp: async (email: string, password: string, depositAddress: string) => {
-    return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/join-save`, {
+    return await networkRequest<AuthResponse>(`${apiBaseUrl}/api/join-save`, {
       method: "POST",
       body: new URLSearchParams({
         UserEmail: email,

@@ -1,11 +1,14 @@
 import { apiBaseUrl, apiKey } from "@/lib/constants";
+import storage from "@/storage";
+import { STORAGE_KEYS } from "@/storage/keys";
 /**
  * Wrapper around fetch
  * Performs fetch request and returns parsed response
  */
 
-//implement concurrency here
-let csrfToken = "a11253e5861000c665283ba49b8468ed2df07a74aa02548fe1859ed47839d632";
+//todo : implement concurrency here
+let csrfToken =
+  "7a13497c3d850adf511a4e8c8c1a8effba462d1457caae27a5f77c7743eafa47";
 
 const hasHeader = (init: RequestInit, headerName: string): boolean => {
   if (!init.headers) return false;
@@ -25,16 +28,19 @@ export const networkRequestWithParser = async <T>(
 ): Promise<string | T> => {
   try {
     let headers = init?.headers;
+    const bearerToken = await storage.retreive(STORAGE_KEYS.AUTH.TOKEN);
     headers = {
       ...headers,
+      authorization: "Bearer " + (bearerToken ?? ""),
     };
     const response = await fetch(input, {
       ...init,
       headers: headers,
-      credentials: "same-origin",
+      // credentials: "same-origin",
     });
     let res = await response.json();
     if (!response.ok) {
+      console.log(res.status)
       return res.status as string;
     }
     return res as T;
@@ -71,15 +77,16 @@ export const networkRequest = async <T>(
     typeof csfrCheckResponse === "string" &&
     csfrCheckResponse === "CSFF Verification failed!"
   ) {
-    //csfr check failed
-    let result = await networkRequestWithParser<{ csrfToken: string }>(
-      apiBaseUrl + `/api/csrf-token`
-    );
-    if (typeof result === "string") {
-      console.log("failed to request csrf token", result);
-      return result;
-    }
-    csrfToken = result.csrfToken;
+    // csfr check failed
+    // let result = await networkRequestWithParser<{ csrfToken: string }>(
+    //   apiBaseUrl + `/api/csrf-token`
+    // );
+    // if (typeof result === "string") {
+    //   console.log("failed to request csrf token", result);
+    //   return result;
+    // }
+    // console.log(result.csrfToken)
+    // csrfToken = result.csrfToken;
   }
 
   if (init && init?.method === "POST") {

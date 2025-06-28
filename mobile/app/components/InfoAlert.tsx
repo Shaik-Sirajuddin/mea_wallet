@@ -1,26 +1,24 @@
 import React, { useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  Animated,
-} from "react-native";
+import { View, Text, Animated } from "react-native";
 import PrimaryButton from "./PrimaryButton";
 
-interface Props {
+export interface InfoAlertProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   onDismiss?: () => void;
   showAnimation?: boolean;
-  text: string;
+  text?: string;
+  type?: "success" | "error" | "info";
 }
 
 const InfoAlert = ({
   visible,
   setVisible,
-  text,
+  text = 'no text passed',
   onDismiss,
   showAnimation = true,
-}: Props) => {
+  type = "success",
+}: InfoAlertProps) => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 

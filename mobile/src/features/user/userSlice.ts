@@ -1,8 +1,10 @@
+import { TwoFADetails } from "@/src/api/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   isAuthenticated: boolean;
   authenticationVerified: boolean;
+  twoFA?: TwoFADetails;
 }
 
 const initialState: UserState = {
@@ -20,9 +22,11 @@ const userSlice = createSlice({
     setIsAuthenticationVerified: (state, action: PayloadAction<boolean>) => {
       state.authenticationVerified = action.payload;
     },
+    setTwoFAData: (state, action: PayloadAction<TwoFADetails>) => {
+      state.twoFA = action.payload;
+    },
   },
 });
-
-export const { setIsAuthenticated, setIsAuthenticationVerified } =
+export const { setIsAuthenticated, setIsAuthenticationVerified, setTwoFAData } =
   userSlice.actions;
 export default userSlice.reducer;

@@ -1,14 +1,116 @@
+import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
-import { useNavigation } from "expo-router";
-import React from "react";
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import useUser from "@/hooks/useUser";
+import { setTwoFAData } from "@/src/features/user/userSlice";
+import { RootState } from "@/src/store";
+import { useAppDispatch } from "@/src/store/hooks";
+import { router, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useSelector } from "react-redux";
+import * as Clipboard from "expo-clipboard";
+import PrimaryButton from "@/app/components/PrimaryButton";
 
 const GoogleOTP = () => {
   const navigation = useNavigation();
+  const twoFAData = useSelector((state: RootState) => state.user.twoFA);
+  const [otp, setOtp] = useState("");
+  const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
+    text: "",
+  });
+  const [setUpCompleted, setSetUpCompleted] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useAppDispatch();
 
+  const validateTwoFABackup = async () => {
+    if (!otp) {
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: "Please enter valid OTP",
+      });
+      setModalVisible(true);
+      return;
+    }
+
+    let result = await useUser.validate2FABackup(otp);
+    if (typeof result === "string") {
+      //show error
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: result,
+      });
+      setModalVisible(true);
+      return;
+    }
+    setModalState({
+      ...modalState,
+      type: "success",
+      text: "2FA Setup Completed",
+    });
+    setSetUpCompleted(true);
+    setModalVisible(true);
+    dispatch(
+      setTwoFAData({
+        isRegistered: true,
+        qrUrl: "",
+        secretCode: "",
+      })
+    );
+  };
+  const syncTwoFAData = async () => {
+    let result = await useUser.getTwoFAData();
+    if (typeof result === "string") {
+      //show error
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: result,
+      });
+      setModalVisible(true);
+      return;
+    }
+    if (result.isRegistered) {
+      setModalState({
+        ...modalState,
+        type: "success",
+        text: "2FA has already been setup for account",
+      });
+      setSetUpCompleted(true);
+      setModalVisible(true);
+      dispatch(
+        setTwoFAData({
+          isRegistered: true,
+          qrUrl: "",
+          secretCode: "",
+        })
+      );
+      return;
+    }
+    console.log(result);
+    dispatch(setTwoFAData(result));
+  };
+  const handleCopy = async () => {
+    if (!twoFAData) return;
+    await Clipboard.setStringAsync(twoFAData.secretCode);
+    Alert.alert("Copied to clipboard");
+  };
+
+  useEffect(() => {
+    syncTwoFAData();
+  }, []);
   return (
     <View className="flex-1 bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10 justify-center">
+      <View className="w-full h-full max-w-5xl mx-auto justify-center">
         <View className="items-center">
           <Pressable
             className="absolute left-0 top-2"
@@ -24,28 +126,37 @@ const GoogleOTP = () => {
             {/* QR Code */}
             <View className="items-center">
               <Image
-                source={require("@/assets/images/qr-code2.png")}
-                className="max-w-[390px]"
+                source={
+                  twoFAData
+                    ? {
+                        uri: twoFAData.qrUrl,
+                      }
+                    : require("@/assets/images/qr-code2.png")
+                }
+                className="max-w-[390px] w-[200px] h-[200px]"
                 resizeMode="contain"
               />
             </View>
 
             {/* Input with Copy Button */}
             <View className="relative my-8">
-              <TextInput
-                placeholder="Enter OTP Code"
-                placeholderTextColor="#FFFFFF"
-                className="text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
-              />
-              <View className="bg-black-1200 mb-8 flex-row rounded-md py-4 px-3 mt-2">
+              <View className="bg-black-1200 mb-8 flex-row rounded-md py-4 px-3 mt-2 items-center">
                 <Text className="text-base font-semibold text-white">
-                  OTP code Setting Key
+                  Secret Key
                 </Text>
-                <Text className="text-[15px] text-gray-1000 inline-block ml-2">
-                  sdasdaderwerqw
+                <Text className="text-[15px] text-gray-1000 inline-block ml-2 flex-1">
+                  {twoFAData ? twoFAData.secretCode : "---"}
                 </Text>
-              </View>
 
+                <TouchableOpacity
+                  onPress={handleCopy}
+                  className="right-3 bg-pink-1100 py-[4px] px-[8px] rounded-2xl "
+                >
+                  <Text className="text-white text-[14px] font-medium leading-[22px]">
+                    Copy
+                  </Text>
+                </TouchableOpacity>
+              </View>
               {/* Instruction List */}
               <View className="pl-6 pr-10">
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -84,10 +195,36 @@ const GoogleOTP = () => {
                   </Text>
                 </View>
               </View>
+              {twoFAData && twoFAData.isRegistered === false && (
+                <View>
+                  <TextInput
+                    placeholder="Enter OTP"
+                    placeholderTextColor="#FFFFFF"
+                    className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
+                    value={otp}
+                    onChangeText={setOtp}
+                  />
+                  <PrimaryButton
+                    text="Verify"
+                    onPress={validateTwoFABackup}
+                    className="mt-6"
+                  />
+                </View>
+              )}
             </View>
           </View>
         </View>
       </View>
+      <InfoAlert
+        {...modalState}
+        visible={modalVisible}
+        setVisible={setModalVisible}
+        onDismiss={() => {
+          if (setUpCompleted) {
+            router.back();
+          }
+        }}
+      />
     </View>
   );
 };

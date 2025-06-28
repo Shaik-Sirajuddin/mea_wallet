@@ -73,6 +73,10 @@ export default function HomeScreen() {
     syncData();
   }, []);
 
+  useEffect(() => {
+    router.navigate("/(Tabs)/settings");
+  }, []);
+
   const totalAssetValue = () => {
     let totalValue = new Decimal(0);
     for (let [token, amount] of Object.entries(freeBalance)) {

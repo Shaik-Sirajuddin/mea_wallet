@@ -3,6 +3,8 @@ import { networkRequest } from ".";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
 import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
+import { TwoFADetails, RegistrationResponse } from "@/src/api/types/user";
+import { StatusResponse } from "@/src/api/types/auth";
 
 export interface DepositSettings {
   minDeposit: TokenBalances;
@@ -59,36 +61,6 @@ export default {
       usd: trimTrailingZeros(raw.usd_quote),
     };
   },
-  getDepositSettings: async (): Promise<DepositSettings | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
-
-    if (typeof raw === "string") return raw;
-
-    return {
-      minDeposit: {
-        mea: trimTrailingZeros(raw.mea_min_deposit_coin),
-        recon: trimTrailingZeros(raw.recon_min_deposit_coin),
-        fox9: trimTrailingZeros(raw.fox9_min_deposit_coin),
-        sol: trimTrailingZeros(raw.sol_min_deposit_coin),
-      },
-      managerDepositAddresses: [
-        raw.manager_deposit_address,
-        raw.manager_deposit_address_2,
-        raw.manager_deposit_address_3,
-        raw.manager_deposit_address_4,
-      ],
-      userDepositAddresses: [
-        raw.deposit_address,
-        raw.deposit_address_2,
-        raw.deposit_address_3,
-        raw.deposit_address_4,
-        raw.deposit_address_5,
-      ],
-    };
-  },
   getWithdrawSettings: async (): Promise<WithdrawSettings | string> => {
     const raw = await networkRequest<BalanceResponseRaw>(
       `${apiBaseUrl}/api/balance-check`,
@@ -121,5 +93,25 @@ export default {
     if (typeof raw === "string") return raw;
 
     return trimTrailingZeros(raw.swap_fee);
+  },
+  getTwoFAData: async (): Promise<TwoFADetails | string> => {
+    const res = await networkRequest<any>(`${apiBaseUrl}/api/user-info`, {
+      method: "POST",
+    });
+
+    if (typeof res === "string") return res;
+
+    return {
+      qrUrl: atob(res.qrUrl),
+      secretCode: atob(res.SecretCode),
+      isRegistered: res.qr_reg === "Y",
+    };
+  },
+
+  validate2FABackup: async (otp_code: string) => {
+    return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/qr-reg`, {
+      method: "POST",
+      body: new URLSearchParams({ otp_code }).toString(),
+    });
   },
 };

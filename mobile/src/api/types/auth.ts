@@ -4,6 +4,11 @@ export interface StatusResponse {
   status: "succ" | string;
 }
 
+export interface AuthResponse {
+  status: "succ" | string;
+  token : string;
+}
+
 export interface CsrfTokenResponse {
   csrfToken: string;
 }
