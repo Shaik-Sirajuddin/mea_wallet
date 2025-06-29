@@ -21,8 +21,8 @@ enum ErrorType {
   INVALID_PASSWORD,
 }
 const Signin: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test");
+  const [password, setPassword] = useState("Testtest");
   const [showPassword, setShowPassword] = useState(false);
 
   // Validation state

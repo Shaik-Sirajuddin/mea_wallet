@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text, Animated } from "react-native";
 import PrimaryButton from "./PrimaryButton";
+import { Portal } from "react-native-paper";
 
 export interface InfoAlertProps {
   visible: boolean;
@@ -14,7 +15,7 @@ export interface InfoAlertProps {
 const InfoAlert = ({
   visible,
   setVisible,
-  text = 'no text passed',
+  text = "no text passed",
   onDismiss,
   showAnimation = true,
   type = "success",
@@ -48,26 +49,28 @@ const InfoAlert = ({
   if (!visible) return null;
 
   return (
-    <View className="flex-1 items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full z-50">
-      <Animated.View
-        style={{
-          transform: [{ scale: scaleAnim }],
-          opacity: opacityAnim,
-        }}
-        className="bg-[#191919] rounded-[16px] px-4 pb-8 pt-10 w-full"
-      >
-        <View className="flex gap-4">
-          <Text className="text-white text-center text-lg">{text}</Text>
-          <PrimaryButton
-            text="OK"
-            onPress={() => {
-              setVisible(false);
-              if (onDismiss) onDismiss();
-            }}
-          />
-        </View>
-      </Animated.View>
-    </View>
+    <Portal>
+      <View className="flex-1 items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full z-50">
+        <Animated.View
+          style={{
+            transform: [{ scale: scaleAnim }],
+            opacity: opacityAnim,
+          }}
+          className="bg-[#191919] rounded-[16px] px-4 pb-8 pt-10 w-full"
+        >
+          <View className="flex gap-4">
+            <Text className="text-white text-center text-lg">{text}</Text>
+            <PrimaryButton
+              text="OK"
+              onPress={() => {
+                setVisible(false);
+                if (onDismiss) onDismiss();
+              }}
+            />
+          </View>
+        </Animated.View>
+      </View>
+    </Portal>
   );
 };
 

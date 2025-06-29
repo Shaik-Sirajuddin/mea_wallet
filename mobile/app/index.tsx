@@ -6,7 +6,9 @@ import { useRoute } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { router, useFocusEffect } from "expo-router";
-import InfoAlert from "./components/InfoAlert";
+import { configureReanimatedLogger } from "react-native-reanimated";
+
+configureReanimatedLogger({ strict: false });
 
 export default function HomeScreen() {
   const route = useRoute();

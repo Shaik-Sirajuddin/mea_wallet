@@ -1,5 +1,7 @@
 import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
+import { trimTrailingZeros } from "@/utils/ui";
+import { SwapPayload, SwapResponseRaw } from "@/src/api/types/asset";
 
 const url = apiBaseUrl + "/asset";
 
@@ -83,5 +85,36 @@ export default {
       },
       body: JSON.stringify({ receiver_username, token_id, amount }),
     });
+  },
+
+  swapTokens: async (payload: SwapPayload) => {
+    const raw = await networkRequest<SwapResponseRaw>(
+      `${apiBaseUrl}/api/swap-proc`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          buyCoin: payload.buyCoin,
+          sel_coin: payload.sellCoin,
+          fee: payload.platformFeePercent,
+          WithdrawFee: payload.withdrawFeeAmount,
+          amount: payload.sellAmount,
+          payment_coin: payload.paymentCoinAmount,
+          buy_coin: payload.buyCoinAmount,
+          quote: payload.fromCurrencyPrice,
+          quote2: payload.toCurrencyPrice,
+          min_deposit_coin: payload.minDepositAmount,
+          otp_code: payload.otpCode,
+        }).toString(),
+      }
+    );
+
+    if (typeof raw === "string") return raw;
+
+    return {
+      success: raw.status === "succ",
+      fromTokenBalance: trimTrailingZeros(raw.from_token_balance),
+      toTokenBalance: trimTrailingZeros(raw.to_token_balance),
+      swapFee: trimTrailingZeros(raw.swap_fee),
+    };
   },
 };

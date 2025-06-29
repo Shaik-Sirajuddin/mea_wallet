@@ -74,7 +74,7 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    router.navigate("/(Tabs)/settings");
+    router.navigate("/(Tabs)/swap-tokens");
   }, []);
 
   const totalAssetValue = () => {

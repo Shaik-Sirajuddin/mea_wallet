@@ -5,7 +5,7 @@ import GridScreen from "./grid";
 import HomeScreen from "./home";
 import LockScreen from "./lock";
 import SettingsScreen from "./settings";
-import SwapTokens from "../(Views)/swap-tokens";
+import SwapTokens from "./swap-tokens";
 import InfoAlert from "../components/InfoAlert";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
@@ -22,6 +22,7 @@ export default function TabLayout() {
     console.log("auth result", result);
     if (typeof result === "string" || !result.loggedIn) {
       //todo : can be specific for error handling
+      console.log(result)
       setPopUpVisible(true);
     }
   };
