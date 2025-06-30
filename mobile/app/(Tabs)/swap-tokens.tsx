@@ -23,10 +23,21 @@ import SvgIcon from "../components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import OtpModal from "../components/OTPModal";
 import Decimal from "decimal.js";
-import { tokenImageMap, trimTrailingZeros } from "@/utils/ui";
+import {
+  parseNumberForView,
+  tokenImageMap,
+  trimTrailingZeros,
+} from "@/utils/ui";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
 
 type TokenType = keyof TokenBalances;
+
+const getFontSize = (text: string) => {
+  if (text.length <= 6) return 32;
+  if (text.length <= 10) return 28;
+  if (text.length <= 14) return 24;
+  return 20;
+};
 
 const SwapTokens = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,6 +56,7 @@ const SwapTokens = () => {
   const [isCalculatingPay, setIsCalculatingPay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [adminCommission, setAdminCommission] = useState("0");
 
   // Modal states
   const [otpModalVisible, setOtpModalVisible] = useState(false);
@@ -99,15 +111,15 @@ const SwapTokens = () => {
   }, []);
 
   // Periodic refresh every 1 second
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     fetchQuotes();
-  //     fetchBalance();
-  //     fetchSwapFee();
-  //   }, 1000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchQuotes();
+      fetchBalance();
+      fetchSwapFee();
+    }, 1000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     console.log("receive vamount", receiveAmount);
@@ -128,8 +140,9 @@ const SwapTokens = () => {
         const receiveValue = payValue.div(quotes[toToken]);
         const feeAmount = receiveValue.mul(swapFee || "0").div("100");
         const finalReceive = receiveValue.sub(feeAmount);
-        console.log(payValue, receiveValue, finalReceive);
-        setReceiveAmount(trimTrailingZeros(finalReceive.toFixed(2)));
+        //todo : fixed at 9 decimal zeroes at max
+        setAdminCommission(trimTrailingZeros(feeAmount.toFixed(9)));
+        setReceiveAmount(trimTrailingZeros(finalReceive.toFixed(9)));
       } catch (error) {
         console.log(error);
         setReceiveAmount("0");
@@ -166,7 +179,7 @@ const SwapTokens = () => {
 
   // Validate balance
   const validateBalance = useCallback(() => {
-    if (!payAmount || new Decimal(payAmount).lte(0)) {
+    if (!payAmount || new Decimal(payAmount ?? 0).lte(0)) {
       return { isValid: false, message: "Enter amount to pay" };
     }
 
@@ -218,12 +231,12 @@ const SwapTokens = () => {
         buyCoin: toToken.toUpperCase(),
         sellCoin: fromToken.toUpperCase(),
         platformFeePercent: swapFee || "0",
-        withdrawFeeAmount: "0", // This would need to be calculated based on actual fees
+        adminComission: adminCommission, // This would need to be calculated based on actual fees
         sellAmount: payAmount,
-        paymentCoinAmount: new Decimal(payAmount)
-          .mul(quotes[fromToken])
-          .toString(),
-        buyCoinAmount: receiveAmount,
+        expectedReceivableBeforeFee: new Decimal(adminCommission)
+          .add(receiveAmount)
+          .toFixed(9),
+        expectedReceivable: receiveAmount,
         fromCurrencyPrice: quotes[fromToken],
         toCurrencyPrice: quotes[toToken],
         minDepositAmount: "0", // This would need to be fetched from settings
@@ -238,7 +251,7 @@ const SwapTokens = () => {
           type: "error",
         });
         setInfoAlertVisible(true);
-      } else if (result.success) {
+      } else {
         setInfoAlertState({
           text: "Swap completed successfully!",
           type: "success",
@@ -247,14 +260,9 @@ const SwapTokens = () => {
         // Clear amounts after successful swap
         setPayAmount("");
         setReceiveAmount("");
-      } else {
-        setInfoAlertState({
-          text: "Swap failed",
-          type: "error",
-        });
-        setInfoAlertVisible(true);
-      }
+      } 
     } catch (error) {
+      console.log(error);
       setInfoAlertState({
         text: "An error occurred during swap",
         type: "error",
@@ -267,21 +275,15 @@ const SwapTokens = () => {
 
   // Handle swap button press
   const handleSwap = () => {
-    setOtpModalVisible(true);
-    console.log("handle swap");
-    return;
     if (!balanceCheck.isValid) {
       setInfoAlertState({
         ...infoAlertState,
         text: balanceCheck.message,
         type: "error",
       });
-      console.log("error in validaton");
       setInfoAlertVisible(true);
       return;
     }
-
-    console.log("otp modal visible");
     setOtpModalVisible(true);
   };
 
@@ -307,66 +309,69 @@ const SwapTokens = () => {
             </Text>
           </View>
           <View className="relative mt-10 h-full pb-14">
-            <View className="bg-black-1200 p-[18px] rounded-[15px] flex-row items-end justify-between">
-              <View className="w-1/2">
-                <View>
-                  <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                    You Pay
-                  </Text>
-                  <TextInput
-                    keyboardType="numeric"
-                    placeholder="0"
-                    value={payAmount}
-                    onChangeText={setPayAmount}
-                    className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+            <View className="bg-black-1200 p-[18px] rounded-[15px]">
+              {/* Row 1: Label */}
+              <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 mb-2">
+                You Pay
+              </Text>
+
+              {/* Row 2: Amount input */}
+              <View className="flex flex-row items-center h-20">
+                <TextInput
+                  keyboardType="numeric"
+                  placeholder="0"
+                  value={payAmount}
+                  onChangeText={setPayAmount}
+                  style={{
+                    fontSize: getFontSize(receiveAmount),
+                  }}
+                  className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+                />
+
+                <View className="bg-gray-1300 flex rounded-[18px] h-10 pr-2 justify-start  flex-row items-center pl-2">
+                  <Image
+                    source={tokenImageMap[fromToken]}
+                    className="w-7 h-7 rounded-full bg-black"
                   />
-                  <Pressable>
-                    <SvgIcon name="smallSwapIcon" />
-                  </Pressable>
+                  <Select
+                    className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200"
+                    selectedValue={fromToken}
+                    onValueChange={(value) => setFromToken(value as TokenType)}
+                  >
+                    <SelectTrigger className="!border-transparent w-[90px] text-center !gap-0  leading-none !p-0">
+                      <SelectInput
+                        className="ml-0 !text-base leading-none text-center !font-medium !p-0 placeholder:!text-gray-1200 !text-gray-1200"
+                        placeholder="SOL"
+                      />
+                      <SelectIcon className="mr-0" as={ChevronDownIcon} />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectBackdrop />
+                      <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                          <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        {availableTokens.map((token) => (
+                          <Select.Item
+                            key={token.value}
+                            label={token.label}
+                            value={token.value}
+                          />
+                        ))}
+                      </SelectContent>
+                    </SelectPortal>
+                  </Select>
                 </View>
               </View>
-              <View className="w-1/2">
-                <View className="items-end">
-                  <View className="bg-gray-1300 rounded-[18px] h-10 mb-2 pr-2 justify-center relative">
-                    <Image
-                      source={tokenImageMap[fromToken]}
-                      className="w-7 h-7 absolute left-1 rounded-full bg-black"
-                    />
-                    <Select
-                      className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200 pl-4"
-                      selectedValue={fromToken}
-                      onValueChange={(value) =>
-                        setFromToken(value as TokenType)
-                      }
-                    >
-                      <SelectTrigger className="!border-transparent min-w-24 text-end !gap-0 w-fit leading-none !p-0">
-                        <SelectInput
-                          className="!min-w-fit ml-2 !text-base leading-none text-end !font-medium !p-0 placeholder:!text-gray-1200 !text-gray-1200"
-                          placeholder="SOL"
-                        />
-                        <SelectIcon className="mr-0" as={ChevronDownIcon} />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectBackdrop />
-                        <SelectContent>
-                          <SelectDragIndicatorWrapper>
-                            <SelectDragIndicator />
-                          </SelectDragIndicatorWrapper>
-                          {availableTokens.map((token) => (
-                            <Select.Item
-                              key={token.value}
-                              label={token.label}
-                              value={token.value}
-                            />
-                          ))}
-                        </SelectContent>
-                      </SelectPortal>
-                    </Select>
-                  </View>
-                  <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                    {getTokenBalance(fromToken)}
-                  </Text>
-                </View>
+
+              {/* Row 3: Symbol selection and balance */}
+              <View className="flex-row items-center justify-between mt-4">
+                <Pressable className="ml-2">
+                  <SvgIcon name="smallSwapIcon" />
+                </Pressable>
+                <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
+                  {getTokenBalance(fromToken)}
+                </Text>
               </View>
             </View>
 
@@ -383,65 +388,69 @@ const SwapTokens = () => {
               <SvgIcon name="qlementineIcon" width="20" height="20" />
             </Pressable>
 
-            <View className="bg-black-1200 p-[18px] rounded-[15px] flex-row items-end justify-between">
-              <View className="w-1/2">
-                <View>
-                  <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                    You Receive
-                  </Text>
-                  <TextInput
-                    keyboardType="default"
-                    placeholder="0"
-                    value={'ad' + receiveAmount}
-                    editable={false}
-                    // onChangeText={setReceiveAmount}
-                    className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+            <View className="bg-black-1200 p-[18px] rounded-[15px]">
+              {/* Row 1: You Receive */}
+              <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 mb-2">
+                You Receive
+              </Text>
+
+              {/* Row 2: Amount Input + Symbol Selection */}
+              <View className="flex flex-row items-center !h-20">
+                <TextInput
+                  keyboardType="default"
+                  placeholder="0"
+                  editable={false}
+                  value={parseNumberForView(receiveAmount)}
+                  style={{
+                    fontSize: getFontSize(receiveAmount),
+                  }}
+                  className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+                />
+
+                <View className="bg-gray-1300 flex rounded-[18px] h-10 pr-2 justify-start flex-row items-center pl-2 ml-2">
+                  <Image
+                    source={tokenImageMap[toToken]}
+                    className="w-7 h-7 rounded-full bg-black"
                   />
-                  <Pressable>
-                    <SvgIcon name="smallSwapIcon" />
-                  </Pressable>
+                  <Select
+                    className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200"
+                    selectedValue={toToken}
+                    onValueChange={(value) => setToToken(value as TokenType)}
+                  >
+                    <SelectTrigger className="!border-transparent w-[90px] text-center !gap-0 leading-none !p-0">
+                      <SelectInput
+                        className="ml-0 !text-base leading-none text-center !font-medium !p-0 placeholder:!text-gray-1200 !text-gray-1200"
+                        placeholder="MEA"
+                      />
+                      <SelectIcon className="mr-0" as={ChevronDownIcon} />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectBackdrop />
+                      <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                          <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        {availableTokens.map((token) => (
+                          <Select.Item
+                            key={token.value}
+                            label={token.label}
+                            value={token.value}
+                          />
+                        ))}
+                      </SelectContent>
+                    </SelectPortal>
+                  </Select>
                 </View>
               </View>
-              <View className="w-1/2">
-                <View className="items-end">
-                  <View className="bg-gray-1300 rounded-[18px] h-10 mb-2 pr-2 justify-center relative">
-                    <Image
-                      source={tokenImageMap[toToken]}
-                      className="w-7 h-7 absolute left-1 rounded-full bg-black"
-                    />
-                    <Select
-                      className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200 pl-4"
-                      selectedValue={toToken}
-                      onValueChange={(value) => setToToken(value as TokenType)}
-                    >
-                      <SelectTrigger className="!border-transparent min-w-24 text-end !gap-0 w-fit leading-none !p-0">
-                        <SelectInput
-                          className="!min-w-fit ml-2 !text-base leading-none text-end !font-medium !p-0 placeholder:!text-gray-1200 !text-gray-1200"
-                          placeholder="MEA"
-                        />
-                        <SelectIcon className="mr-0" as={ChevronDownIcon} />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectBackdrop />
-                        <SelectContent>
-                          <SelectDragIndicatorWrapper>
-                            <SelectDragIndicator />
-                          </SelectDragIndicatorWrapper>
-                          {availableTokens.map((token) => (
-                            <Select.Item
-                              key={token.value}
-                              label={token.label}
-                              value={token.value}
-                            />
-                          ))}
-                        </SelectContent>
-                      </SelectPortal>
-                    </Select>
-                  </View>
-                  <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                    {getTokenBalance(toToken)}
-                  </Text>
-                </View>
+
+              {/* Row 3: Swap icon + Balance */}
+              <View className="flex-row items-center justify-between">
+                <Pressable>
+                  <SvgIcon name="smallSwapIcon" />
+                </Pressable>
+                <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
+                  {getTokenBalance(toToken)}
+                </Text>
               </View>
             </View>
 

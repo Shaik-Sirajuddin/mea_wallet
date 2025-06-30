@@ -26,3 +26,24 @@ export function trimTrailingZeros(value: string): string {
   if (!value.includes(".")) return value; // no decimal point
   return value.replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
 }
+
+export function parseNumberForView(value: string) {
+  const maxLength = 12;
+  if (value.length <= maxLength) {
+    return value;
+  }
+
+  let prefix = value.substring(0, 12);
+  let suffix = value.substring(12);
+
+  if (prefix.includes(".")) {
+    return prefix;
+  }
+
+  if (suffix.at(0) === ".") {
+    return prefix;
+  }
+
+  //can use math notaions 1e9+xyx;
+  return prefix + "..";
+}

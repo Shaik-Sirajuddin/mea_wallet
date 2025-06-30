@@ -107,7 +107,6 @@ export default {
       isRegistered: res.qr_reg === "Y",
     };
   },
-
   validate2FABackup: async (otp_code: string) => {
     return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/qr-reg`, {
       method: "POST",

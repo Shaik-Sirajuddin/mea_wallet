@@ -2,6 +2,7 @@ import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
 import { trimTrailingZeros } from "@/utils/ui";
 import { SwapPayload, SwapResponseRaw } from "@/src/api/types/asset";
+import { StatusResponse } from "@/src/api/types/auth";
 
 const url = apiBaseUrl + "/asset";
 
@@ -88,33 +89,26 @@ export default {
   },
 
   swapTokens: async (payload: SwapPayload) => {
-    const raw = await networkRequest<SwapResponseRaw>(
+    const raw = await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/swap-proc`,
       {
         method: "POST",
         body: new URLSearchParams({
-          buyCoin: payload.buyCoin,
-          sel_coin: payload.sellCoin,
-          fee: payload.platformFeePercent,
-          WithdrawFee: payload.withdrawFeeAmount,
-          amount: payload.sellAmount,
-          payment_coin: payload.paymentCoinAmount,
-          buy_coin: payload.buyCoinAmount,
-          quote: payload.fromCurrencyPrice,
-          quote2: payload.toCurrencyPrice,
-          min_deposit_coin: payload.minDepositAmount,
+          buyCoin: payload.buyCoin, //to symbol
+          sel_coin: payload.sellCoin, //from symbol
+          fee: payload.platformFeePercent, //fee percentage
+          WithdrawFee: payload.adminComission, //admin commission receivable token absolute
+          amount: payload.sellAmount, //amount of from token
+          payment_coin: payload.expectedReceivableBeforeFee, //expected receivable token before fee
+          buy_coin: payload.expectedReceivable, //final receivable to token ( after fee)
+          quote: payload.toCurrencyPrice, //to currency price
+          quote2: payload.fromCurrencyPrice, //from currency price
+          min_deposit_coin: payload.minDepositAmount, //mimumum sell quantity of from token
           otp_code: payload.otpCode,
         }).toString(),
       }
     );
 
     if (typeof raw === "string") return raw;
-
-    return {
-      success: raw.status === "succ",
-      fromTokenBalance: trimTrailingZeros(raw.from_token_balance),
-      toTokenBalance: trimTrailingZeros(raw.to_token_balance),
-      swapFee: trimTrailingZeros(raw.swap_fee),
-    };
   },
 };
