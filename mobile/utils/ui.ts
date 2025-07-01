@@ -47,3 +47,32 @@ export function parseNumberForView(value: string) {
   //can use math notaions 1e9+xyx;
   return prefix + "..";
 }
+
+/**
+ * Truncates a wallet address to a viewable format.
+ * Example: 0x123456...abcd
+ *
+ * @param {string} address - Full wallet address
+ * @param {number} startLength - Number of characters to keep at start (default: 6)
+ * @param {number} endLength - Number of characters to keep at end (default: 4)
+ * @returns {string} Truncated address
+ */
+/**
+ * Truncates a wallet address to a viewable format.
+ * Example: 0x123456...abcd
+ *
+ * @param address - Full wallet address
+ * @param startLength - Number of characters to keep at start (default: 6)
+ * @param endLength - Number of characters to keep at end (default: 4)
+ * @returns Truncated address string
+ */
+export const truncateAddress = (
+  address: string,
+  startLength: number = 6,
+  endLength: number = 4
+): string => {
+  if (!address || address.length <= startLength + endLength) {
+    return address;
+  }
+  return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
+};

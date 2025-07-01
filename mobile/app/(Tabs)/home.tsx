@@ -73,9 +73,14 @@ export default function HomeScreen() {
     syncData();
   }, []);
 
-  useEffect(() => {
-    router.navigate("/(Tabs)/swap-tokens");
-  }, []);
+  // useEffect(() => {
+  //   router.navigate({
+  //     pathname: "/(Views)/TokenActionsView",
+  //     params: {
+  //       symbol: "mea",
+  //     },
+  //   });
+  // }, []);
 
   const totalAssetValue = () => {
     let totalValue = new Decimal(0);
@@ -212,33 +217,42 @@ export default function HomeScreen() {
               {Object.entries(
                 showLokcupBalance ? lockedBalance : freeBalance
               ).map(([token, amount]) => (
-                <View
+                <TouchableOpacity
                   key={token}
-                  className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3"
+                  onPress={() => {
+                    router.navigate({
+                      pathname: "/(Views)/TokenActionsView",
+                      params: {
+                        symbol: token,
+                      },
+                    });
+                  }}
                 >
-                  <View className="flex-row items-center gap-[11px]">
-                    <Image
-                      source={getTokenImage(token)}
-                      className="w-12 h-12 rounded-full"
-                    />
+                  <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
+                    <View className="flex-row items-center gap-[11px]">
+                      <Image
+                        source={getTokenImage(token)}
+                        className="w-12 h-12 rounded-full"
+                      />
+                      <View>
+                        <Text className="text-[17px] font-medium leading-5 text-white">
+                          {token.toUpperCase()}
+                        </Text>
+                        <Text className="text-[15px] font-normal leading-5 text-gray-1200">
+                          {amount} {token.toUpperCase()}
+                        </Text>
+                      </View>
+                    </View>
                     <View>
-                      <Text className="text-[17px] font-medium leading-5 text-white">
-                        {token.toUpperCase()}
+                      <Text className="text-[17px] font-medium leading-5 text-white text-right">
+                        ${getTokensValue(token, amount)}
                       </Text>
-                      <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                        {amount} {token.toUpperCase()}
+                      <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
+                        ${getPrice(token)}
                       </Text>
                     </View>
                   </View>
-                  <View>
-                    <Text className="text-[17px] font-medium leading-5 text-white text-right">
-                      ${getTokensValue(token, amount)}
-                    </Text>
-                    <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
-                      ${getPrice(token)}
-                    </Text>
-                  </View>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
             {/* 

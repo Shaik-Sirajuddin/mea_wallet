@@ -1,10 +1,10 @@
 import {
   TokenQuotes,
-  TokenQuotes as TokenThresholds,
+  TokenBalances as TokenThresholds,
 } from "@/src/types/balance";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface TokenState {
+export interface TokenState {
   quotes: TokenQuotes;
   minDeposit: TokenThresholds;
   withdrawFees: TokenThresholds;
@@ -20,9 +20,9 @@ const initialState: TokenState = {
     recon: "0",
     usd: "0",
   },
-  minDeposit: { mea: "0", sol: "0", fox9: "0", recon: "0", usd: "0" },
-  withdrawFees: { mea: "0", sol: "0", fox9: "0", recon: "0", usd: "0" },
-  minWithdraw: { mea: "0", sol: "0", fox9: "0", recon: "0", usd: "0" },
+  minDeposit: { mea: "0", sol: "0", fox9: "0", recon: "0" },
+  withdrawFees: { mea: "0", sol: "0", fox9: "0", recon: "0" },
+  minWithdraw: { mea: "0", sol: "0", fox9: "0", recon: "0" },
   swapFee: "0",
 };
 

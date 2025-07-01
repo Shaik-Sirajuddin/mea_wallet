@@ -1,0 +1,215 @@
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useMemo, useState } from "react";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import PrimaryButton from "../components/PrimaryButton";
+import SvgIcon from "../components/SvgIcon";
+import { TokenBalances } from "@/src/types/balance";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store";
+import { truncateAddress } from "@/utils/ui";
+import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
+import useWithdrawl from "@/hooks/useWithdrawl";
+
+export type ConfirmWithdrawParams = {
+  symbol: keyof TokenBalances;
+  amount: string;
+  address: string;
+};
+
+const ConfirmWithdraw = () => {
+  const navigation = useNavigation();
+  const [otp, setOtp] = useState("");
+  const { symbol, amount, address } =
+    useLocalSearchParams<ConfirmWithdrawParams>();
+
+  const displaySymbol = useMemo(() => {
+    return symbol.toUpperCase();
+  }, [symbol]);
+
+  const withdrawFees = useSelector(
+    (state: RootState) => state.token.withdrawFees[symbol]
+  );
+  const minWithdrawl = useSelector(
+    (state: RootState) => state.token.minWithdraw[symbol]
+  );
+  const [infoAlertVisible, setInfoAlertVisible] = useState(false);
+  const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
+    {}
+  );
+  const [withdrawlSuccess, setWithdrawlSuccess] = useState(false);
+
+  const processWithdraw = async () => {
+    if (!otp || otp.length < 6) {
+      setInfoAlertState({
+        type: "error",
+        text: "Please enter a valid 6-digit Google OTP code.",
+      });
+      setInfoAlertVisible(true);
+      return;
+    }
+
+    // Proceed with withdrawal API call here
+    console.log("Processing withdrawal with:", {
+      symbol,
+      amount,
+      address,
+      otp,
+    });
+
+    // TODO: Implement API call, handle success and failure
+    // Example success:
+    // navigation.navigate("WithdrawalSuccess");
+    // Example error handling:
+    // setInfoAlertState({ type: "error", text: "Withdrawal failed. Try again." });
+    // setInfoAlertVisible(true);
+
+    let result = await useWithdrawl.initiate({
+      address,
+      amount,
+      otp_code: otp,
+      min_withdraw_coin: minWithdrawl,
+      symbol,
+      WithdrawFee: withdrawFees,
+    });
+
+    if (typeof result === "string") {
+      setInfoAlertState({
+        type: "error",
+        text: result,
+      });
+      setInfoAlertVisible(true);
+      return;
+    }
+    setInfoAlertState({
+      type: "success",
+      text: "Withdraw Initaited",
+    });
+    setInfoAlertVisible(true);
+    setWithdrawlSuccess(true);
+  };
+  return (
+    <View className="bg-black-1000">
+      <View className="w-full h-full max-w-5xl mx-auto pb-10">
+        <View className="w-full h-full">
+          <View className="items-center relative">
+            <Pressable
+              onPress={() => navigation.goBack()}
+              className="absolute left-0 top-2 z-10 p-0"
+            >
+              <SvgIcon name="leftArrow" width="20" height="20" />
+            </Pressable>
+            <Text className="text-lg font-semibold text-white">Withdrawal</Text>
+          </View>
+
+          <View className="relative mt-10">
+            <View className="mb-4">
+              <View className="flex flex-row items-center gap-2 mb-3">
+                <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+                <Text className="text-base font-medium leading-[22px] text-white">
+                  Google OTP Code
+                </Text>
+              </View>
+              <View className="relative mb-2">
+                <TextInput
+                  placeholder="Google OTP Code"
+                  placeholderTextColor="#ffffff"
+                  value={otp}
+                  onChangeText={setOtp}
+                  className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+
+            <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
+                Address
+              </Text>
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
+                {truncateAddress(address)}
+              </Text>
+            </View>
+
+            <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
+                Total withdrawal
+              </Text>
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
+                {amount}{" "}
+                <Text className="text-[15px] text-gray-400">
+                  {displaySymbol}
+                </Text>
+              </Text>
+            </View>
+
+            <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
+                Withdrawal Fee
+              </Text>
+              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
+                {withdrawFees}{" "}
+                <Text className="text-[15px] text-gray-400">
+                  {displaySymbol}
+                </Text>
+              </Text>
+            </View>
+
+            <View className="flex flex-row items-center gap-2 mt-9 mb-3">
+              <SvgIcon name="infoIcon" />
+              <Text className="text-base font-medium leading-[22px] text-white">
+                Notice: Precautions for cryptocurrency withdrawal
+              </Text>
+            </View>
+
+            <View className="bg-black-1200 rounded-[15px] px-6 py-10">
+              <View className="ml-2">
+                <View className="flex-row mb-4">
+                  <Text className="text-[15px] text-gray-400 leading-5">
+                    •{" "}
+                  </Text>
+                  <Text className="text-[15px] text-gray-400 leading-5 flex-1">
+                    Due to the nature of digital assets, withdrawal requests
+                    cannot be canceled once completed.
+                  </Text>
+                </View>
+                <View className="flex-row">
+                  <Text className="text-[15px] text-gray-400 leading-5">
+                    •{" "}
+                  </Text>
+                  <Text className="text-[15px] text-gray-400 leading-5 flex-1">
+                    No refunds if money is sent incorrectly to another digital
+                    asset wallet.
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View className="flex flex-row gap-2 justify-center mt-auto">
+            <PrimaryButton text="Withdraw" onPress={processWithdraw} />
+          </View>
+        </View>
+      </View>
+
+      <InfoAlert
+        {...infoAlertState}
+        visible={infoAlertVisible}
+        setVisible={setInfoAlertVisible}
+        onDismiss={() => {
+          if (withdrawlSuccess) {
+            router.dismissAll();
+            router.replace("/(Tabs)/home");
+          }
+        }}
+      />
+    </View>
+  );
+};
+
+export default ConfirmWithdraw;

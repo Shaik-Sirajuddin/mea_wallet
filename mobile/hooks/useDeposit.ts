@@ -126,14 +126,14 @@ export default {
         raw.manager_deposit_address_2,
         raw.manager_deposit_address_3,
         raw.manager_deposit_address_4,
-      ],
+      ].filter((address) => address),
       userDepositAddresses: [
         raw.deposit_address,
         raw.deposit_address_2,
         raw.deposit_address_3,
         raw.deposit_address_4,
         raw.deposit_address_5,
-      ],
+      ].filter((address) => address),
     };
   },
 };

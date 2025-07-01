@@ -17,7 +17,7 @@ const NativeView = () => {
   return (
     <View className="bg-black-1000">
     <View className="w-full h-full max-w-5xl mx-auto ">
-      <ScrollView className="px-4 pt-8"
+      <ScrollView className="pt-8"
          refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
