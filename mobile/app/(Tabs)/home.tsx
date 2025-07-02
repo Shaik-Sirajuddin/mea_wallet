@@ -75,7 +75,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     router.navigate({
-      pathname: "/(Tabs)/lock",
+      pathname: "/(Tabs)/staking",
       params: {
         symbol: "mea",
       },

@@ -43,16 +43,10 @@ const LockUpScreen = () => {
         >
           <View className="w-full pb-20">
             <View className="items-center relative">
-              <Pressable
-                onPress={() => navigation.goBack()}
-                className="absolute left-0 top-2 z-10"
-              >
-                <SvgIcon name="leftArrow" width="21" height="21" />
-              </Pressable>
               <Text className="text-lg font-semibold text-white">Lock Up</Text>
             </View>
 
-            <View className="relative mt-5">
+            <View className="relative mt-10">
               {Object.entries(lockedBalance).map(([tokenSymbol, amount]) => {
                 const tokenPrice = quotes[tokenSymbol as keyof TokenBalances];
                 const tokenValue = new Decimal(tokenPrice).mul(amount);

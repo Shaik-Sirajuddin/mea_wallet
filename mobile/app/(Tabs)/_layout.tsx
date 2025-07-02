@@ -10,6 +10,7 @@ import InfoAlert from "../components/InfoAlert";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
+import Staking from "./staking";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ export default function TabLayout() {
     console.log("auth result", result);
     if (typeof result === "string" || !result.loggedIn) {
       //todo : can be specific for error handling
-      console.log(result)
+      console.log(result);
       setPopUpVisible(true);
     }
   };
@@ -64,6 +65,28 @@ export default function TabLayout() {
                 <SvgIcon
                   name="home"
                   width="20"
+                  height="22"
+                  color={focused ? "#D107FB" : "#B9B9B9"}
+                />
+                <View
+                  className={`w-[150%] h-[1px] rounded-full ${
+                    focused ? "bg-pink-1100" : "transparent"
+                  } absolute -top-5`}
+                />
+              </View>
+            ),
+            tabBarLabel: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="staking"
+          component={Staking}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <View className="flex flex-col items-center justify-center">
+                <SvgIcon
+                  name="grid"
+                  width="22"
                   height="22"
                   color={focused ? "#D107FB" : "#B9B9B9"}
                 />
@@ -121,28 +144,7 @@ export default function TabLayout() {
             tabBarLabel: () => null,
           }}
         />
-        <Tab.Screen
-          name="grid"
-          component={GridScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View className="flex flex-col items-center justify-center">
-                <SvgIcon
-                  name="grid"
-                  width="22"
-                  height="22"
-                  color={focused ? "#D107FB" : "#B9B9B9"}
-                />
-                <View
-                  className={`w-[150%] h-[1px] rounded-full ${
-                    focused ? "bg-pink-1100" : "transparent"
-                  } absolute -top-5`}
-                />
-              </View>
-            ),
-            tabBarLabel: () => null,
-          }}
-        />
+
         <Tab.Screen
           name="settings"
           component={SettingsScreen}

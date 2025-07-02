@@ -23,12 +23,6 @@ export default function SettingsScreen() {
       <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
         <View className="text-center relative">
           <View className="items-center">
-            <Pressable
-              className="absolute left-0 top-2"
-              onPress={() => navigation.goBack()}
-            >
-              <SvgIcon name="leftArrow" width="21" height="21" />
-            </Pressable>
             <Text className="text-lg font-semibold text-white">Setting</Text>
           </View>
           <View className="mt-10">

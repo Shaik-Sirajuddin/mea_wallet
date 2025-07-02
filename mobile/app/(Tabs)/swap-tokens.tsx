@@ -260,7 +260,7 @@ const SwapTokens = () => {
         // Clear amounts after successful swap
         setPayAmount("");
         setReceiveAmount("");
-      } 
+      }
     } catch (error) {
       console.log(error);
       setInfoAlertState({
@@ -301,9 +301,6 @@ const SwapTokens = () => {
       <View className="w-full h-full max-w-5xl mx-auto py-8 px-4">
         <View className="w-full h-full">
           <View className="items-center relative">
-            <Pressable className="absolute left-0 top-0 z-10 p-2">
-              <SvgIcon name="crossIcon" width="14" height="14" />
-            </Pressable>
             <Text className="text-lg font-semibold text-white">
               Swap Tokens
             </Text>
