@@ -3,6 +3,10 @@ import { networkRequest } from ".";
 import { trimTrailingZeros } from "@/utils/ui";
 import { SwapPayload, SwapResponseRaw } from "@/src/api/types/asset";
 import { StatusResponse } from "@/src/api/types/auth";
+import {
+  LockupHistoryResponse,
+  LockupHistoryResponseRaw,
+} from "@/src/api/types/lockup";
 
 const url = apiBaseUrl + "/asset";
 
@@ -110,5 +114,42 @@ export default {
     );
 
     if (typeof raw === "string") return raw;
+  },
+
+  /**
+   * Get lockup history for a token with parsed field names
+   */
+  getLockupHistory: async (symbol: string, page: number) => {
+    const params = new URLSearchParams();
+    params.append("symbol", symbol);
+    params.append("page", page.toString());
+
+    const raw = await networkRequest<LockupHistoryResponseRaw>(
+      `${apiBaseUrl}/api/lockup-history`,
+      {
+        method: "POST",
+        body: params.toString(),
+      }
+    );
+
+    if (typeof raw === "string") {
+      return raw;
+    }
+    // map raw data to parsed data
+    const parsed: LockupHistoryResponse = {
+      status: raw.status,
+      blockStart: raw.block_start,
+      blockEnd: raw.block_end,
+      blockNum: raw.block_num,
+      totalBlock: raw.total_block,
+      items: raw.data.map((item) => ({
+        registeredAt: item.regdate,
+        amount: item.amount,
+        startDate: item.sdate,
+        endDate: item.edate,
+        status: item.state,
+      })),
+    };
+    return parsed;
   },
 };
