@@ -7,9 +7,12 @@ export interface DepositRecord {
 }
 
 export interface InitiateDepositPayload {
-  token: string;
+  symbol: string;
+  manager_deposit_address: string;
+  min_deposit_coin: string;
   amount: string;
-  address: string;
+  txid: string;
+  wallet_address: string;
 }
 
 export interface DepositAddressResponse {

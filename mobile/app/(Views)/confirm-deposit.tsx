@@ -17,10 +17,14 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { TokenBalances } from "@/src/types/balance";
 import PrimaryButton from "../components/PrimaryButton";
 import { truncateAddress } from "@/utils/ui";
+import useDeposit from "@/hooks/useDeposit";
 
 const Deposit2 = () => {
   const navigation = useNavigation();
-  const { symbol } = useLocalSearchParams<{ symbol: keyof TokenBalances }>();
+  const { symbol, amount } = useLocalSearchParams<{
+    symbol: keyof TokenBalances;
+    amount: string;
+  }>();
 
   const displaySymbol = useMemo(() => symbol?.toUpperCase() || "", [symbol]);
 
@@ -29,6 +33,9 @@ const Deposit2 = () => {
   );
   const depositAddresses = useSelector(
     (state: RootState) => state.deposit.depositAddresses
+  );
+  const minDeposit = useSelector(
+    (state: RootState) => state.token.minDeposit[symbol]
   );
 
   const depositAddress = depositAddresses[0] || "No deposit address available";
@@ -41,8 +48,8 @@ const Deposit2 = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
-
-  const handleDepositApplication = () => {
+  const [depoistSubmitted, setDepositSubmitted] = useState(false);
+  const handleDepositApplication = async () => {
     if (!txid) {
       setInfoAlertState({
         type: "error",
@@ -60,11 +67,30 @@ const Deposit2 = () => {
       return;
     }
 
-    // Navigate or call API as needed
-    // router.push({
-    //   pathname: "/deposit-success",
-    //   params: { symbol: displaySymbol, txid, wallet: selectedWalletAddress },
-    // });
+    let result = await useDeposit.applyDeposit({
+      amount,
+      min_deposit_coin: minDeposit,
+      manager_deposit_address: depositAddress,
+      wallet_address: selectedWalletAddress,
+      symbol,
+      txid,
+    });
+
+    if (typeof result === "string") {
+      setInfoAlertState({
+        type: "error",
+        text: result,
+      });
+      setInfoAlertVisible(true);
+      return;
+    }
+    console.log(result)
+    setInfoAlertState({
+      type: "success",
+      text: "Deposit application submitted",
+    });
+    setInfoAlertVisible(true);
+    setDepositSubmitted(true);
   };
 
   const handleCopy = async (data: string) => {
@@ -210,7 +236,11 @@ const Deposit2 = () => {
         {...infoAlertState}
         visible={infoAlertVisible}
         setVisible={setInfoAlertVisible}
-        onDismiss={() => {}}
+        onDismiss={() => {
+          if (depoistSubmitted) {
+            router.push("/(Tabs)/home");
+          }
+        }}
       />
     </View>
   );

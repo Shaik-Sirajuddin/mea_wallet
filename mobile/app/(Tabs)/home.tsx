@@ -73,14 +73,15 @@ export default function HomeScreen() {
     syncData();
   }, []);
 
-  // useEffect(() => {
-  //   router.navigate({
-  //     pathname: "/(Views)/TokenActionsView",
-  //     params: {
-  //       symbol: "mea",
-  //     },
-  //   });
-  // }, []);
+  useEffect(() => {
+    router.navigate({
+      pathname: "/(Tabs)/lock",
+      params: {
+        symbol: "mea",
+      },
+    });
+  }, []);
+
 
   const totalAssetValue = () => {
     let totalValue = new Decimal(0);

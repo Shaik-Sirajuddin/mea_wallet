@@ -14,14 +14,26 @@ export default {
   /**
    * Initiates a new deposit request
    */
-  initiate: async ({
-    ...payload
-  }: InitiateDepositPayload): Promise<{ depositId: string } | string> => {
-    return await networkRequest<{ depositId: string }>(
-      `${apiBaseUrl}/api/initiate-deposit`,
+  applyDeposit: async ({
+    symbol,
+    manager_deposit_address,
+    min_deposit_coin,
+    amount,
+    txid,
+    wallet_address,
+  }: InitiateDepositPayload): Promise<StatusResponse | string> => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/deposit-save`,
       {
         method: "POST",
-        body: new URLSearchParams(payload).toString(),
+        body: new URLSearchParams({
+          symbol,
+          manager_deposit_address,
+          min_deposit_coin,
+          amount,
+          txid,
+          wallet_address,
+        }).toString(),
       }
     );
   },
