@@ -1,0 +1,333 @@
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import SvgIcon from "@/app/components/SvgIcon";
+import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
+import OtpModal from "@/app/components/OTPModal";
+import useStaking, { StakingPlan } from "@/hooks/useStaking";
+import { tokenImageMap } from "@/utils/ui";
+import Decimal from "decimal.js";
+import { RootState } from "@/src/store";
+import { useSelector } from "react-redux";
+import { TokenBalances } from "@/src/types/balance";
+
+const EnrollPlan = () => {
+  const { plan } = useLocalSearchParams();
+
+  let parsedPlan: StakingPlan | null = null;
+  try {
+    parsedPlan = plan ? JSON.parse(plan as string) : null;
+  } catch (error) {
+    console.error("Failed to parse plan data", error);
+  }
+
+  const [amount, setAmount] = useState("");
+  const [selectedToken, setSelectedToken] = useState<
+    keyof TokenBalances | null
+  >("recon");
+  const [tokenModalVisible, setTokenModalVisible] = useState(false);
+  const [otpModalVisible, setOtpModalVisible] = useState(false);
+  const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [enrollmentSucces, setEnrollmentSuccess] = useState(false);
+  const freeBalance = useSelector(
+    (state: RootState) => state.balance.free || {}
+  );
+  const expectedInterest = useMemo(() => {
+    try {
+      const deposit = parseFloat(amount || "0");
+      return new Decimal(deposit)
+        .mul(parsedPlan!.interestRate)
+        .div(100)
+        .toFixed(2);
+    } catch (error) {
+      console.log("something went wrong", error);
+      return "0";
+    }
+  }, [amount]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      //   setTokenModalVisible(true);
+    }, 0);
+  }, []);
+
+  if (!parsedPlan) {
+    return (
+      <View className="bg-black-1000 flex-1 items-center justify-center">
+        <Text className="text-white">Invalid plan data</Text>
+      </View>
+    );
+  }
+
+  const handleEnroll = async () => {
+    if (!selectedToken) {
+      setModalState({
+        text: "Please select a token",
+        type: "error",
+      });
+      setPopupVisible(true);
+      return;
+    }
+    if (!amount || parseFloat(amount) < parseFloat(parsedPlan!.minDeposit)) {
+      setModalState({
+        text: `Minimum deposit is ${parsedPlan!.minDeposit}`,
+        type: "error",
+      });
+      setPopupVisible(true);
+      return;
+    }
+
+    if (new Decimal(amount).gt(freeBalance[selectedToken])) {
+      setModalState({
+        text: `Amount exceeds avaiable balance ${
+          freeBalance[selectedToken]
+        } ${selectedToken.toUpperCase()}`,
+        type: "error",
+      });
+      setPopupVisible(true);
+      return;
+    }
+    setOtpModalVisible(true);
+  };
+
+  const handleOtpSubmit = async (otp: string | null) => {
+    setOtpModalVisible(false);
+    if (!otp || otp.length < 6) {
+      setModalState({
+        text: "Invalid OTP",
+        type: "error",
+      });
+      setPopupVisible(true);
+      return;
+    }
+
+    let result = await useStaking.applyStaking({
+      asset: selectedToken!.toUpperCase(),
+      deposit_money: amount,
+      interest: expectedInterest,
+      interest_rate: parseFloat(parsedPlan.interestRate),
+      otp_code: otp!,
+      seqno: parsedPlan.id.toString(),
+    });
+
+    if (typeof result === "string") {
+      setModalState({
+        text: result || "Enrollment failed",
+        type: "error",
+      });
+      setPopupVisible(true);
+      return;
+    }
+    setModalState({
+      text: "Enrolled successfully",
+      type: "success",
+    });
+    setPopupVisible(true);
+    setEnrollmentSuccess(true);
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-black-1000"
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View className="bg-black-1000 flex-1">
+          <View className="w-full max-w-5xl mx-auto pb-4">
+            <View className="items-center relative mt-4 mb-6">
+              <Pressable
+                onPress={() => router.back()}
+                className="absolute left-0 top-2"
+              >
+                <SvgIcon name="leftArrow" />
+              </Pressable>
+              <Text className="text-lg font-semibold text-white">
+                Enroll Plan
+              </Text>
+            </View>
+
+            {/* Plan Details */}
+            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mb-4">
+              <Text className="text-white font-semibold text-lg mb-3">
+                {parsedPlan.name}
+              </Text>
+
+              <View className="bg-black-700 rounded-xl p-3 mb-4">
+                <View className="flex-row justify-between mb-3">
+                  <Text className="text-gray-400 text-base">
+                    Interest Rate (APY)
+                  </Text>
+                  <Text className="text-green-500 text-xl font-bold">
+                    {parsedPlan.interestRate}%
+                  </Text>
+                </View>
+                <View className="flex-row justify-between mb-2">
+                  <Text className="text-gray-400 text-base">Lockup Days</Text>
+                  <Text className="text-white text-lg font-medium">
+                    {parsedPlan.lockupDays}
+                  </Text>
+                </View>
+                <View className="flex-row justify-between mb-2">
+                  <Text className="text-gray-400 text-base">Min Deposit</Text>
+                  <Text className="text-white text-lg font-medium">
+                    {parsedPlan.minDeposit}
+                  </Text>
+                </View>
+                <View className="flex-row justify-between">
+                  <Text className="text-gray-400 text-base">Unstaking Fee</Text>
+                  <Text className="text-white text-lg font-medium">
+                    {parsedPlan.unstakingFee}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Selected Token */}
+              <View className="mb-4">
+                <Text className="text-gray-400 mb-2">Token</Text>
+                <TouchableOpacity
+                  onPress={() => setTokenModalVisible(true)}
+                  className="border border-gray-700 rounded-xl px-4 py-2 bg-black-900 flex-row items-center"
+                >
+                  {selectedToken ? (
+                    <>
+                      <View className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-gray-600 bg-black-900">
+                        <Image
+                          source={tokenImageMap[selectedToken]}
+                          className="w-full h-full"
+                          resizeMode="cover"
+                        />
+                      </View>
+                      <Text className="text-white text-base">
+                        {selectedToken.toUpperCase()}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text className="text-white">Select Token</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row justify-between mb-2">
+                <Text className="text-gray-400 text-base">
+                  Available Balance:
+                </Text>
+                <Text className="text-white text-lg font-medium">
+                  {selectedToken
+                    ? freeBalance[selectedToken as keyof TokenBalances]
+                    : "--"}
+                </Text>
+              </View>
+              {/* Expected Final Amount */}
+              <View className="mb-4 mt-4">
+                <Text className="text-gray-400">Interest at Maturity</Text>
+                <View className="flex flex-row gap-2 items-center mt-2">
+                  <Text className="text-green-500 text-2xl font-extrabold">
+                    {expectedInterest}
+                  </Text>
+                  <Text className="text-white text font-bold">
+                    {selectedToken?.toUpperCase()}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Amount Input */}
+              <View className="mb-4">
+                <Text className="text-gray-400 mb-2">Amount</Text>
+                <TextInput
+                  keyboardType="numeric"
+                  value={amount}
+                  onChangeText={setAmount}
+                  placeholder="Enter amount to stake"
+                  className="border border-gray-700 rounded-xl px-4 py-2 text-white bg-black-900"
+                  placeholderTextColor="#999"
+                />
+              </View>
+
+              {/* Enroll Button */}
+              <TouchableOpacity
+                onPress={handleEnroll}
+                activeOpacity={1}
+                className="bg-pink-1100 rounded-xl py-3 items-center"
+              >
+                <Text className="text-white font-semibold text-base">
+                  Enroll
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Token Selection Modal */}
+          <Modal visible={tokenModalVisible} transparent animationType="fade">
+            <View className="flex-1 bg-black-1000 bg-opacity-95 justify-center items-center px-8">
+              <View className="bg-black-800 rounded-xl p-4 w-full">
+                <Text className="text-white text-lg font-semibold mb-4">
+                  Select Token
+                </Text>
+
+                {parsedPlan.supportedTokens.map((token) => (
+                  <TouchableOpacity
+                    key={token}
+                    onPress={() => {
+                      setSelectedToken(token);
+                      setTokenModalVisible(false);
+                    }}
+                    className="flex-row items-center py-3 px-2 border-b border-gray-700"
+                  >
+                    <View className="w-10 h-10 rounded-full overflow-hidden mr-4 border border-gray-600 bg-black-900">
+                      <Image
+                        source={tokenImageMap[token]}
+                        className="w-full h-full"
+                        resizeMode="cover"
+                      />
+                    </View>
+                    <Text className="text-white text-base">
+                      {token.toUpperCase()}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                <TouchableOpacity
+                  onPress={() => setTokenModalVisible(false)}
+                  className="mt-4 bg-pink-1100 rounded-xl py-3 items-center"
+                >
+                  <Text className="text-white font-semibold text-base">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          <InfoAlert
+            {...modalState}
+            visible={popupVisible}
+            setVisible={setPopupVisible}
+            onDismiss={() => {
+              if (enrollmentSucces) {
+                router.dismiss();
+                router.navigate("/(Tabs)/staking");
+              }
+            }}
+          />
+          <OtpModal visible={otpModalVisible} onClose={handleOtpSubmit} />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+export default EnrollPlan;

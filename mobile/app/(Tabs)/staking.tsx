@@ -12,7 +12,7 @@ export default function Staking() {
         </View>
         <View className="mt-10">
           <Pressable
-            onPress={() => router.push("/(Views)/settings/change-password")}
+            onPress={() => router.push("/(Views)/staking/staking-plans")}
             className="flex-row items-center gap-3 px-3 py-5 mb-2 rounded-2xl border-2 border-transparent active:border-pink-1200 bg-black-1200 transition-all duration-500"
           >
             <View className="w-8 h-8 rounded-full bg-gray-1500 flex items-center justify-center">

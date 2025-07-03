@@ -1,70 +1,119 @@
+// src/api/staking.ts
+
 import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
-import { StakingPlan } from "@/schema/StakingPlan"; // You must define this
-import { StakingDeposit } from "@/schema/StakingDeposit"; // You must define this
+import { trimTrailingZeros } from "@/utils/ui";
+import { TokenBalances } from "@/src/types/balance";
+import { StatusResponse } from "@/src/api/types/auth";
 
-const url = apiBaseUrl + "/stake";
-
-export interface EnrollStakePayload {
-  plan_id: number;
-  amount: number | string;
-}
-
-export interface EnrollStakeResponse {
+export interface StakingPlan {
   id: number;
+  registeredAt: string;
+  imageUrl: string;
+  name: string;
+  lockupDays: number;
+  interestRate: string;
+  unstakingFee: string;
+  minDeposit: string;
+  totalDeposited: string;
+  state: string;
+  supportedTokens: (keyof TokenBalances)[];
 }
 
-export interface CloseStakePayload {
-  deposit_id: number;
+export interface StakingListParsed {
+  plans: StakingPlan[];
+  totalPages: number;
 }
+
+export interface StakingListResponse {
+  status: string;
+  data: any[];
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+}
+
+export interface ApplyStakingPayload {
+  asset: string;
+  seqno: string;
+  interest_rate: number;
+  interest: string;
+  deposit_money: string;
+  otp_code: string;
+}
+
+export interface ApplyStakingResponse {
+  status: string;
+  msg?: string;
+}
+
+let tokenBalance: TokenBalances = {
+  fox9: "0",
+  mea: "0",
+  recon: "0",
+  sol: "0",
+};
+
+const TOKEN_SYMBOLS = Object.keys(tokenBalance) as (keyof TokenBalances)[];
 
 export default {
   /**
-   * Get all active staking plans
+   * Fetch staking plans list with pagination.
    */
-  getPlans: async () => {
-    const response = await networkRequest<object[]>(url + "/plans");
-    if (typeof response === "string") return response;
-    return response.map((plan) => new StakingPlan(plan));
-  },
+  getStakingList: async (page = 1): Promise<StakingListParsed | string> => {
+    const payload = {
+      page: String(page),
+    };
 
-  /**
-   * Get all staking deposits by the user
-   */
-  getStakes: async () => {
-    const response = await networkRequest<object[]>(url + "/stakes");
-    if (typeof response === "string") return response;
-    return response.map((deposit) => new StakingDeposit(deposit));
-  },
+    const raw = await networkRequest<StakingListResponse>(
+      `${apiBaseUrl}/api/staking-list`,
+      {
+        method: "POST",
+        body: new URLSearchParams(payload).toString(),
+      }
+    );
 
-  /**
-   * Enroll into a staking plan
-   */
-  enrollStake: async (plan_id: number, amount: string) => {
-    return await networkRequest<EnrollStakeResponse>(url + "/enroll-stake", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        plan_id,
-        amount,
-      }),
+    if (typeof raw === "string") return raw;
+    if (raw.status !== "succ") return "Failed to fetch staking list";
+
+    const plans: StakingPlan[] = raw.data.map((item) => {
+      const supportedTokens = TOKEN_SYMBOLS.filter(
+        (symbol) => item[symbol] === "Y"
+      );
+
+      return {
+        id: item.seqno,
+        registeredAt: item.regdate,
+        imageUrl: item.image,
+        name: item.goods_name_en,
+        lockupDays: item.withdrawal_date,
+        interestRate: trimTrailingZeros(String(item.interest_rate)),
+        unstakingFee: trimTrailingZeros(item.unstaking_fee),
+        minDeposit: trimTrailingZeros(item.min_deposit_token),
+        totalDeposited: trimTrailingZeros(String(item.total_deposit)),
+        state: item.state,
+        supportedTokens,
+      };
     });
+
+    return { plans, totalPages: raw.total_block };
   },
 
   /**
-   * Close a staking deposit
+   * Apply for staking with provided details.
    */
-  closeStake: async (deposit_id: number) => {
-    return networkRequest<object>(url + "/close-stake", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        deposit_id,
-      }),
-    });
+  applyStaking: async (payload: ApplyStakingPayload) => {
+    const data = {
+      ...payload,
+    };
+
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/staking-proc`,
+      {
+        method: "POST",
+        body: new URLSearchParams(data as any).toString(),
+      }
+    );
   },
 };
