@@ -5,6 +5,7 @@ import { networkRequest } from ".";
 import { trimTrailingZeros } from "@/utils/ui";
 import { TokenBalances } from "@/src/types/balance";
 import { StatusResponse } from "@/src/api/types/auth";
+import { UserStaking, UserStakingResponse } from "@/src/api/types/staking";
 
 export interface StakingPlan {
   id: number;
@@ -115,5 +116,51 @@ export default {
         body: new URLSearchParams(data as any).toString(),
       }
     );
+  },
+
+  getUserStakings: async (
+    page = 1,
+    state = "",
+    sort = ""
+  ): Promise<{ items: UserStaking[]; totalPages: number } | string> => {
+    const payload = {
+      page: String(page),
+      state,
+      sort,
+    };
+
+    const raw = await networkRequest<UserStakingResponse>(
+      `${apiBaseUrl}/api/staking-user`,
+      {
+        method: "POST",
+        body: new URLSearchParams(payload).toString(),
+      }
+    );
+
+    if (typeof raw === "string") return raw;
+    const items: UserStaking[] = raw.data.map((item) => ({
+      id: item.seqno,
+      tokenSymbol: item.symbol,
+      registeredAt: item.regdate,
+      planName: item.goods_name,
+      expectedWithdrawalDate: item.expected_withdrawal_date,
+      depositAmount: item.money,
+      usdtValue: item.usdt,
+      krwValue: item.krw,
+      interestRate: item.interest_rate,
+      interestAtMaturity: item.interest,
+      unstakingFee: item.unstaking_fee,
+      lockupDays: item.withdrawal_date,
+      maturityState: item.maturity_state,
+      expectedFinalAmount: item.expected_withdrawal,
+      lockupDate: item.lockup_date,
+      stateStr: item.stateStr,
+      state: item.state,
+    }));
+
+    return {
+      items,
+      totalPages: raw.total_block,
+    };
   },
 };
