@@ -4,13 +4,15 @@ import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import DialogAlert from "../components/DialogAlert";
 import useAuth from "@/hooks/useAuth";
+import storage from "@/storage";
+import { STORAGE_KEYS } from "@/storage/keys";
 
 export default function SettingsScreen() {
-  const navigation = useNavigation();
   const [popupVisible, setPopUpVisible] = useState(false);
 
   const performLogout = async () => {
     let result = await useAuth.logout();
+    await storage.delete(STORAGE_KEYS.AUTH.TOKEN);
     if (typeof result === "string") {
       //show error dialog
       console.log("failed to logout", result);

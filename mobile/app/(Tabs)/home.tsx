@@ -20,7 +20,11 @@ import {
   setFreeBalances,
   setLockupBalances,
 } from "@/src/features/balance/balanceSlice";
-import { tokenImageMap, trimTrailingZeros } from "@/utils/ui";
+import {
+  parseNumberForView,
+  tokenImageMap,
+  trimTrailingZeros,
+} from "@/utils/ui";
 import { setQuotes } from "@/src/features/token/tokenSlice";
 import Decimal from "decimal.js";
 
@@ -73,15 +77,14 @@ export default function HomeScreen() {
     syncData();
   }, []);
 
-  useEffect(() => {
-    router.navigate({
-      pathname: "/(Tabs)/staking",
-      params: {
-        symbol: "mea",
-      },
-    });
-  }, []);
-
+  // useEffect(() => {
+  //   router.navigate({
+  //     pathname: "/(Tabs)/staking",
+  //     params: {
+  //       symbol: "mea",
+  //     },
+  //   });
+  // }, []);
 
   const totalAssetValue = () => {
     let totalValue = new Decimal(0);
@@ -140,7 +143,7 @@ export default function HomeScreen() {
             <View className="items-center mt-[46px] mb-10">
               <SvgIcon name="spaceman" width="74" height="74" />
               <Text className="text-white text-[37px] mt-2 font-semibold">
-                ${totalAssetValue()}
+                ${parseNumberForView(totalAssetValue())}
               </Text>
               <View className="flex-row items-center justify-center gap-1.5">
                 <Text className="text-base font-medium text-pink-1200">
@@ -240,7 +243,7 @@ export default function HomeScreen() {
                           {token.toUpperCase()}
                         </Text>
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {amount} {token.toUpperCase()}
+                          {parseNumberForView(amount)} {token.toUpperCase()}
                         </Text>
                       </View>
                     </View>

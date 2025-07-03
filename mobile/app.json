@@ -16,7 +16,10 @@
     },
     "android": {
       "edgeToEdgeEnabled": true,
-      "package": "com.meccain.wallet"
+      "package": "com.meccain.wallet",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -59,7 +62,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "00571a84-3231-4223-a9ef-ece49d2cde3f"
+        "projectId": "ecc28968-e9a9-428b-8e28-5a5c8cfafa43"
       }
     }
   }

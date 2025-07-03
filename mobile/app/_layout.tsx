@@ -15,7 +15,10 @@ import { STORAGE_KEYS } from "@/storage/keys";
 import { Provider as PaperProvider } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync();
-
+SplashScreen.setOptions({
+  fade: true,
+  duration: 1000,
+});
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const pathname = usePathname();
@@ -29,7 +32,7 @@ export default function RootLayout() {
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && isAuthenticated !== null) {
-      await SplashScreen.hideAsync();
+      // await SplashScreen.hideAsync();
     }
   }, [fontsLoaded, isAuthenticated]);
 

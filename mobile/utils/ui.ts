@@ -37,6 +37,9 @@ export function parseNumberForView(value: string) {
   let suffix = value.substring(12);
 
   if (prefix.includes(".")) {
+    if (prefix[11] === ".") {
+      return prefix.substring(0, 11);
+    }
     return prefix;
   }
 

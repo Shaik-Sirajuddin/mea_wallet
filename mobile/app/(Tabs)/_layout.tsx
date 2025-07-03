@@ -157,7 +157,7 @@ export default function TabLayout() {
                   height="23"
                   color={focused ? "#D107FB" : "#B9B9B9"}
                 />
-                <View className="w-[5px] h-[5px] rounded-full bg-pink-1100 absolute -top-2 -right-2" />
+                {/* <View className="w-[5px] h-[5px] rounded-full bg-pink-1100 absolute -top-2 -right-2" /> */}
                 <View
                   className={`w-[150%] h-[1px] rounded-full ${
                     focused ? "bg-pink-1100" : "transparent"
