@@ -5,7 +5,13 @@ import { networkRequest } from ".";
 import { trimTrailingZeros } from "@/utils/ui";
 import { TokenBalances } from "@/src/types/balance";
 import { StatusResponse } from "@/src/api/types/auth";
-import { UserStaking, UserStakingResponse } from "@/src/api/types/staking";
+import {
+  StakingHistoryApiResponse,
+  StakingHistoryItem,
+  UserStaking,
+  UserStakingResponse,
+} from "@/src/api/types/staking";
+import dayjs from "dayjs";
 
 export interface StakingPlan {
   id: number;
@@ -141,9 +147,9 @@ export default {
     const items: UserStaking[] = raw.data.map((item) => ({
       id: item.seqno,
       tokenSymbol: item.symbol,
-      registeredAt: item.regdate,
+      registeredAt: new Date(item.regdate),
       planName: item.goods_name,
-      expectedWithdrawalDate: item.expected_withdrawal_date,
+      expectedWithdrawalDate: new Date(item.expected_withdrawal_date),
       depositAmount: item.money,
       usdtValue: item.usdt,
       krwValue: item.krw,
@@ -161,6 +167,52 @@ export default {
     return {
       items,
       totalPages: raw.total_block,
+    };
+  },
+  closeStaking: async (id: number) => {
+    const payload = {
+      seqno: id.toString(),
+    };
+
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/unStaking-proc`,
+      {
+        method: "POST",
+        body: new URLSearchParams(payload).toString(),
+      }
+    );
+  },
+  getStakingHistory: async (page = 1, sort = "날짜별", gubn = "스테이킹") => {
+    const payload = {
+      page: String(page),
+      sort,
+      gubn,
+    };
+    const raw = await networkRequest<StakingHistoryApiResponse>(
+      `${apiBaseUrl}/api/staking-history`,
+      {
+        method: "POST",
+        body: new URLSearchParams(payload).toString(),
+      }
+    );
+
+    if (typeof raw === "string") return raw;
+    const parsedItems: StakingHistoryItem[] = raw.data.map((item) => ({
+      id: item.seqno,
+      token: item.target,
+      date: dayjs(item.regdate).toISOString(),
+      previousBalance: item.prev_money,
+      amount: item.money,
+      state: item.gubn,
+      newBalance: item.next_money,
+      note: item.memo || "",
+    }));
+
+    return {
+      items: parsedItems,
+      totalPages: raw.total_block,
+      blockStart: raw.block_start,
+      blockEnd: raw.block_end,
     };
   },
 };

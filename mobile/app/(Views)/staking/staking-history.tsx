@@ -1,46 +1,39 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  Pressable,
+  Image,
+} from "react-native";
+import { router } from "expo-router";
+import dayjs from "dayjs";
+
+import useStaking from "@/hooks/useStaking";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
-import useStaking from "@/hooks/useStaking";
-import { UserStaking } from "@/src/api/types/staking";
-import { tokenImageMap } from "@/utils/ui";
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
-import dayjs from "dayjs";
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Pressable,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import StakingItem from "@/app/components/StakingItem";
-import WithdrawalModal from "@/app/components/WithdrawModel";
-import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 import FilterIcon from "@/assets/images/double-arrow.svg";
+import { StakingHistoryItem } from "@/src/api/types/staking";
+import { tokenImageMap } from "@/utils/ui";
+import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 
-const UserStakings = () => {
-  const [stakings, setStakings] = useState<UserStaking[]>([]);
+const StakingHistory = () => {
+  const [history, setHistory] = useState<StakingHistoryItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
-
-  const [selectedStaking, setSelectedStaking] = useState<UserStaking | null>(
-    null
-  );
   const [popupVisible, setPopupVisible] = useState(false);
-  const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const filters = [
     {
       label: "Status",
       options: [
         { label: "--", value: "" },
-        { label: "Unstaking Application", value: "언스테이킹신청" },
+        { label: "Staking", value: "스테이킹" },
         { label: "Unstaking", value: "언스테이킹" },
       ],
     },
@@ -65,14 +58,14 @@ const UserStakings = () => {
   const handleApply = () => {
     console.log("Selected Filters:", selectedFilters);
     setFilterVisible(false);
-    syncStakings(1);
+    syncHistory(1);
   };
-  const syncStakings = async (requestedPage = 1) => {
+  const syncHistory = async (requestedPage = 1) => {
     setLoading(true);
-    const res = await useStaking.getUserStakings(
+    const res = await useStaking.getStakingHistory(
       requestedPage,
-      selectedFilters["Status"].value,
-      selectedFilters["Sort"].value
+      selectedFilters["Sort"].value,
+      selectedFilters["Status"].value
     );
 
     if (typeof res === "string") {
@@ -83,9 +76,9 @@ const UserStakings = () => {
       setPopupVisible(true);
     } else {
       if (requestedPage === 1) {
-        setStakings(res.items);
+        setHistory(res.items);
       } else {
-        setStakings((prev) => [...prev, ...res.items]);
+        setHistory((prev) => [...prev, ...res.items]);
       }
       setTotalPages(res.totalPages);
     }
@@ -94,58 +87,66 @@ const UserStakings = () => {
   };
 
   useEffect(() => {
-    syncStakings(1);
+    syncHistory(1);
   }, []);
 
   const loadMore = () => {
     if (page < totalPages) {
       const nextPage = page + 1;
       setPage(nextPage);
-      syncStakings(nextPage);
+      syncHistory(nextPage);
     }
   };
 
-  const handleUnstakeClick = (staking: UserStaking) => {
-    setWithdrawModalVisible(true);
-    setSelectedStaking(staking);
-    // call unstake API here
-  };
+  const renderRow = (label: string, value: string) => (
+    <View className="flex-row justify-between mb-1">
+      <Text className="text-gray-400 text-base">{label}</Text>
+      <Text className="text-white text-base max-w-[60%] text-right">
+        {value}
+      </Text>
+    </View>
+  );
 
-  const unstake = async (isEarlyUnstake: boolean) => {
-    //todo loading bars
-    setWithdrawModalVisible(false);
-    if (!selectedStaking) {
-      return;
-    }
-    let result = await useStaking.closeStaking(selectedStaking.id);
-
-    if (typeof result === "string") {
-      setModalState({
-        text: result,
-        type: "error",
-      });
-      setPopupVisible(true);
-      return;
-    }
-    setModalState({
-      text: isEarlyUnstake ? "Unstaking Success" : "Claim Success",
-      type: "success",
-    });
-    setPopupVisible(true);
-    syncStakings(1);
-  };
+  const renderItem = ({ item }: { item: StakingHistoryItem }) => (
+    <View className="bg-black-1200 rounded-2xl px-6 py-4 mb-4 flex gap-2">
+      {renderRow("Transaction ID", String(item.id))}
+      {renderRow("Date", dayjs(item.date).format("YYYY-MM-DD HH:mm"))}
+      <View className="flex-row justify-between mb-1">
+        <Text className="text-gray-400 text-base">Symbol</Text>
+        <View className="flex flex-row gap-2 items-center">
+          <Image
+            source={
+              tokenImageMap[item.token.toLowerCase()] ||
+              tokenImageMap["default"]
+            }
+            className="w-8 h-8 rounded-full"
+            resizeMode="contain"
+          />
+          <Text className="text-white text-base  text-right">{item.token}</Text>
+        </View>
+      </View>
+      {renderRow("Amount", item.amount)}
+      {renderRow("Previous Balance", item.previousBalance)}
+      {renderRow("New Balance", item.newBalance)}
+      {renderRow("Note", item.note || "-")}
+      {renderRow("Status", item.state || "-")}
+      {/* {renderRow("Maturity State", item.maturity_state || "-")} */}
+    </View>
+  );
 
   return (
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">
-        <View className="items-center relative mt-4 mb-6">
+        <View className="items-center relative mb-6">
           <Pressable
             onPress={() => router.back()}
             className="absolute left-0 top-2"
           >
             <SvgIcon name="leftArrow" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">My Stakings</Text>
+          <Text className="text-xl font-semibold text-white">
+            Staking History
+          </Text>
         </View>
         <View className="flex flex-row justify-end mb-2">
           <Pressable
@@ -159,21 +160,9 @@ const UserStakings = () => {
         </View>
 
         <FlatList
-          className="mt-2"
-          data={stakings}
-          renderItem={({ item }) => {
-            return (
-              <StakingItem
-                item={item}
-                handleClaim={() => {
-                  handleUnstakeClick(item);
-                }}
-                handleEarlyUnstake={() => {
-                  handleUnstakeClick(item);
-                }}
-              />
-            );
-          }}
+          className="px-4 mt-4"
+          data={history}
+          renderItem={renderItem}
           keyExtractor={(item) => String(item.id)}
           ListFooterComponent={
             loading ? (
@@ -184,14 +173,15 @@ const UserStakings = () => {
                 activeOpacity={1}
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
-                <Text className="text-white font-semibold">Load More</Text>
+                <Text className="text-white text-lg font-semibold">
+                  Load More
+                </Text>
               </TouchableOpacity>
             ) : null
           }
-          contentContainerStyle={{ paddingBottom: 110 }}
         />
 
-        {stakings.length === 0 && !loading && (
+        {history.length === 0 && !loading && (
           <View className="flex w-full text-center h-screen items-center justify-center absolute">
             <Text className="text-white text-base">No Records Found</Text>
           </View>
@@ -203,16 +193,6 @@ const UserStakings = () => {
         visible={popupVisible}
         setVisible={setPopupVisible}
       />
-      {selectedStaking && (
-        <WithdrawalModal
-          visible={withdrawModalVisible}
-          onClose={() => setWithdrawModalVisible(false)}
-          onConfirm={(isEarlyUnstake) => {
-            unstake(isEarlyUnstake);
-          }}
-          item={selectedStaking}
-        />
-      )}
       <FilterModal
         visible={filterVisible}
         onClose={() => setFilterVisible(false)}
@@ -227,4 +207,4 @@ const UserStakings = () => {
   );
 };
 
-export default UserStakings;
+export default StakingHistory;

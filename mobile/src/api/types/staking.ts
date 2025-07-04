@@ -34,9 +34,9 @@ export interface RawUserStaking {
 export interface UserStaking {
   id: number;
   tokenSymbol: string;
-  registeredAt: string;
+  registeredAt: Date;
   planName: string;
-  expectedWithdrawalDate: string;
+  expectedWithdrawalDate: Date;
   depositAmount: string;
   usdtValue: string;
   krwValue: string;
@@ -49,4 +49,36 @@ export interface UserStaking {
   lockupDate: string;
   stateStr: string;
   state: string;
+}
+
+export interface StakingHistoryItem {
+  id: number;
+  token: string;
+  date: string; // ISO string, parsed to localised string if needed in component
+  previousBalance: string;
+  amount: string;
+  newBalance: string;
+  note: string;
+  state : string;
+}
+
+export interface StakingHistoryApiItem {
+  seqno: number;
+  target: string;
+  regdate: string;
+  prev_money: string;
+  gubn: string;
+  maturity_state: string;
+  money: string;
+  next_money: string;
+  memo: string;
+}
+
+export interface StakingHistoryApiResponse {
+  status: string;
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: StakingHistoryApiItem[];
 }
