@@ -258,14 +258,12 @@ const WithDrawal = () => {
             </View>
           </View>
 
-          <Link href={"/(Views)/qr-scanner"}>
-            <PrimaryButton
-              text="NEXT"
-              onPress={() => {
-                handleNext();
-              }}
-            />
-          </Link>
+          <PrimaryButton
+            text="NEXT"
+            onPress={() => {
+              handleNext();
+            }}
+          />
         </View>
       </View>
       <QRModal visible={qrScanVisible} onClose={handleQRData} />

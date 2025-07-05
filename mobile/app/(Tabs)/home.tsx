@@ -9,7 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { Link, router } from "expo-router";
 
 import { AppDispatch, RootState } from "@/src/store";
 import useUser from "@/hooks/useUser";
@@ -27,11 +27,11 @@ import {
 } from "@/utils/ui";
 import { setQuotes } from "@/src/features/token/tokenSlice";
 import Decimal from "decimal.js";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
+  const navigation = useNavigation();
   const [showLokcupBalance, setShowLockUpBalance] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -167,7 +167,7 @@ export default function HomeScreen() {
                 </Link>
               </View>
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
-                <Link href="/select-token">
+                <Link href="/transfer-token">
                   <View className="w-full items-center p-[18px] py-[17px]">
                     <SvgIcon name="sendIcon" width="24" height="24" />
                     <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
@@ -177,14 +177,19 @@ export default function HomeScreen() {
                 </Link>
               </View>
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
-                <Link href="/swap-tokens">
+                <Pressable
+                  onPress={() => {
+                    //@ts-expect-error this
+                    navigation.navigate("swap");
+                  }}
+                >
                   <View className="w-full items-center p-[18px] py-[17px]">
                     <SvgIcon name="swapIcon" width="24" height="24" />
                     <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
                       Swap
                     </Text>
                   </View>
-                </Link>
+                </Pressable>
               </View>
             </View>
 

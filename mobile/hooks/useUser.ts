@@ -3,7 +3,7 @@ import { networkRequest } from ".";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
 import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
-import { TwoFADetails, RegistrationResponse } from "@/src/api/types/user";
+import { TwoFADetails } from "@/src/api/types/user";
 import { StatusResponse } from "@/src/api/types/auth";
 
 export interface DepositSettings {

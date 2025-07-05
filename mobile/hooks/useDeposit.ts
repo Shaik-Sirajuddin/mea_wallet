@@ -148,4 +148,15 @@ export default {
       ].filter((address) => address),
     };
   },
+  isAddressAvailable: async (depositAddress: string) => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/address-check`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          deposit_address: depositAddress,
+        }).toString(),
+      }
+    );
+  },
 };

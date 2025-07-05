@@ -48,12 +48,10 @@ const Deposit = () => {
       return;
     }
 
-    if (symbol && res.minDeposit[symbol]) {
-      // Dispatch to redux store
-      dispatch(setMinDeposit(res.minDeposit));
-      dispatch(setRegisteredAddresses(res.userDepositAddresses));
-      dispatch(setDepositAddresses(res.managerDepositAddresses));
-    }
+    // Dispatch to redux store
+    dispatch(setMinDeposit(res.minDeposit));
+    dispatch(setRegisteredAddresses(res.userDepositAddresses));
+    dispatch(setDepositAddresses(res.managerDepositAddresses));
   };
 
   const handleNext = () => {

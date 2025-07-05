@@ -66,7 +66,7 @@ const Signin: React.FC = () => {
       return;
     }
     await storage.save(STORAGE_KEYS.AUTH.TOKEN, result.token);
-    router.push("/success-page");
+    router.push("/(Tabs)/home");
   };
 
   useEffect(() => {

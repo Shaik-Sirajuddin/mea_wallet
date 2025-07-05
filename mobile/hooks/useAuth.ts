@@ -11,20 +11,17 @@ import {
 
 export default {
   login: async (email: string, password: string) => {
-    return await networkRequest<AuthResponse>(
-      `${apiBaseUrl}/api/login-check`,
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          UserEmail: email,
-          UserPwd: password,
-        }).toString(),
-      }
-    );
+    return await networkRequest<AuthResponse>(`${apiBaseUrl}/api/login-check`, {
+      method: "POST",
+      body: new URLSearchParams({
+        UserEmail: email,
+        UserPwd: password,
+      }).toString(),
+    });
   },
 
   signUp: async (email: string, password: string, depositAddress: string) => {
-    return await networkRequest<AuthResponse>(`${apiBaseUrl}/api/join-save`, {
+    return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/join-save`, {
       method: "POST",
       body: new URLSearchParams({
         UserEmail: email,
@@ -34,7 +31,7 @@ export default {
     });
   },
 
-  idCheck: async (email: string) => {
+  isEmailAvailable: async (email: string) => {
     return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/id-check`, {
       method: "POST",
       body: new URLSearchParams({

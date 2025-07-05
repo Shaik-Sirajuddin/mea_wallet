@@ -64,12 +64,12 @@ const QRModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
             <View />
           ) : !permission.granted ? (
             <View className="flex-1 justify-center items-center px-4">
-              <Text className="text-center mb-4 text-base">
+              <Text className="text-center mb-4 text-white text-xl">
                 We need your permission to show the camera
               </Text>
               <Pressable
                 onPress={requestPermission}
-                className="bg-blue-600 px-4 py-2 rounded"
+                className="bg-blue-600 px-6 py-3 rounded mt-2"
               >
                 <Text className="text-white text-center font-semibold">
                   Grant Permission
