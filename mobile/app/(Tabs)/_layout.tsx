@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import GridScreen from "./grid";
 import HomeScreen from "./home";
@@ -62,11 +62,19 @@ export default function TabLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <View className="flex flex-col items-center justify-center">
-                <SvgIcon
+                {/* <SvgIcon
                   name="home"
                   width="20"
                   height="22"
                   color={focused ? "#D107FB" : "#B9B9B9"}
+                /> */}
+                <Image
+                  source={require("@/assets/images/home-icon.png")}
+                  style={{
+                    width: 20,
+                    height: 22,
+                    tintColor: focused ? "#D107FB" : "#B9B9B9",
+                  }}
                 />
                 <View
                   className={`w-[150%] h-[1px] rounded-full ${
@@ -84,33 +92,19 @@ export default function TabLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <View className="flex flex-col items-center justify-center">
-                <SvgIcon
+                {/* <SvgIcon
                   name="grid"
                   width="22"
                   height="22"
                   color={focused ? "#D107FB" : "#B9B9B9"}
-                />
-                <View
-                  className={`w-[150%] h-[1px] rounded-full ${
-                    focused ? "bg-pink-1100" : "transparent"
-                  } absolute -top-5`}
-                />
-              </View>
-            ),
-            tabBarLabel: () => null,
-          }}
-        />
-        <Tab.Screen
-          name="swap"
-          component={SwapTokens}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View className="flex flex-col items-center justify-center">
-                <SvgIcon
-                  name="attach"
-                  width="22"
-                  height="22"
-                  color={focused ? "#D107FB" : "#B9B9B9"}
+                /> */}
+                <Image
+                  source={require("@/assets/images/stk_icon.png")}
+                  style={{
+                    width: 25,
+                    height: 22,
+                    tintColor: focused ? "#D107FB" : "#B9B9B9",
+                  }}
                 />
                 <View
                   className={`w-[150%] h-[1px] rounded-full ${
@@ -133,6 +127,30 @@ export default function TabLayout() {
                   width="20"
                   height="22"
                   color={focused ? "#D107FB" : "#B9B9B9"}
+                />
+                <View
+                  className={`w-[150%] h-[1px] rounded-full ${
+                    focused ? "bg-pink-1100" : "transparent"
+                  } absolute -top-5`}
+                />
+              </View>
+            ),
+            tabBarLabel: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="swap"
+          component={SwapTokens}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <View className="flex flex-col items-center justify-center">
+                <Image
+                  source={require("@/assets/images/swap_icon.png")}
+                  style={{
+                    width: 25,
+                    height: 22,
+                    tintColor: focused ? "#D107FB" : "#B9B9B9",
+                  }}
                 />
                 <View
                   className={`w-[150%] h-[1px] rounded-full ${

@@ -45,11 +45,12 @@ export const networkRequestWithParser = async <T>(
     }
     return res as T;
   } catch (error: any) {
+    console.log("Request failed at parser" , error)
     if (error.message && typeof error.message === "string") {
       return error.message as string;
     }
     return "";
-  }
+  } 
 };
 
 export const networkRequest = async <T>(
@@ -57,37 +58,6 @@ export const networkRequest = async <T>(
   init?: RequestInit
 ) => {
   //pre request
-
-  //check if csrf is valid
-  let csfrCheckResponse = await networkRequestWithParser(
-    apiBaseUrl + "/api/id-check",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        UserEmail: "this",
-        csrfToken,
-        apikey: apiKey,
-      }).toString(),
-    }
-  );
-  if (
-    typeof csfrCheckResponse === "string" &&
-    csfrCheckResponse === "CSFF Verification failed!"
-  ) {
-    // csfr check failed
-    // let result = await networkRequestWithParser<{ csrfToken: string }>(
-    //   apiBaseUrl + `/api/csrf-token`
-    // );
-    // if (typeof result === "string") {
-    //   console.log("failed to request csrf token", result);
-    //   return result;
-    // }
-    // console.log(result.csrfToken)
-    // csrfToken = result.csrfToken;
-  }
 
   if (init && init?.method === "POST") {
     if (init.body && typeof init.body !== "string") {

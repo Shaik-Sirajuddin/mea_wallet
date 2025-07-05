@@ -5,6 +5,7 @@ import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
 import { TwoFADetails } from "@/src/api/types/user";
 import { StatusResponse } from "@/src/api/types/auth";
+import Decimal from "decimal.js";
 
 export interface DepositSettings {
   minDeposit: TokenBalances;
@@ -84,7 +85,7 @@ export default {
       },
     };
   },
-  getSwapFee: async (): Promise<string> => {
+  getSwapFee: async (): Promise<string | Decimal> => {
     const raw = await networkRequest<BalanceResponseRaw>(
       `${apiBaseUrl}/api/balance-check`,
       { method: "POST" }
@@ -92,7 +93,8 @@ export default {
 
     if (typeof raw === "string") return raw;
 
-    return trimTrailingZeros(raw.swap_fee);
+    let data = trimTrailingZeros(new Decimal(raw.swap_fee).toFixed(6));
+    return new Decimal(data);
   },
   getTwoFAData: async (): Promise<TwoFADetails | string> => {
     const res = await networkRequest<any>(`${apiBaseUrl}/api/user-info`, {

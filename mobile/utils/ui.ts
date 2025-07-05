@@ -23,8 +23,13 @@ export const tokenImageMap: Record<string, any> = {
  *   "100" => "100"
  */
 export function trimTrailingZeros(value: string): string {
-  if (!value.includes(".")) return value; // no decimal point
-  return value.replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
+  try {
+    if (!value.includes(".")) return value; // no decimal point
+    return value.replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
 }
 
 export function parseNumberForView(value: string) {
