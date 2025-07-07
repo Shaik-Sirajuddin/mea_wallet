@@ -1,9 +1,11 @@
 import { useNavigation } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import SvgIcon from '../../components/SvgIcon';
 
 const RecentActivityEmpty = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
 
   return (
@@ -17,10 +19,10 @@ const RecentActivityEmpty = () => {
           >
             <SvgIcon name="leftArrow" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">Recent Activity</Text>
+          <Text className="text-lg font-semibold text-white">{t("settings.recent_activity")}</Text>
         </View>
         <View className="relative items-center justify-center h-full">
-            <Text className='text-[21px] font-semibold leading-[22px] text-gray-1200'>None</Text>
+            <Text className='text-[21px] font-semibold leading-[22px] text-gray-1200'>{t("settings.no_activity")}</Text>
         </View>
       </View>
     </View>

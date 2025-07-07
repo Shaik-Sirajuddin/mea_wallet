@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import EyeIcon from "@/assets/images/eye-icon.svg";
+import { useTranslation } from "react-i18next";
 
 interface LabeledInputProps extends TextInputProps {
   label: string;
@@ -26,6 +27,7 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
   errorText,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const [showSecure, setShowSecure] = useState(false);
 
   return (
@@ -43,7 +45,7 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={isSecure && !showSecure}
-          placeholder={`Enter ${label}`}
+          placeholder={t('components.enter_label', { label })}
           placeholderTextColor="#FFFFFF"
           className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
         />

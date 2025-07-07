@@ -5,6 +5,7 @@ import { UserStaking } from "@/src/api/types/staking";
 import { tokenImageMap } from "@/utils/ui";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import {
   ActivityIndicator,
@@ -22,6 +23,7 @@ import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 import FilterIcon from "@/assets/images/double-arrow.svg";
 
 const UserStakings = () => {
+  const { t } = useTranslation();
   const [stakings, setStakings] = useState<UserStaking[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -37,19 +39,19 @@ const UserStakings = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const filters = [
     {
-      label: "Status",
+      label: t("components.status"),
       options: [
         { label: "--", value: "" },
-        { label: "Unstaking Application", value: "언스테이킹신청" },
-        { label: "Unstaking", value: "언스테이킹" },
+        { label: t("components.unstaking_application"), value: "언스테이킹신청" },
+        { label: t("components.unstaking"), value: "언스테이킹" },
       ],
     },
     {
-      label: "Sort",
+      label: t("components.sort"),
       options: [
         { label: "--", value: "" },
-        { label: "Date", value: "날짜별" },
-        { label: "Amount", value: "금액별" },
+        { label: t("components.date"), value: "날짜별" },
+        { label: t("common.amount"), value: "금액별" },
       ],
     },
   ];
@@ -128,7 +130,7 @@ const UserStakings = () => {
       return;
     }
     setModalState({
-      text: isEarlyUnstake ? "Unstaking Success" : "Claim Success",
+      text: isEarlyUnstake ? t("staking.unstaking_success") : t("staking.claim_success"),
       type: "success",
     });
     setPopupVisible(true);
@@ -145,7 +147,7 @@ const UserStakings = () => {
           >
             <SvgIcon name="leftArrow" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">My Stakings</Text>
+          <Text className="text-lg font-semibold text-white">{t("staking.my_staking")}</Text>
         </View>
         <View className="flex flex-row justify-end mb-2">
           <Pressable
@@ -184,7 +186,7 @@ const UserStakings = () => {
                 activeOpacity={1}
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
-                <Text className="text-white font-semibold">Load More</Text>
+                <Text className="text-white font-semibold">{t("common.load_more")}</Text>
               </TouchableOpacity>
             ) : null
           }
@@ -193,7 +195,7 @@ const UserStakings = () => {
 
         {stakings.length === 0 && !loading && (
           <View className="flex w-full text-center h-screen items-center justify-center absolute">
-            <Text className="text-white text-base">No Records Found</Text>
+            <Text className="text-white text-base">{t("components.no_records_found")}</Text>
           </View>
         )}
       </View>
@@ -207,9 +209,7 @@ const UserStakings = () => {
         <WithdrawalModal
           visible={withdrawModalVisible}
           onClose={() => setWithdrawModalVisible(false)}
-          onConfirm={(isEarlyUnstake) => {
-            unstake(isEarlyUnstake);
-          }}
+          onConfirm={unstake}
           item={selectedStaking}
         />
       )}
@@ -218,9 +218,7 @@ const UserStakings = () => {
         onClose={() => setFilterVisible(false)}
         filters={filters ?? []}
         selected={selectedFilters}
-        onChange={(data) => {
-          setSelectedFilters(data);
-        }}
+        onChange={setSelectedFilters}
         onApply={handleApply}
       />
     </View>

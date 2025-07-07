@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -20,6 +21,7 @@ import { tokenImageMap } from "@/utils/ui";
 import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 
 const StakingHistory = () => {
+  const { t } = useTranslation();
   const [history, setHistory] = useState<StakingHistoryItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -30,19 +32,19 @@ const StakingHistory = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const filters = [
     {
-      label: "Status",
+      label: t("components.status"),
       options: [
         { label: "--", value: "" },
-        { label: "Staking", value: "스테이킹" },
-        { label: "Unstaking", value: "언스테이킹" },
+        { label: t("components.staking"), value: "스테이킹" },
+        { label: t("components.unstaking"), value: "언스테이킹" },
       ],
     },
     {
-      label: "Sort",
+      label: t("components.sort"),
       options: [
         { label: "--", value: "" },
-        { label: "Date", value: "날짜별" },
-        { label: "Amount", value: "금액별" },
+        { label: t("components.date"), value: "날짜별" },
+        { label: t("common.amount"), value: "금액별" },
       ],
     },
   ];
@@ -109,10 +111,15 @@ const StakingHistory = () => {
 
   const renderItem = ({ item }: { item: StakingHistoryItem }) => (
     <View className="bg-black-1200 rounded-2xl px-6 py-4 mb-4 flex gap-2">
-      {renderRow("Transaction ID", String(item.id))}
-      {renderRow("Date", dayjs(item.date).format("YYYY-MM-DD HH:mm"))}
+      {renderRow(t("components.transaction_id"), String(item.id))}
+      {renderRow(
+        t("components.date"),
+        dayjs(item.date).format("YYYY-MM-DD HH:mm")
+      )}
       <View className="flex-row justify-between mb-1">
-        <Text className="text-gray-400 text-base">Symbol</Text>
+        <Text className="text-gray-400 text-base">
+          {t("components.symbol")}
+        </Text>
         <View className="flex flex-row gap-2 items-center">
           <Image
             source={
@@ -125,11 +132,11 @@ const StakingHistory = () => {
           <Text className="text-white text-base  text-right">{item.token}</Text>
         </View>
       </View>
-      {renderRow("Amount", item.amount)}
-      {renderRow("Previous Balance", item.previousBalance)}
-      {renderRow("New Balance", item.newBalance)}
-      {renderRow("Note", item.note || "-")}
-      {renderRow("Status", item.state || "-")}
+      {renderRow(t("common.amount"), item.amount)}
+      {renderRow(t("components.previous_balance"), item.previousBalance)}
+      {renderRow(t("components.new_balance"), item.newBalance)}
+      {renderRow(t("components.note"), item.note || "-")}
+      {renderRow(t("components.status"), item.state || "-")}
       {/* {renderRow("Maturity State", item.maturity_state || "-")} */}
     </View>
   );
@@ -145,7 +152,7 @@ const StakingHistory = () => {
             <SvgIcon name="leftArrow" />
           </Pressable>
           <Text className="text-xl font-semibold text-white">
-            Staking History
+            {t("staking.staking_history")}
           </Text>
         </View>
         <View className="flex flex-row justify-end mb-2">
@@ -174,7 +181,7 @@ const StakingHistory = () => {
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
                 <Text className="text-white text-lg font-semibold">
-                  Load More
+                  {t("common.load_more")}
                 </Text>
               </TouchableOpacity>
             ) : null
@@ -183,7 +190,9 @@ const StakingHistory = () => {
 
         {history.length === 0 && !loading && (
           <View className="flex w-full text-center h-screen items-center justify-center absolute">
-            <Text className="text-white text-base">No Records Found</Text>
+            <Text className="text-white text-base">
+              {t("components.no_records_found")}
+            </Text>
           </View>
         )}
       </View>
@@ -198,9 +207,7 @@ const StakingHistory = () => {
         onClose={() => setFilterVisible(false)}
         filters={filters ?? []}
         selected={selectedFilters}
-        onChange={(data) => {
-          setSelectedFilters(data);
-        }}
+        onChange={setSelectedFilters}
         onApply={handleApply}
       />
     </View>

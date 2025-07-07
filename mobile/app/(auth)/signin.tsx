@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import PrimaryButton from "../components/PrimaryButton";
 import useAuth from "@/hooks/useAuth";
 import utils from "@/utils";
@@ -21,6 +22,7 @@ enum ErrorType {
   INVALID_PASSWORD,
 }
 const Signin: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("test");
   const [password, setPassword] = useState("Testtest");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +35,7 @@ const Signin: React.FC = () => {
   const validateForm = () => {
     // Email validation
     if (!email) {
-      setInputError("Email is required");
+      setInputError(t("auth.signin.email_required"));
       setErrorType(ErrorType.INVALID_EMAIL);
       return;
     }
@@ -45,7 +47,7 @@ const Signin: React.FC = () => {
 
     if (!password) {
       setErrorType(ErrorType.INVALID_PASSWORD);
-      setInputError("Password is required");
+      setInputError(t("auth.signin.password_required"));
       return;
     }
     // if (password.length < 6) {
@@ -62,7 +64,7 @@ const Signin: React.FC = () => {
     let result = await useAuth.login(email, password);
     //sign up failed
     if (typeof result === "string") {
-      Alert.alert("Login Error", result);
+      Alert.alert(t("auth.signin.login_error"), result);
       return;
     }
     await storage.save(STORAGE_KEYS.AUTH.TOKEN, result.token);
@@ -102,11 +104,13 @@ const Signin: React.FC = () => {
 
           <View className="flex-row items-center gap-4 mt-12">
             <TouchableOpacity>
-              <Text className="text-xl font-semibold text-white">Sign In</Text>
+              <Text className="text-xl font-semibold text-white">
+                {t("auth.signin.title")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.replace("/signup")}>
               <Text className="text-xl font-semibold text-gray-400">
-                Sign Up
+                {t("auth.signin.signup_link")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -116,7 +120,8 @@ const Signin: React.FC = () => {
             <View className="flex-row items-center gap-2 mb-3">
               <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
               <Text className="text-base font-medium text-white">
-                Email Address <Text className="text-pink-1200">*</Text>
+                {t("auth.signin.email_address")}{" "}
+                <Text className="text-pink-1200">*</Text>
               </Text>
             </View>
             <TextInput
@@ -127,7 +132,7 @@ const Signin: React.FC = () => {
                   setInputError(null);
                 }
               }}
-              placeholder="Enter Email Address"
+              placeholder={t("auth.signin.enter_email")}
               placeholderTextColor="#FFFFFF"
               className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
               keyboardType="email-address"
@@ -145,7 +150,8 @@ const Signin: React.FC = () => {
             <View className="flex-row items-center gap-2 mb-3">
               <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
               <Text className="text-base font-medium text-white">
-                Password <Text className="text-pink-1200">*</Text>
+                {t("auth.signin.password")}{" "}
+                <Text className="text-pink-1200">*</Text>
               </Text>
             </View>
             <View className="relative">
@@ -158,7 +164,7 @@ const Signin: React.FC = () => {
                   }
                 }}
                 secureTextEntry={!showPassword}
-                placeholder="Enter Password"
+                placeholder={t("auth.signin.enter_password")}
                 placeholderTextColor="#FFFFFF"
                 className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
               />
@@ -166,7 +172,20 @@ const Signin: React.FC = () => {
                 onPress={() => setShowPassword((prev) => !prev)}
                 className="absolute p-2 top-1/2 right-4 -translate-y-1/2"
               >
-                <EyeIcon />
+                {!showPassword && (
+                  <Image
+                    source={require("../../assets/images/eye.png")}
+                    className="w-6 h-6"
+                    tintColor={"white"}
+                  />
+                )}
+                {showPassword && (
+                  <Image
+                    source={require("../../assets/images/eye_close.png")}
+                    className="w-6 h-6"
+                    tintColor={"white"}
+                  />
+                )}
               </TouchableOpacity>
             </View>
             {inputError && errorType === ErrorType.INVALID_PASSWORD ? (
@@ -182,17 +201,21 @@ const Signin: React.FC = () => {
           <PrimaryButton
             onPress={handleSignIn}
             className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
-            text="Sign In"
+            text={t("auth.signin.sign_in")}
             disabled={inputError !== null}
           />
           <View className="mt-5 mb-4">
             <Link href="/forget-password">
-              <Text className="text-[15px] text-gray-400">Forgot Password</Text>
+              <Text className="text-[15px] text-gray-400">
+                {t("auth.signin.forgot_password")}
+              </Text>
             </Link>
           </View>
           <View>
             <TouchableOpacity onPress={() => router.replace("/signup")}>
-              <Text className="text-[15px] text-pink-1100">Sign Up</Text>
+              <Text className="text-[15px] text-pink-1100">
+                {t("auth.signin.sign_up")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -5,14 +5,11 @@ import SvgIcon from "../components/SvgIcon";
 import utils from "@/utils/index";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert from "../components/InfoAlert";
+import { useTranslation } from "react-i18next";
 
 const ForgetPassword: React.FC = () => {
-<<<<<<< Updated upstream
-  const [email, setEmail] = useState("test@gmail.com");
-=======
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
->>>>>>> Stashed changes
   const [popupVisible, setPopUpVisible] = useState(false);
 
   const [emailError, setEmailError] = useState<string | null>(null);

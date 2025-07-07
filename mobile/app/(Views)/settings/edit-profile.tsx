@@ -1,9 +1,11 @@
 import { useNavigation } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import SvgIcon from '../../components/SvgIcon';
 
 const EditProfile = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
 
   return (
@@ -18,7 +20,7 @@ const EditProfile = () => {
             >
               <SvgIcon name="leftArrow" width='21' height='21' />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Edit Profile</Text>
+            <Text className="text-lg font-semibold text-white">{t("settings.edit_profile")}</Text>
           </View>
           <View className="mt-10">
             <View className="w-[111px] mx-auto relative">
@@ -31,7 +33,7 @@ const EditProfile = () => {
             </View>
       
             <View className="bg-black-1200 flex-row mt-[29px] rounded-[15px] items-center justify-between py-[14px] px-4">
-              <Text className="text-[17px] font-semibold text-white leading-5">Account Name</Text>
+              <Text className="text-[17px] font-semibold text-white leading-5">{t("settings.account_name")}</Text>
               <Pressable className="flex flex-row w-fit items-center gap-3">
                 <Text className="text-[17px] font-medium text-gray-1000">mecca</Text>
                 <SvgIcon name='rightArrow' width='10' height='14' />

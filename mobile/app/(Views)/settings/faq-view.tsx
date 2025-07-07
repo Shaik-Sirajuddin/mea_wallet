@@ -1,10 +1,12 @@
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, TextInput, View } from "react-native";
 import SvgIcon from "../../components/SvgIcon";
 import FAQList from "../faq/faqs-list";
 
 const FaqView = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
 
   return (
@@ -18,14 +20,14 @@ const FaqView = () => {
             >
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">FAQ</Text>
+            <Text className="text-lg font-semibold text-white">{t("settings.faq")}</Text>
           </View>
 
           <View className="relative mt-10">
             {/* Search Input */}
             <View className="relative mb-10">
               <TextInput
-                placeholder="Search..."
+                placeholder={t("common.search")}
                 placeholderTextColor="#6B7280"
                 className="text-[17px] font-medium leading-[22px] w-full text-white pl-10 bg-black-1200  rounded-[10px]"
               />

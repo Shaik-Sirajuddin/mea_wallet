@@ -2,8 +2,8 @@
   "auth": {
     "get_started": {
       "title": "시작하려면 새 지갑을 생성하거나 기존 지갑을 가져오세요.",
-      "create_wallet": "로그인",
-      "existing_wallet": "회원가입"
+      "create_wallet": "새 지갑 생성",
+      "existing_wallet": "이미 존재하는 지갑입니다"
     },
     "signin": {
       "title": "로그인",
@@ -393,5 +393,4 @@
   "error": {
     "open_url_failed": "URL을 열 수 없습니다"
   }
-
 }

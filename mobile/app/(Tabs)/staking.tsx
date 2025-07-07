@@ -1,14 +1,16 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Image, Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import { router } from "expo-router";
 
 export default function Staking() {
+  const { t } = useTranslation();
   return (
     <View className="bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto py-8 px-4">
         <View className="items-center relative">
-          <Text className="text-lg font-semibold text-white">Staking</Text>
+          <Text className="text-lg font-semibold text-white">{t("staking.title")}</Text>
         </View>
         <View className="mt-10">
           <Pressable
@@ -23,7 +25,7 @@ export default function Staking() {
               />
             </View>
             <Text className="text-base font-semibold leading-5 text-white">
-              Plans
+              {t("staking.plans")}
             </Text>
           </Pressable>
           <Pressable
@@ -38,7 +40,7 @@ export default function Staking() {
               />
             </View>
             <Text className="text-base font-semibold leading-5 text-white">
-              My Staking
+              {t("staking.my_staking")}
             </Text>
           </Pressable>
           <Pressable
@@ -53,7 +55,7 @@ export default function Staking() {
               />
             </View>
             <Text className="text-base font-semibold leading-5 text-white">
-              History
+              {t("staking.staking_history")}
             </Text>
           </Pressable>
         </View>

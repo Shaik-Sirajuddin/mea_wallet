@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import PrimaryButton from "./PrimaryButton";
 import { Portal } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 
 const { height } = Dimensions.get("window");
 
@@ -18,6 +19,7 @@ interface OtpModalProps {
 }
 
 const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
+  const { t } = useTranslation();
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +52,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
 
   const onSubmit = () => {
     if (!otp || otp.length < 6) {
-      setError("Please enter a valid 6-digit OTP");
+      setError(t('components.otp_error'));
       return;
     }
     onClose(otp);
@@ -71,7 +73,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
         >
           <View className="flex gap-4">
             <Text className="text-xl text-white font-semibold text-center mb-4">
-              Enter Verification Code
+              {t('components.enter_verification_code')}
             </Text>
 
             <TextInput
@@ -80,7 +82,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
                 setOtp(text);
                 if (error) setError(null);
               }}
-              placeholder="Enter OTP"
+              placeholder={t('components.enter_otp')}
               placeholderTextColor="#ccc"
               keyboardType="number-pad"
               className="text-[17px] text-white font-medium px-4 bg-black-1200 w-full h-[55px] rounded-[10px] mb-2"
@@ -90,10 +92,10 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
               <Text className="text-red-500 text-sm text-center">{error}</Text>
             )}
 
-            <PrimaryButton text="Submit" onPress={onSubmit} />
+            <PrimaryButton text={t('components.submit')} onPress={onSubmit} />
 
             <TouchableOpacity onPress={handleClose} className="mt-2">
-              <Text className="text-gray-400 text-center">Cancel</Text>
+              <Text className="text-gray-400 text-center">{t('common.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>

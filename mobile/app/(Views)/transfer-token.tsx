@@ -1,5 +1,6 @@
 import { router, useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -15,6 +16,7 @@ import { RootState } from "@/src/store";
 import { parseNumberForView, tokenImageMap } from "@/utils/ui";
 
 const SelectToken = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = React.useState(false);
   const balances = useSelector((state: RootState) => state.balance.free);
@@ -44,7 +46,7 @@ const SelectToken = () => {
                 <SvgIcon name="leftArrow2" width="14" height="14" />
               </Pressable>
               <Text className="text-lg font-semibold text-white">
-                Select Token
+                {t("swap.select_token")}
               </Text>
             </View>
             <View className="relative mt-10">

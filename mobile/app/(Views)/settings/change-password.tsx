@@ -3,6 +3,7 @@ import SvgIcon from "@/app/components/SvgIcon";
 import LabelInput from "@/app/components/LabeledInput";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
 import useAuth from "@/hooks/useAuth";
 import OtpModal from "@/app/components/OTPModal";
@@ -14,6 +15,7 @@ enum ErrorType {
 }
 
 const ChangePassword: React.FC = () => {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,27 +32,27 @@ const ChangePassword: React.FC = () => {
   const [passwordUpdated, setPasswordUpdated] = useState(false);
   const validateForm = () => {
     if (!currentPassword) {
-      setInputError("Current password is required");
+      setInputError(t("settings.current_password_required"));
       setErrorType(ErrorType.CURRENT_PASSWORD);
       return false;
     }
     if (!newPassword) {
-      setInputError("New password is required");
+      setInputError(t("settings.new_password_required"));
       setErrorType(ErrorType.NEW_PASSWORD);
       return false;
     }
     if (newPassword.length < 6) {
-      setInputError("Password must be at least 6 characters");
+      setInputError(t("settings.password_min_length"));
       setErrorType(ErrorType.NEW_PASSWORD);
       return false;
     }
     if (!confirmPassword) {
-      setInputError("Please confirm your password");
+      setInputError(t("settings.confirm_password_required"));
       setErrorType(ErrorType.CONFIRM_PASSWORD);
       return false;
     }
     if (confirmPassword !== newPassword) {
-      setInputError("Passwords do not match");
+      setInputError(t("settings.passwords_not_match"));
       setErrorType(ErrorType.CONFIRM_PASSWORD);
       return false;
     }
@@ -62,7 +64,7 @@ const ChangePassword: React.FC = () => {
     if (!otp || otp.length < 6) {
       setModalState({
         ...modalState,
-        text: "TwoFA Failed!",
+        text: t("settings.twofa_failed"),
         type: "error",
       });
       setPopUpVisible(true);
@@ -86,7 +88,7 @@ const ChangePassword: React.FC = () => {
     //show success text
     setModalState({
       ...modalState,
-      text: "Password Change Successfully",
+      text: t("settings.password_change_success"),
       type: "success",
     });
     setPopUpVisible(true);
@@ -110,13 +112,13 @@ const ChangePassword: React.FC = () => {
             >
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Password</Text>
+            <Text className="text-lg font-semibold text-white">{t("settings.password")}</Text>
           </View>
 
           <View className="mt-10 mb-2">
             {/* Old Password Field */}
             <LabelInput
-              label="Password"
+              label={t("settings.password")}
               required
               isSecure
               value={currentPassword}
@@ -127,7 +129,7 @@ const ChangePassword: React.FC = () => {
                   setErrorType(null);
                 }
               }}
-              placeholder="Enter Password"
+              placeholder={t("settings.enter_password")}
               errorText={
                 inputError && errorType === ErrorType.CURRENT_PASSWORD
                   ? inputError
@@ -137,7 +139,7 @@ const ChangePassword: React.FC = () => {
 
             {/* New Password Field */}
             <LabelInput
-              label="Password to change"
+              label={t("settings.password_to_change")}
               required
               isSecure
               value={newPassword}
@@ -148,7 +150,7 @@ const ChangePassword: React.FC = () => {
                   setErrorType(null);
                 }
               }}
-              placeholder="Enter Password to change"
+              placeholder={t("settings.enter_password_to_change")}
               errorText={
                 inputError && errorType === ErrorType.NEW_PASSWORD
                   ? inputError
@@ -158,7 +160,7 @@ const ChangePassword: React.FC = () => {
 
             {/* Confirm Password Field */}
             <LabelInput
-              label="Verify password"
+              label={t("settings.verify_password")}
               required
               isSecure
               value={confirmPassword}
@@ -169,7 +171,7 @@ const ChangePassword: React.FC = () => {
                   setErrorType(null);
                 }
               }}
-              placeholder="Confirm Password"
+              placeholder={t("settings.confirm_password")}
               errorText={
                 inputError && errorType === ErrorType.CONFIRM_PASSWORD
                   ? inputError
@@ -187,7 +189,7 @@ const ChangePassword: React.FC = () => {
             className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
           >
             <Text className="text-base group-active:text-pink-1100 text-white font-semibold">
-              OK
+              {t("common.ok")}
             </Text>
           </TouchableOpacity>
         </View>

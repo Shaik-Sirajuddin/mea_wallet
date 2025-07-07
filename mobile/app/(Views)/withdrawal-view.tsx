@@ -25,6 +25,7 @@ import {
 } from "@/src/features/token/tokenSlice";
 import { useDispatch } from "react-redux";
 import Decimal from "decimal.js";
+import { t } from "i18next";
 
 const WithDrawal = () => {
   const navigation = useNavigation();
@@ -118,14 +119,10 @@ const WithDrawal = () => {
     if (amount.lessThan(minWithdrawl)) {
       setInfoAlertState({
         type: "error",
-<<<<<<< Updated upstream
-        text: `Minimum withdrawal amount is ${minWithdrawl} ${displaySymbol}.`,
-=======
         text: t("withdrawal.min_amount_error", {
           amount: minWithdrawl,
           symbol: displaySymbol,
         }),
->>>>>>> Stashed changes
       });
       setInfoAlertVisible(true);
       return;
@@ -134,14 +131,10 @@ const WithDrawal = () => {
     if (amount.greaterThan(freeBalance)) {
       setInfoAlertState({
         type: "error",
-<<<<<<< Updated upstream
-        text: `Withdrawal amount exceeds your available balance of ${freeBalance} ${displaySymbol}.`,
-=======
         text: t("withdrawal.insufficient_balance", {
           balance: freeBalance,
           symbol: displaySymbol,
         }),
->>>>>>> Stashed changes
       });
       setInfoAlertVisible(true);
       return;
@@ -176,13 +169,9 @@ const WithDrawal = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-<<<<<<< Updated upstream
-            <Text className="text-lg font-semibold text-white">Withdrawal</Text>
-=======
             <Text className="text-lg font-semibold text-white">
               {t("withdrawal.title")}
             </Text>
->>>>>>> Stashed changes
           </View>
           <View className="relative mt-10">
             <View className="mt-2.5 mb-2">
@@ -238,20 +227,10 @@ const WithDrawal = () => {
 
                 <View className="relative items-center justify-center mb-2">
                   <TextInput
-<<<<<<< Updated upstream
-                    placeholder={
-                      "Enter Amount (Minimum " +
-                      minWithdrawl +
-                      " " +
-                      displaySymbol +
-                      " )"
-                    }
-=======
                     placeholder={t("withdrawal.enter_amount_min", {
                       amount: minWithdrawl,
                       symbol: displaySymbol,
                     })}
->>>>>>> Stashed changes
                     placeholderTextColor="#fff"
                     className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
                     keyboardType="numeric"

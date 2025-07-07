@@ -22,6 +22,7 @@ import {
   setRegisteredAddresses,
 } from "@/src/features/asset/depositSlice";
 import { setMinDeposit } from "@/src/features/token/tokenSlice";
+import { t } from "i18next";
 
 const ReceiveItems = () => {
   const navigation = useNavigation();
@@ -96,13 +97,9 @@ const ReceiveItems = () => {
               >
                 <SvgIcon name="leftArrow2" width="14" height="14" />
               </Pressable>
-<<<<<<< Updated upstream
-              <Text className="text-lg font-semibold text-white">Receive</Text>
-=======
               <Text className="text-lg font-semibold text-white">
                 {t("receive.title")}
               </Text>
->>>>>>> Stashed changes
             </View>
 
             <View className="relative mt-10">

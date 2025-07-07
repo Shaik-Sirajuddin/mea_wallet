@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import SvgIcon from '../../../components/SvgIcon';
 
@@ -28,6 +29,7 @@ const faqs = [
 ];
 
 export default function FAQDetail() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [refreshing, setRefreshing] = useState(false);
@@ -38,7 +40,7 @@ export default function FAQDetail() {
   if (!faq) {
     return (
       <View className="bg-black-1000 flex-1 items-center justify-center">
-        <Text className="text-white">FAQ not found</Text>
+        <Text className="text-white">{t("faq.not_found")}</Text>
       </View>
     );
   }
@@ -68,12 +70,12 @@ export default function FAQDetail() {
             >
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">FAQ</Text>
+            <Text className="text-lg font-semibold text-white">{t("faq.title")}</Text>
           </View>
 
           <View className="mt-10">
             <Text className='text-[21px] font-semibold text-white'>{faq.id}. {faq.title}</Text>
-            <Text className='text-sm text-gray-1200 font-medium my-10'>{faq.lastUpdated} | Update Time</Text>
+            <Text className='text-sm text-gray-1200 font-medium my-10'>{faq.lastUpdated} | {t("faq.update_time")}</Text>
             <Text className='text-[17px] font-semibold text-white'>{faq.content}</Text>
           </View>
         </View>

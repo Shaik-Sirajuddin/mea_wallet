@@ -1,5 +1,6 @@
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -11,6 +12,7 @@ import {
 import SvgIcon from "../../components/SvgIcon";
 
 const RecentActivity = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -40,7 +42,7 @@ const RecentActivity = () => {
                 <SvgIcon name="leftArrow" />
               </Pressable>
               <Text className="text-lg font-semibold text-white">
-                Recent Activity
+                {t("settings.recent_activity")}
               </Text>
             </View>
             <View className="relative mt-8 h-full">
@@ -61,10 +63,10 @@ const RecentActivity = () => {
                     </View>
                     <View>
                       <Text className="text-[17px] font-medium leading-[22px] text-white">
-                        Receipt completed
+                        {t("settings.receipt_completed")}
                       </Text>
                       <Text className="text-[15px] font-semibold leading-[22px] text-white">
-                        Transmit: 404
+                        {t("settings.transmit")}: 404
                       </Text>
                     </View>
                   </View>
@@ -86,10 +88,10 @@ const RecentActivity = () => {
                     </View>
                     <View>
                       <Text className="text-[17px] font-medium leading-[22px] text-white">
-                        Receipt completed
+                        {t("settings.receipt_completed")}
                       </Text>
                       <Text className="text-[15px] font-semibold leading-[22px] text-white">
-                        Transmit: 404
+                        {t("settings.transmit")}: 404
                       </Text>
                     </View>
                   </View>
