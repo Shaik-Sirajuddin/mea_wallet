@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
-import GridScreen from "./grid";
 import HomeScreen from "./home";
 import LockScreen from "./lock";
 import SettingsScreen from "./settings";

@@ -229,12 +229,22 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   key={token}
                   onPress={() => {
-                    router.navigate({
-                      pathname: "/(Views)/TokenActionsView",
-                      params: {
-                        symbol: token,
-                      },
-                    });
+                    if (showLokcupBalance) {
+                      router.push({
+                        pathname: "/(Views)/lock-up-history",
+                        params: {
+                          symbol: token,
+                        },
+                      });
+                      return;
+                    } else {
+                      router.navigate({
+                        pathname: "/(Views)/TokenActionsView",
+                        params: {
+                          symbol: token,
+                        },
+                      });
+                    }
                   }}
                 >
                   <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
