@@ -112,9 +112,14 @@ const StakingHistory = () => {
   const renderItem = ({ item }: { item: StakingHistoryItem }) => (
     <View className="bg-black-1200 rounded-2xl px-6 py-4 mb-4 flex gap-2">
       {renderRow(t("components.transaction_id"), String(item.id))}
-      {renderRow(t("components.date"), dayjs(item.date).format("YYYY-MM-DD HH:mm"))}
+      {renderRow(
+        t("components.date"),
+        dayjs(item.date).format("YYYY-MM-DD HH:mm")
+      )}
       <View className="flex-row justify-between mb-1">
-        <Text className="text-gray-400 text-base">{t("components.symbol")}</Text>
+        <Text className="text-gray-400 text-base">
+          {t("components.symbol")}
+        </Text>
         <View className="flex flex-row gap-2 items-center">
           <Image
             source={
@@ -185,7 +190,9 @@ const StakingHistory = () => {
 
         {history.length === 0 && !loading && (
           <View className="flex w-full text-center h-screen items-center justify-center absolute">
-            <Text className="text-white text-base">{t("components.no_records_found")}</Text>
+            <Text className="text-white text-base">
+              {t("components.no_records_found")}
+            </Text>
           </View>
         )}
       </View>
