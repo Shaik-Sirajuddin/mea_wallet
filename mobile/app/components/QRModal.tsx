@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ interface OtpModalProps {
 }
 
 const QRModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
+  const { t } = useTranslation();
   const [permission, requestPermission] = useCameraPermissions();
 
   const [data, setData] = useState("");
@@ -65,14 +67,14 @@ const QRModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
           ) : !permission.granted ? (
             <View className="flex-1 justify-center items-center px-4">
               <Text className="text-center mb-4 text-white text-xl">
-                We need your permission to show the camera
+                {t("components.camera_permission_required")}
               </Text>
               <Pressable
                 onPress={requestPermission}
                 className="bg-blue-600 px-6 py-3 rounded mt-2"
               >
                 <Text className="text-white text-center font-semibold">
-                  Grant Permission
+                  {t("components.grant_permission")}
                 </Text>
               </Pressable>
             </View>
@@ -91,7 +93,7 @@ const QRModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
                         <SvgIcon name="leftArrow" width="22" height="22" />
                       </Pressable>
                       <Text className="text-lg font-semibold text-white">
-                        QR Scanner
+                        {t("components.qr_scanner")}
                       </Text>
                     </View>
                     <View className="relative mt-10">
@@ -116,10 +118,10 @@ const QRModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
                         </View>
 
                         <Text className="mt-10 text-[21px] font-semibold text-white mb-2.5">
-                          QR code
+                          {t("components.qr_code")}
                         </Text>
                         <Text className="text-[17px] font-normal leading-5 text-gray-1000">
-                          Scan the QR Code to detect Address
+                          {t("components.scan_qr_instruction")}
                         </Text>
                       </View>
                     </View>

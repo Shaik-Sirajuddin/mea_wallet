@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useNavigation, router } from "expo-router";
 import React, { useEffect, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   Text,
@@ -22,6 +23,7 @@ import {
 } from "@/src/features/asset/depositSlice";
 
 const Deposit = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: keyof TokenBalances }>();
   const [depositAmount, setDepositAmount] = useState("");
@@ -58,7 +60,7 @@ const Deposit = () => {
     if (!depositAmount || parseFloat(depositAmount) < parseFloat(minDeposit)) {
       setInfoAlertState({
         type: "error",
-        text: `Minimum deposit is ${minDeposit} ${displaySymbol}.`,
+        text: t("deposit.min_deposit_error", { amount: minDeposit, symbol: displaySymbol }),
       });
       setInfoAlertVisible(true);
       return;
@@ -85,7 +87,7 @@ const Deposit = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Deposit</Text>
+            <Text className="text-lg font-semibold text-white">{t("deposit.title")}</Text>
           </View>
 
           <View className="relative mt-10">
@@ -93,7 +95,7 @@ const Deposit = () => {
               <View className="flex flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Quantity held
+                  {t("deposit.quantity_held")}
                 </Text>
               </View>
 
@@ -108,13 +110,13 @@ const Deposit = () => {
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Deposit Quantity
+                    {t("deposit.deposit_quantity")}
                   </Text>
                 </View>
 
                 <View className="relative items-center justify-center mb-2">
                   <TextInput
-                    placeholder={`Enter Amount (Minimum ${minDeposit} ${displaySymbol})`}
+                    placeholder={t("deposit.enter_amount_min", { amount: minDeposit, symbol: displaySymbol })}
                     placeholderTextColor="#fff"
                     value={depositAmount}
                     onChangeText={setDepositAmount}
@@ -130,7 +132,7 @@ const Deposit = () => {
           </View>
 
           <View className="flex flex-row gap-2 justify-center mt-auto">
-            <PrimaryButton text="Next" onPress={handleNext} />
+            <PrimaryButton text={t("common.next")} onPress={handleNext} />
           </View>
         </View>
       </View>

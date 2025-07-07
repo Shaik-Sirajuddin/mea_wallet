@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   addresses: string[];
@@ -12,9 +13,10 @@ const ellipsize = (text: string, start = 10, end = 17): string => {
 };
 
 const DepositAddressList = ({ addresses }: Props) => {
+  const { t } = useTranslation();
   const handleCopy = async (address: string) => {
     await Clipboard.setStringAsync(address);
-    Alert.alert("Copied to clipboard", address);
+    Alert.alert(t('components.copied_to_clipboard'), address);
   };
 
   return (

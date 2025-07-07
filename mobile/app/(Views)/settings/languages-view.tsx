@@ -1,9 +1,11 @@
 import { useNavigation } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Pressable, Text, View } from 'react-native';
 import SvgIcon from '../../components/SvgIcon';
 
 const Language = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [selectedLanguage, setSelectedLanguage] = React.useState('korean');
 
@@ -18,7 +20,7 @@ const Language = () => {
             >
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Language</Text>
+            <Text className="text-lg font-semibold text-white">{t("settings.language")}</Text>
           </View>
 
           <View className="relative mt-10">

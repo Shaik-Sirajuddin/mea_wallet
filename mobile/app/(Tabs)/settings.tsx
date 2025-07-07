@@ -1,5 +1,6 @@
 import { router, useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import DialogAlert from "../components/DialogAlert";
@@ -8,6 +9,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const [popupVisible, setPopUpVisible] = useState(false);
 
   const performLogout = async () => {
@@ -25,7 +27,7 @@ export default function SettingsScreen() {
       <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
         <View className="text-center relative">
           <View className="items-center">
-            <Text className="text-lg font-semibold text-white">Setting</Text>
+            <Text className="text-lg font-semibold text-white">{t("settings.title")}</Text>
           </View>
           <View className="mt-10">
             <View className="w-full">
@@ -37,7 +39,7 @@ export default function SettingsScreen() {
                   <SvgIcon name="passwordIcon1" />
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Password
+                  {t("settings.password")}
                 </Text>
               </Pressable>
 
@@ -49,7 +51,7 @@ export default function SettingsScreen() {
                   <SvgIcon name="walletIcon1" width="16" />
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Wallet Address
+                  {t("settings.wallet_address")}
                 </Text>
               </Pressable>
 
@@ -63,7 +65,7 @@ export default function SettingsScreen() {
                   </View>
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Google OTP
+                  {t("settings.google_otp")}
                 </Text>
               </Pressable>
 
@@ -75,7 +77,7 @@ export default function SettingsScreen() {
                   <SvgIcon name="globleIcon1" width="16" />
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Language
+                  {t("settings.language")}
                 </Text>
               </Pressable>
 
@@ -89,7 +91,7 @@ export default function SettingsScreen() {
                   <SvgIcon name="headphoneIcon1" />
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Customer Support
+                  {t("settings.customer_support")}
                 </Text>
               </Pressable>
 
@@ -103,7 +105,7 @@ export default function SettingsScreen() {
                   <SvgIcon name="logoutIcon1" width="16" />
                 </View>
                 <Text className="text-base font-semibold leading-5 text-white">
-                  Logout
+                  {t("settings.logout")}
                 </Text>
               </Pressable>
             </View>
@@ -114,7 +116,7 @@ export default function SettingsScreen() {
         visible={popupVisible}
         setVisible={setPopUpVisible}
         onConfirm={performLogout}
-        text="Are you sure want to logout?"
+        text={t("settings.logout_confirm")}
       />
     </View>
   );

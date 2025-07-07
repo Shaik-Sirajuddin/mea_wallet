@@ -1,6 +1,7 @@
 import SvgIcon from "@/app/components/SvgIcon";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 
 const ContactForm = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
   const maxLength = 500;
@@ -35,7 +37,7 @@ const ContactForm = () => {
           <SvgIcon name="leftArrow" width="21" height="21" />
         </Pressable>
         <Text className="text-lg font-semibold text-white">
-          Customer Support
+          {t("settings.customer_support")}
         </Text>
       </View>
       <View className="relative mt-6">
@@ -44,7 +46,7 @@ const ContactForm = () => {
           onChangeText={setMessage}
           multiline
           maxLength={maxLength}
-          placeholder="Please enter your inquiry details"
+          placeholder={t("settings.enter_inquiry")}
           placeholderTextColor="rgba(136,136,136,0.5)"
           className="text-[15px] font-semibold leading-5 pt-10 text-gray-1200 rounded-2xl bg-black-1200 h-[286px] w-full text-center"
         />
@@ -70,7 +72,7 @@ const ContactForm = () => {
               pressed || message.trim() === "" ? "text-white/60" : "text-white"
             }`}
           >
-            Send
+            {t("settings.send")}
           </Text>
         )}
       </Pressable>

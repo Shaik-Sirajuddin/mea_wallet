@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { View, Text, Animated } from "react-native";
 import PrimaryButton from "./PrimaryButton";
 import { Portal } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 
 export interface InfoAlertProps {
   visible: boolean;
@@ -20,6 +21,7 @@ const InfoAlert = ({
   showAnimation = true,
   type = "success",
 }: InfoAlertProps) => {
+  const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -61,7 +63,7 @@ const InfoAlert = ({
           <View className="flex gap-4">
             <Text className="text-white text-center text-lg">{text}</Text>
             <PrimaryButton
-              text="OK"
+              text={t("common.ok")}
               onPress={() => {
                 setVisible(false);
                 if (onDismiss) onDismiss();

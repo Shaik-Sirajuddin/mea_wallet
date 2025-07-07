@@ -1,6 +1,7 @@
 // components/StakingItem.tsx
 
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
@@ -18,6 +19,8 @@ const StakingItem: React.FC<Props> = ({
   handleClaim,
   handleEarlyUnstake,
 }) => {
+  const { t } = useTranslation();
+  
   const accumulatedInterest = useMemo(() => {
     if (item.state === StakingState.IN_PROGRESS) {
       const start = dayjs(item.registeredAt);
@@ -68,26 +71,26 @@ const StakingItem: React.FC<Props> = ({
 
       <View className="bg-black-700 rounded-xl p-3 mb-4">
         <Row
-          label="Registered Date"
+          label={t("components.registered_date")}
           value={dayjs(item.registeredAt).format("YYYY-MM-DD")}
         />
-        <Row label="Deposit Amount" value={item.depositAmount} />
+        <Row label={t("components.deposit_amount")} value={item.depositAmount} />
         <Row
-          label="Interest Rate"
+          label={t("components.interest_rate")}
           value={`${item.interestRate}%`}
           valueClass="!text-green-500"
         />
         <Row
-          label="Expected Final Amount"
+          label={t("components.expected_final_amount")}
           value={new Decimal(item.depositAmount)
             .add(item.interestAtMaturity)
             .toFixed(2)}
         />
-        <Row label="Lockup Days" value={item.lockupDays} />
+        <Row label={t("components.lockup_days")} value={item.lockupDays} />
 
         {item.state === StakingState.IN_PROGRESS && (
           <Row
-            label="Accumulated Interest"
+            label={t("components.accumulated_interest")}
             value={`${accumulatedInterest} (${accumulatedPercentage}%)`}
             valueClass="!text-green-500"
           />
@@ -95,12 +98,12 @@ const StakingItem: React.FC<Props> = ({
 
         {item.state === StakingState.CLOSED && (
           <Row
-            label="Claimed Amount"
+            label={t("components.claimed_amount")}
             value={item.expectedFinalAmount}
             valueClass={isProfit ? "!text-green-500" : "!text-red-500"}
           />
         )}
-        <Row label="State" value={item.state + item.stateStr} />
+        <Row label={t("components.state")} value={item.state + item.stateStr} />
       </View>
 
       {item.state === StakingState.IN_PROGRESS && (
@@ -109,7 +112,7 @@ const StakingItem: React.FC<Props> = ({
           className="bg-gray-700 rounded-xl py-2 items-center"
         >
           <Text className="text-white font-semibold text-base">
-            Early Unstake
+            {t("components.early_unstake")}
           </Text>
         </TouchableOpacity>
       )}

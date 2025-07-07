@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text, Animated, TouchableOpacity } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   visible: boolean;
@@ -18,6 +19,7 @@ const DialogAlert = ({
   onReject,
   showAnimation = true,
 }: Props) => {
+  const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -68,7 +70,7 @@ const DialogAlert = ({
                 }}
                 className="w-1/2 h-[45px] bg-pink-1100 rounded-[15px] justify-center items-center border border-blue-1100"
               >
-                <Text className="text-white font-semibold">Yes</Text>
+                <Text className="text-white font-semibold">{t('common.yes')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -79,7 +81,7 @@ const DialogAlert = ({
                 }}
                 className="w-1/2 h-[45px] bg-black-1100 rounded-[15px] justify-center items-center"
               >
-                <Text className="text-white font-semibold">No</Text>
+                <Text className="text-white font-semibold">{t('common.no')}</Text>
               </TouchableOpacity>
             </View>
           </View>

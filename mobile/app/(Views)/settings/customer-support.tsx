@@ -1,9 +1,11 @@
 import { router, useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../../components/SvgIcon";
 
 const CustomerSupport = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
 
   return (
@@ -18,7 +20,7 @@ const CustomerSupport = () => {
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
             <Text className="text-lg font-semibold text-white">
-              Customer Support
+              {t("settings.customer_support")}
             </Text>
           </View>
 
@@ -28,7 +30,7 @@ const CustomerSupport = () => {
               className="bg-black-1200 mb-4 rounded-2xl flex-row items-center justify-between pt-3 pb-4 px-3"
             >
               <Text className="text-base font-semibold leading-5 text-white">
-                Contact
+                {t("settings.contact")}
               </Text>
               <SvgIcon name="rightArrow" width="8" />
             </Pressable>
@@ -38,7 +40,7 @@ const CustomerSupport = () => {
               className="bg-black-1200 mb-4 rounded-2xl flex-row items-center justify-between pt-3 pb-4 px-3"
             >
               <Text className="text-base font-semibold leading-5 text-white">
-                FAQ
+                {t("settings.faq")}
               </Text>
               <SvgIcon name="rightArrow" width="8" />
             </Pressable>

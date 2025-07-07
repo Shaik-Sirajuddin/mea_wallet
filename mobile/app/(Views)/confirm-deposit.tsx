@@ -1,6 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { useLocalSearchParams, useNavigation, router } from "expo-router";
 import React, { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import * as Clipboard from "expo-clipboard";
 import {
   Pressable,
@@ -20,6 +21,7 @@ import { truncateAddress } from "@/utils/ui";
 import useDeposit from "@/hooks/useDeposit";
 
 const Deposit2 = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { symbol, amount } = useLocalSearchParams<{
     symbol: keyof TokenBalances;
@@ -53,7 +55,7 @@ const Deposit2 = () => {
     if (!txid) {
       setInfoAlertState({
         type: "error",
-        text: "Please enter Txid",
+        text: t("deposit.txid_required"),
       });
       setInfoAlertVisible(true);
       return;
@@ -61,7 +63,7 @@ const Deposit2 = () => {
     if (!selectedWalletAddress) {
       setInfoAlertState({
         type: "error",
-        text: "Please Select a wallet address.",
+        text: t("deposit.wallet_address_required"),
       });
       setInfoAlertVisible(true);
       return;
@@ -87,7 +89,7 @@ const Deposit2 = () => {
     console.log(result)
     setInfoAlertState({
       type: "success",
-      text: "Deposit application submitted",
+      text: t("deposit.application_submitted"),
     });
     setInfoAlertVisible(true);
     setDepositSubmitted(true);
@@ -97,7 +99,7 @@ const Deposit2 = () => {
     await Clipboard.setStringAsync(data);
     setInfoAlertState({
       type: "success",
-      text: "Deposit address copied to clipboard",
+      text: t("deposit.address_copied"),
     });
     setInfoAlertVisible(true);
   };
@@ -113,7 +115,7 @@ const Deposit2 = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Deposit</Text>
+            <Text className="text-lg font-semibold text-white">{t("deposit.title")}</Text>
           </View>
 
           <View className="relative mt-10 flex-1 pb-4">
@@ -123,7 +125,7 @@ const Deposit2 = () => {
                 <View className="flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Deposit Address ({displaySymbol})
+                    {t("deposit.deposit_address")} ({displaySymbol})
                   </Text>
                 </View>
                 <View className="relative">
@@ -141,7 +143,7 @@ const Deposit2 = () => {
                     }}
                   >
                     <Text className="text-white text-[17px] font-medium leading-[22px]">
-                      Copy
+                      {t("common.copy")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -152,12 +154,12 @@ const Deposit2 = () => {
                 <View className="flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Txid Address
+                    {t("deposit.txid_address")}
                   </Text>
                 </View>
                 <View className="relative mb-2">
                   <TextInput
-                    placeholder="Txid Address"
+                    placeholder={t("deposit.txid_address")}
                     placeholderTextColor="#ffffff"
                     value={txid}
                     onChangeText={setTxid}
@@ -171,7 +173,7 @@ const Deposit2 = () => {
                 <View className="flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Sender Wallet Address
+                    {t("deposit.sender_wallet_address")}
                   </Text>
                 </View>
                 <View className="relative mb-2">
@@ -191,7 +193,7 @@ const Deposit2 = () => {
                     }}
                     dropdownIconColor="#fff"
                   >
-                    <Picker.Item label="Select Wallet Address" value="" />
+                    <Picker.Item label={t("deposit.select_wallet_address")} value="" />
                     {registeredAddresses.map((addr, index) => (
                       <Picker.Item key={index} label={addr} value={addr} />
                     ))}
@@ -203,7 +205,7 @@ const Deposit2 = () => {
               <View className="flex-row mt-9 items-center gap-2 mb-3">
                 <SvgIcon name="infoIcon" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Notice: before making a deposit
+                  {t("deposit.notice_before_deposit")}
                 </Text>
               </View>
 
@@ -211,14 +213,12 @@ const Deposit2 = () => {
                 <View className="ml-5 space-y-4">
                   <View className="flex-row">
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200">
-                      • Due to the nature of digital assets, once the deposit
-                      application is completed, it cannot be cancelled.
+                      • {t("deposit.notice_cannot_cancel")}
                     </Text>
                   </View>
                   <View className="flex-row">
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200">
-                      • No refunds if transfer is made by mistake to another
-                      digital asset wallet.
+                      • {t("deposit.notice_no_refund")}
                     </Text>
                   </View>
                 </View>
@@ -226,7 +226,7 @@ const Deposit2 = () => {
             </ScrollView>
           </View>
           <PrimaryButton
-            text="Deposit Application"
+            text={t("deposit.deposit_application")}
             onPress={handleDepositApplication}
             className=""
           />

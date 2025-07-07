@@ -12,6 +12,7 @@ import {
   SelectTrigger,
 } from "@gluestack-ui/themed";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   Text,
@@ -50,6 +51,7 @@ const getFontSize = (text: string) => {
 };
 
 const SwapTokens = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
 
   // State from Redux
@@ -241,7 +243,7 @@ const SwapTokens = () => {
 
     if (!otp || otp.length < 6) {
       setInfoAlertState({
-        text: "Please enter a valid 6-digit OTP",
+        text: t("swap.invalid_otp"),
         type: "error",
       });
       setInfoAlertVisible(true);
@@ -276,7 +278,7 @@ const SwapTokens = () => {
         setInfoAlertVisible(true);
       } else {
         setInfoAlertState({
-          text: "Swap completed successfully!",
+          text: t("swap.swap_success"),
           type: "success",
         });
         setInfoAlertVisible(true);
@@ -287,7 +289,7 @@ const SwapTokens = () => {
     } catch (error) {
       console.log(error);
       setInfoAlertState({
-        text: "An error occurred during swap",
+        text: t("swap.swap_error"),
         type: "error",
       });
       setInfoAlertVisible(true);
@@ -330,14 +332,14 @@ const SwapTokens = () => {
             <View className="w-full h-full">
               <View className="items-center relative">
                 <Text className="text-lg font-semibold text-white">
-                  Swap Tokens
+                  {t("swap.title")}
                 </Text>
               </View>
               <View className="relative mt-10 h-full pb-14">
                 <View className="bg-black-1200 p-[18px] rounded-[15px]">
                   {/* Row 1: Label */}
                   <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 mb-2">
-                    You Pay
+                    {t("swap.you_pay")}
                   </Text>
 
                   {/* Row 2: Amount input */}
@@ -418,7 +420,7 @@ const SwapTokens = () => {
                 <View className="bg-black-1200 p-[18px] rounded-[15px]">
                   {/* Row 1: You Receive */}
                   <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 mb-2">
-                    You Receive
+                    {t("swap.you_receive")}
                   </Text>
 
                   {/* Row 2: Amount Input + Symbol Selection */}
@@ -484,14 +486,14 @@ const SwapTokens = () => {
                 </View>
 
                 <Text className="text-sm leading-[22px] font-normal mt-3 text-gray-1200">
-                  Quote includes a {swapFee || "0"}% platform fee
+                  {t("swap.quote_includes_fee", { fee: swapFee || "0" })}
                 </Text>
                 {/* Info summary section */}
                 <View className="bg-black-1200 mt-4 rounded-[15px] px-4 py-3">
                   {/* Price */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      {fromToken.toUpperCase()} Price
+                      {t("swap.token_price", { token: fromToken.toUpperCase() })}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {getTokenPrice(fromToken)}
@@ -500,7 +502,7 @@ const SwapTokens = () => {
 
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      {toToken.toUpperCase()} Price
+                      {t("swap.token_price", { token: toToken.toUpperCase() })}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {getTokenPrice(toToken)}
@@ -510,7 +512,7 @@ const SwapTokens = () => {
                   {/* Payment amount */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      Payment Amount
+                      {t("swap.payment_amount")}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {payAmount} {fromToken.toUpperCase()}
@@ -520,7 +522,7 @@ const SwapTokens = () => {
                   {/* Receivable amount before fee */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      Receivable (Before Fee)
+                      {t("swap.receivable_before_fee")}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {parseNumberForView(
@@ -535,7 +537,7 @@ const SwapTokens = () => {
                   {/* Fee % */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      Fee %
+                      {t("swap.fee_percent")}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {swapFee || "0"}%
@@ -545,7 +547,7 @@ const SwapTokens = () => {
                   {/* Fee amount */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      Fee Amount
+                      {t("swap.fee_amount")}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {parseNumberForView(adminCommission)}{" "}
@@ -556,7 +558,7 @@ const SwapTokens = () => {
                   {/* Final receivable */}
                   <View className="flex-row justify-between">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      Final Receivable
+                      {t("swap.final_receivable")}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {parseNumberForView(receiveAmount)}{" "}
@@ -581,8 +583,8 @@ const SwapTokens = () => {
               text={
                 balanceCheck.isValid
                   ? isLoading
-                    ? "Processing..."
-                    : "Swap"
+                    ? t("swap.processing")
+                    : t("swap.swap_button")
                   : balanceCheck.message
               }
               onPress={handleSwap}

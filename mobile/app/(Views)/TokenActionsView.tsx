@@ -1,23 +1,34 @@
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import { TokenQuotes } from "@/src/types/balance";
 
-const buttons = [
-  { label: "Deposit", url: "/deposit-view" },
-  { label: "Withdrawal", url: "/withdrawal-view" },
-  { label: "History", url: "/history-view" },
-  { label: "Chart", url: "/chart-view" },
-];
-
-const normalizePath = (path: string) => path.replace(/\/$/, "");
-
 const TokenActionsView = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const [pressedIndex, setPressedIndex] = useState<number | null>(null);
   const { symbol } = useLocalSearchParams<{ symbol: keyof TokenQuotes }>();
+
+  const buttons = [
+    { label: t("token_actions.deposit"), url: "/deposit-view" },
+    { label: t("token_actions.withdrawal"), url: "/withdrawal-view" },
+    { label: t("token_actions.history"), url: "/history-view" },
+    { label: t("token_actions.chart"), url: "/chart-view" },
+  ];
+
+const normalizePath = (path: string) => path.replace(/\/$/, "");
+
+  // useEffect(() => {
+  //   router.push({
+  //     pathname: "/withdrawal-view",
+  //     params: {
+  //       symbol,
+  //     },
+  //   });
+  // }, []);
   // useEffect(() => {
   //   router.push({
   //     pathname: "/withdrawal-view",
@@ -36,7 +47,7 @@ const TokenActionsView = () => {
           >
             <SvgIcon name="leftArrow2" width="14" height="14" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">Native</Text>
+          <Text className="text-lg font-semibold text-white">{t("token_actions.native")}</Text>
         </View>
 
         <View className="relative mt-10">

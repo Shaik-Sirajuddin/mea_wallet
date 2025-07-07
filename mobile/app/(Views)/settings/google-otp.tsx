@@ -18,8 +18,10 @@ import {
 import { useSelector } from "react-redux";
 import * as Clipboard from "expo-clipboard";
 import PrimaryButton from "@/app/components/PrimaryButton";
+import { useTranslation } from "react-i18next";
 
 const GoogleOTP = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const twoFAData = useSelector((state: RootState) => state.user.twoFA);
   const [otp, setOtp] = useState("");
@@ -35,7 +37,7 @@ const GoogleOTP = () => {
       setModalState({
         ...modalState,
         type: "error",
-        text: "Please enter valid OTP",
+        text: t("settings.otp_required"),
       });
       setModalVisible(true);
       return;
@@ -55,7 +57,7 @@ const GoogleOTP = () => {
     setModalState({
       ...modalState,
       type: "success",
-      text: "2FA Setup Completed",
+      text: t("settings.otp_setup_completed"),
     });
     setSetUpCompleted(true);
     setModalVisible(true);
@@ -83,7 +85,7 @@ const GoogleOTP = () => {
       setModalState({
         ...modalState,
         type: "success",
-        text: "2FA has already been setup for account",
+        text: t("settings.otp_already_setup"),
       });
       setSetUpCompleted(true);
       setModalVisible(true);
@@ -102,7 +104,7 @@ const GoogleOTP = () => {
   const handleCopy = async () => {
     if (!twoFAData) return;
     await Clipboard.setStringAsync(twoFAData.secretCode);
-    Alert.alert("Copied to clipboard");
+    Alert.alert(t("common.copied"));
   };
 
   useEffect(() => {
@@ -118,7 +120,7 @@ const GoogleOTP = () => {
           >
             <SvgIcon name="leftArrow" width="21" height="21" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">Google OTP</Text>
+          <Text className="text-lg font-semibold text-white">{t("settings.google_otp")}</Text>
         </View>
 
         <View className="my-auto">
@@ -142,7 +144,7 @@ const GoogleOTP = () => {
             <View className="relative my-8">
               <View className="bg-black-1200 mb-8 flex-row rounded-md py-4 px-3 mt-2 items-center">
                 <Text className="text-base font-semibold text-white">
-                  Secret Key
+                  {t("settings.secret_key")}
                 </Text>
                 <Text className="text-[15px] text-gray-1000 inline-block ml-2 flex-1">
                   {twoFAData ? twoFAData.secretCode : "---"}
@@ -153,7 +155,7 @@ const GoogleOTP = () => {
                   className="right-3 bg-pink-1100 py-[4px] px-[8px] rounded-2xl "
                 >
                   <Text className="text-white text-[14px] font-medium leading-[22px]">
-                    Copy
+                    {t("common.copy")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -164,8 +166,7 @@ const GoogleOTP = () => {
                     <Text className="text-white flex text-xs">1</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    Install the Google Authenticator app from the Google Play
-                    Store.
+                    {t("settings.otp_instruction_1")}
                   </Text>
                 </View>
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -173,8 +174,7 @@ const GoogleOTP = () => {
                     <Text className="text-white flex text-xs">2</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    Launch the Google Authenticator app and click the "+" button
-                    at the bottom.
+                    {t("settings.otp_instruction_2")}
                   </Text>
                 </View>
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -182,8 +182,7 @@ const GoogleOTP = () => {
                     <Text className="text-white flex text-xs">3</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    Click the "Scan QR Code" button and scan the "QR Code" to
-                    register Google OTP.
+                    {t("settings.otp_instruction_3")}
                   </Text>
                 </View>
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -191,21 +190,21 @@ const GoogleOTP = () => {
                     <Text className="text-white flex text-xs">4</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    Enter Google OTP code when withdrawing money.
+                    {t("settings.otp_instruction_4")}
                   </Text>
                 </View>
               </View>
               {twoFAData && twoFAData.isRegistered === false && (
                 <View>
                   <TextInput
-                    placeholder="Enter OTP"
+                    placeholder={t("settings.enter_otp")}
                     placeholderTextColor="#FFFFFF"
                     className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
                     value={otp}
                     onChangeText={setOtp}
                   />
                   <PrimaryButton
-                    text="Verify"
+                    text={t("settings.verify")}
                     onPress={validateTwoFABackup}
                     className="mt-6"
                   />

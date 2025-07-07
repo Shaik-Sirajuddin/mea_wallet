@@ -1,5 +1,6 @@
 import { useNavigation, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   ScrollView,
@@ -17,6 +18,7 @@ import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
 
 const LockUpHistory = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
   const lockedBalance = useSelector(
@@ -72,7 +74,9 @@ const LockUpHistory = () => {
               >
                 <SvgIcon name="leftArrow" width="21" height="21" />
               </Pressable>
-              <Text className="text-lg font-semibold text-white">Lock up</Text>
+              <Text className="text-lg font-semibold text-white">
+                {t("lockup.title")}
+              </Text>
             </View>
 
             <View
@@ -85,7 +89,7 @@ const LockUpHistory = () => {
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    {displaySymbol} LockUp
+                    {t("lockup.token_lockup", { token: displaySymbol })}
                   </Text>
                 </View>
               </View>
@@ -104,7 +108,7 @@ const LockUpHistory = () => {
 
                 {!loading && history.length === 0 && (
                   <Text className="text-white text-center py-10">
-                    No lockup history found.
+                    {t("lockup.no_history")}
                   </Text>
                 )}
               </View>
@@ -115,7 +119,7 @@ const LockUpHistory = () => {
                     <View key={index} className="mb-4">
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          Amount
+                          {t("lockup.amount")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.amount}
@@ -124,7 +128,7 @@ const LockUpHistory = () => {
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          Date
+                          {t("lockup.date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {new Date(item.registeredAt).toLocaleString()}
@@ -133,7 +137,7 @@ const LockUpHistory = () => {
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          Start Date
+                          {t("lockup.start_date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.startDate}
@@ -142,7 +146,7 @@ const LockUpHistory = () => {
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          End Date
+                          {t("lockup.end_date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.endDate}
@@ -151,7 +155,7 @@ const LockUpHistory = () => {
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          Status
+                          {t("lockup.status")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.status}
@@ -192,7 +196,7 @@ const LockUpHistory = () => {
               <View className="flex-row mt-9 items-center gap-2 mb-3">
                 <SvgIcon name="infoIcon" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Notice
+                  {t("lockup.notice")}
                 </Text>
               </View>
 
@@ -201,16 +205,14 @@ const LockUpHistory = () => {
                   <View className="flex-row">
                     <Text className="text-white mr-2">•</Text>
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200 flex-1">
-                      After the end date, the coins become available for deposit
-                      or withdrawal.
+                      {t("lockup.notice_after_end_date")}
                     </Text>
                   </View>
 
                   <View className="flex-row">
                     <Text className="text-white mr-2">•</Text>
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200 flex-1">
-                      The coins you received can be withdrawn normally through
-                      "Withdrawal".
+                      {t("lockup.notice_withdrawal_available")}
                     </Text>
                   </View>
                 </View>

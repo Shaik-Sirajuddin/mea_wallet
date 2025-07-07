@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   Text,
@@ -23,6 +24,7 @@ export type ConfirmWithdrawParams = {
 };
 
 const ConfirmWithdraw = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [otp, setOtp] = useState("");
   const { symbol, amount, address } =
@@ -48,7 +50,7 @@ const ConfirmWithdraw = () => {
     if (!otp || otp.length < 6) {
       setInfoAlertState({
         type: "error",
-        text: "Please enter a valid 6-digit Google OTP code.",
+        text: t("withdrawal.otp_required"),
       });
       setInfoAlertVisible(true);
       return;
@@ -88,7 +90,7 @@ const ConfirmWithdraw = () => {
     }
     setInfoAlertState({
       type: "success",
-      text: "Withdraw Initaited",
+      text: t("withdrawal.withdraw_initiated"),
     });
     setInfoAlertVisible(true);
     setWithdrawlSuccess(true);
@@ -104,7 +106,7 @@ const ConfirmWithdraw = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Withdrawal</Text>
+            <Text className="text-lg font-semibold text-white">{t("withdrawal.title")}</Text>
           </View>
 
           <View className="relative mt-10">
@@ -112,12 +114,12 @@ const ConfirmWithdraw = () => {
               <View className="flex flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Google OTP Code
+                  {t("withdrawal.google_otp_code")}
                 </Text>
               </View>
               <View className="relative mb-2">
                 <TextInput
-                  placeholder="Google OTP Code"
+                  placeholder={t("withdrawal.google_otp_code")}
                   placeholderTextColor="#ffffff"
                   value={otp}
                   onChangeText={setOtp}
@@ -129,7 +131,7 @@ const ConfirmWithdraw = () => {
 
             <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
-                Address
+                {t("withdrawal.address")}
               </Text>
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
                 {truncateAddress(address)}
@@ -138,7 +140,7 @@ const ConfirmWithdraw = () => {
 
             <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
-                Total withdrawal
+                {t("withdrawal.total_withdrawal")}
               </Text>
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
                 {amount}{" "}
@@ -150,7 +152,7 @@ const ConfirmWithdraw = () => {
 
             <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-400">
-                Withdrawal Fee
+                {t("withdrawal.withdrawal_fee")}
               </Text>
               <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white">
                 {withdrawFees}{" "}
@@ -163,7 +165,7 @@ const ConfirmWithdraw = () => {
             <View className="flex flex-row items-center gap-2 mt-9 mb-3">
               <SvgIcon name="infoIcon" />
               <Text className="text-base font-medium leading-[22px] text-white">
-                Notice: Precautions for cryptocurrency withdrawal
+                {t("withdrawal.notice_precautions")}
               </Text>
             </View>
 
@@ -174,8 +176,7 @@ const ConfirmWithdraw = () => {
                     •{" "}
                   </Text>
                   <Text className="text-[15px] text-gray-400 leading-5 flex-1">
-                    Due to the nature of digital assets, withdrawal requests
-                    cannot be canceled once completed.
+                    {t("withdrawal.notice_cannot_cancel")}
                   </Text>
                 </View>
                 <View className="flex-row">
@@ -183,8 +184,7 @@ const ConfirmWithdraw = () => {
                     •{" "}
                   </Text>
                   <Text className="text-[15px] text-gray-400 leading-5 flex-1">
-                    No refunds if money is sent incorrectly to another digital
-                    asset wallet.
+                    {t("withdrawal.notice_no_refund")}
                   </Text>
                 </View>
               </View>
@@ -192,7 +192,7 @@ const ConfirmWithdraw = () => {
           </View>
 
           <View className="flex flex-row gap-2 justify-center mt-auto">
-            <PrimaryButton text="Withdraw" onPress={processWithdraw} />
+            <PrimaryButton text={t("withdrawal.withdraw")} onPress={processWithdraw} />
           </View>
         </View>
       </View>

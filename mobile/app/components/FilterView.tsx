@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import { CheckBox } from "@rneui/themed";
 import SvgIcon from "../components/SvgIcon";
@@ -28,6 +29,8 @@ const FilterView = ({
   onApply,
   onClose,
 }: FilterViewProps) => {
+  const { t } = useTranslation();
+  
   const toggleOption = (
     filterLabel: string,
     option: { label: string; value: string }
@@ -45,12 +48,12 @@ const FilterView = ({
           >
             <SvgIcon name="leftArrow" width="21" height="21" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">Filter</Text>
+          <Text className="text-lg font-semibold text-white">{t("common.filter")}</Text>
           <Pressable
             onPress={onApply}
             className="absolute right-0 items-end justify-end z-10 p-2"
           >
-            <Text className="text-pink-1200 text-[17px]">Apply</Text>
+            <Text className="text-pink-1200 text-[17px]">{t("components.apply")}</Text>
           </Pressable>
         </View>
 

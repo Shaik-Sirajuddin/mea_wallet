@@ -1,5 +1,6 @@
 // components/WithdrawalModal.tsx
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 import Decimal from "decimal.js";
 import { UserStaking, StakingState } from "@/src/api/types/staking";
@@ -19,6 +20,8 @@ const WithdrawalModal: React.FC<Props> = ({
   onConfirm,
   item,
 }) => {
+  const { t } = useTranslation();
+  
   const isEarlyWithdrawal = useMemo(() => {
     const maturityDate = new Date(item.expectedWithdrawalDate);
     const registeredAt = item.registeredAt;
@@ -67,31 +70,30 @@ const WithdrawalModal: React.FC<Props> = ({
         <View className="bg-black-1200 rounded-2xl p-5 w-full">
           <Text className="text-white text-lg font-semibold mb-4">
             {isEarlyWithdrawal
-              ? "Early Withdrawal Confirmation"
-              : "Claim Confirmation"}
+              ? t("components.early_withdrawal_confirmation")
+              : t("components.claim_confirmation")}
           </Text>
 
           {isEarlyWithdrawal && (
             <Text className="text-red-500 mb-3">
-              Note: An early withdrawal fee of {item.unstakingFee}% on your
-              deposit amount will be charged. No interest will be credited.
+              {t("components.early_withdrawal_note", { fee: item.unstakingFee })}
             </Text>
           )}
 
-          <Row label="Plan" value={item.planName} />
+          <Row label={t("components.plan")} value={item.planName} />
           <Row
-            label="Registered Date"
+            label={t("components.registered_date")}
             value={dayjs(item.registeredAt).format("YYYY-MM-DD")}
           />
-          <Row label="Deposit Amount" value={item.depositAmount} />
+          <Row label={t("components.deposit_amount")} value={item.depositAmount} />
           <Row
-            label="Interest Credited"
+            label={t("components.interest_credited")}
             value={interestCredited}
             valueClass={!isEarlyWithdrawal ? "text-green-500" : "text-white"}
           />
-          {isEarlyWithdrawal && <Row label="Fee Deducted" value={`${fee}`} />}
+          {isEarlyWithdrawal && <Row label={t("components.fee_deducted")} value={`${fee}`} />}
           <Row
-            label="Final Receivable"
+            label={t("components.final_receivable")}
             value={`${finalReceivable}`}
             valueClass={
               new Decimal(finalReceivable).lt(item.depositAmount)
@@ -103,14 +105,14 @@ const WithdrawalModal: React.FC<Props> = ({
           <View className="flex gap-2 mt-4">
             <PrimaryButton
               onPress={onClose}
-              text={"Cancel"}
+              text={t("common.cancel")}
               className={!isEarlyWithdrawal ? "bg-gray-500" : ""}
             />
             <PrimaryButton
               onPress={() => {
                 onConfirm(isEarlyWithdrawal);
               }}
-              text={isEarlyWithdrawal ? "Withdraw" : "Claim"}
+              text={isEarlyWithdrawal ? t("components.withdraw") : t("components.claim")}
               className={isEarlyWithdrawal ? "bg-gray-500" : ""}
             />
           </View>

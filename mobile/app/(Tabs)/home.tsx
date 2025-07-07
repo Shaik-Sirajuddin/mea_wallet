@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Link, router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { AppDispatch, RootState } from "@/src/store";
 import useUser from "@/hooks/useUser";
@@ -30,6 +31,7 @@ import Decimal from "decimal.js";
 import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const [showLokcupBalance, setShowLockUpBalance] = useState(false);
@@ -161,7 +163,7 @@ export default function HomeScreen() {
                   <View className="w-full items-center p-[18px] py-[17px]">
                     <SvgIcon name="receiceIcon" width="24" height="24" />
                     <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Receive
+                      {t("home.receive")}
                     </Text>
                   </View>
                 </Link>
@@ -171,7 +173,7 @@ export default function HomeScreen() {
                   <View className="w-full items-center p-[18px] py-[17px]">
                     <SvgIcon name="sendIcon" width="24" height="24" />
                     <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Send
+                      {t("home.send")}
                     </Text>
                   </View>
                 </Link>
@@ -186,7 +188,7 @@ export default function HomeScreen() {
                   <View className="w-full items-center p-[18px] py-[17px]">
                     <SvgIcon name="swapIcon" width="24" height="24" />
                     <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Swap
+                      {t("home.swap")}
                     </Text>
                   </View>
                 </Pressable>
@@ -204,7 +206,7 @@ export default function HomeScreen() {
                     !showLokcupBalance ? "text-white" : "text-gray-1000"
                   }`}
                 >
-                  Native
+                  {t("home.native")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -217,7 +219,7 @@ export default function HomeScreen() {
                     showLokcupBalance ? "text-white" : "text-gray-1000"
                   }`}
                 >
-                  Lock up
+                  {t("home.lock_up")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -324,7 +326,7 @@ export default function HomeScreen() {
           </Text>
           <PrimaryButton
             onPress={() => router.push("/(Views)/settings/edit-profile")}
-            text="Edit Profile"
+            text={t("home.edit_profile")}
           />
         </View>
       </PopupModal>

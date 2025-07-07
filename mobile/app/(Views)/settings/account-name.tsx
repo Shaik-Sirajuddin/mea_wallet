@@ -1,9 +1,11 @@
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, TextInput, View } from "react-native";
 import SvgIcon from "../../components/SvgIcon";
 
 const AccountName = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [name, setName] = useState("mecca");
 
@@ -19,7 +21,7 @@ const AccountName = () => {
               <SvgIcon name="leftArrow" />
             </Pressable>
             <Text className="text-lg font-semibold text-white">
-              Account Name
+              {t("settings.account_name")}
             </Text>
           </View>
           <View className="relative mt-10">

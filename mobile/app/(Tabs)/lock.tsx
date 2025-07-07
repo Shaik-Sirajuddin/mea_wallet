@@ -1,5 +1,6 @@
 import { router, useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -17,6 +18,7 @@ import Decimal from "decimal.js";
 import { tokenImageMap } from "@/utils/ui";
 
 const LockUpScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -43,7 +45,7 @@ const LockUpScreen = () => {
         >
           <View className="w-full pb-20">
             <View className="items-center relative">
-              <Text className="text-lg font-semibold text-white">Lock Up</Text>
+              <Text className="text-lg font-semibold text-white">{t("home.lock_up")}</Text>
             </View>
 
             <View className="relative mt-10">
@@ -80,7 +82,7 @@ const LockUpScreen = () => {
                     </View>
                     <View className="absolute left-44 top-3 w-[90px] text-[15px] font-medium leading-none text-gray-1200 rounded border  px-[5px] border-gray-1400">
                       <Text className="text-gray-1200 font-medium w-full text-center">
-                        Unavailable
+                        {t("common.unavailable")}
                       </Text>
                     </View>
                     <View className="flex-row justify-between  items-start gap-4 ">

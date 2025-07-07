@@ -6,6 +6,7 @@ import useStaking, { StakingPlan } from "@/hooks/useStaking";
 import { tokenImageMap } from "@/utils/ui";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -17,6 +18,7 @@ import {
 } from "react-native";
 
 const StakingPlans = () => {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState<StakingPlan[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -85,26 +87,26 @@ const StakingPlans = () => {
       {/* Details Table */}
       <View className="bg-black-700 rounded-xl p-3 mb-4">
         <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-400 text-base">Interest Rate (APY)</Text>
+          <Text className="text-gray-400 text-base">{t("staking.interest_rate")}</Text>
           <Text className="text-green-500 text-xl font-bold">
             {item.interestRate}%
           </Text>
         </View>
         <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">Min Deposit</Text>
+          <Text className="text-gray-400 text-base">{t("staking.min_deposit")}</Text>
           <Text className="text-white text-lg font-medium">
             {item.minDeposit}
           </Text>
         </View>
         <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">Lockup Days</Text>
+          <Text className="text-gray-400 text-base">{t("staking.lockup_days")}</Text>
           <Text className="text-white text-lg font-medium">
             {item.lockupDays}
           </Text>
         </View>
 
         <View className="flex-row justify-between">
-          <Text className="text-gray-400 text-base">Unstaking Fee</Text>
+          <Text className="text-gray-400 text-base">{t("staking.unstaking_fee")}</Text>
           <Text className="text-white text-lg font-medium">
             {item.unstakingFee}
           </Text>
@@ -125,7 +127,7 @@ const StakingPlans = () => {
           console.log("Enroll pressed for plan", item.id);
         }}
       >
-        <Text className="text-white font-semibold text-base">Enroll</Text>
+        <Text className="text-white font-semibold text-base">{t("staking.enroll")}</Text>
       </Pressable>
     </View>
   );
@@ -141,7 +143,7 @@ const StakingPlans = () => {
             <SvgIcon name="leftArrow" />
           </Pressable>
           <Text className="text-lg font-semibold text-white">
-            Staking Plans
+            {t("staking.plans")}
           </Text>
         </View>
 
@@ -159,7 +161,7 @@ const StakingPlans = () => {
                 activeOpacity={1}
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
-                <Text className="text-white font-semibold">Load More</Text>
+                <Text className="text-white font-semibold">{t("common.load_more")}</Text>
               </TouchableOpacity>
             ) : null
           }

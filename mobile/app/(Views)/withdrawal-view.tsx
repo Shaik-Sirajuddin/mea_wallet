@@ -1,5 +1,6 @@
 import { Link, router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -27,6 +28,7 @@ import { useDispatch } from "react-redux";
 import Decimal from "decimal.js";
 
 const WithDrawal = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: keyof TokenBalances }>();
   const freeBalance = useSelector(
@@ -64,7 +66,7 @@ const WithDrawal = () => {
       setInfoAlertState({
         ...infoAlertState,
         type: "error",
-        text: "Invalid Address",
+        text: t("withdrawal.invalid_address"),
       });
       setInfoAlertVisible(true);
       return;
@@ -99,7 +101,7 @@ const WithDrawal = () => {
     if (!withdrawalAddress || !isValidPublicKey(withdrawalAddress)) {
       setInfoAlertState({
         type: "error",
-        text: "Please enter a valid withdrawal address.",
+        text: t("withdrawal.address_required"),
       });
       setInfoAlertVisible(true);
       return;
@@ -109,7 +111,7 @@ const WithDrawal = () => {
     if (!withdrawAmount || isNaN(Number(withdrawAmount))) {
       setInfoAlertState({
         type: "error",
-        text: "Please enter a valid withdrawal amount.",
+        text: t("withdrawal.amount_required"),
       });
       setInfoAlertVisible(true);
       return;
@@ -120,7 +122,7 @@ const WithDrawal = () => {
     if (amount.lessThan(minWithdrawl)) {
       setInfoAlertState({
         type: "error",
-        text: `Minimum withdrawal amount is ${minWithdrawl} ${displaySymbol}.`,
+        text: t("withdrawal.min_amount_error", { amount: minWithdrawl, symbol: displaySymbol }),
       });
       setInfoAlertVisible(true);
       return;
@@ -129,7 +131,7 @@ const WithDrawal = () => {
     if (amount.greaterThan(freeBalance)) {
       setInfoAlertState({
         type: "error",
-        text: `Withdrawal amount exceeds your available balance of ${freeBalance} ${displaySymbol}.`,
+        text: t("withdrawal.insufficient_balance", { balance: freeBalance, symbol: displaySymbol }),
       });
       setInfoAlertVisible(true);
       return;
@@ -164,14 +166,14 @@ const WithDrawal = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">Withdrawal</Text>
+            <Text className="text-lg font-semibold text-white">{t("withdrawal.title")}</Text>
           </View>
           <View className="relative mt-10">
             <View className="mt-2.5 mb-2">
               <View className="flex flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Withdrawal possible
+                  {t("withdrawal.withdrawal_possible")}
                 </Text>
               </View>
 
@@ -186,14 +188,14 @@ const WithDrawal = () => {
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Withdrawal Address
+                    {t("withdrawal.withdrawal_address")}
                   </Text>
                 </View>
                 <View>
                   <TextInput
                     value={withdrawalAddress}
                     onChangeText={setWithdrawalAddress}
-                    placeholder="Withdrawal Address"
+                    placeholder={t("withdrawal.withdrawal_address")}
                     placeholderTextColor="#fff"
                     keyboardType="default"
                     className="text-[15px] text-white font-medium px-8 pr-20 bg-black-1200 w-full h-[71px] rounded-[15px]"
@@ -214,19 +216,13 @@ const WithDrawal = () => {
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    Withdrawal Quantity
+                    {t("withdrawal.withdrawal_quantity")}
                   </Text>
                 </View>
 
                 <View className="relative items-center justify-center mb-2">
                   <TextInput
-                    placeholder={
-                      "Enter Amount (Minimum " +
-                      minWithdrawl +
-                      " " +
-                      displaySymbol +
-                      " )"
-                    }
+                    placeholder={t("withdrawal.enter_amount_min", { amount: minWithdrawl, symbol: displaySymbol })}
                     placeholderTextColor="#fff"
                     className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
                     keyboardType="numeric"
@@ -259,7 +255,7 @@ const WithDrawal = () => {
           </View>
 
           <PrimaryButton
-            text="NEXT"
+            text={t("common.next")}
             onPress={() => {
               handleNext();
             }}

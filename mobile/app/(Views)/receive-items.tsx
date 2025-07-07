@@ -1,5 +1,6 @@
 import { useNavigation } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -24,6 +25,7 @@ import {
 import { setMinDeposit } from "@/src/features/token/tokenSlice";
 
 const ReceiveItems = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
@@ -46,7 +48,7 @@ const ReceiveItems = () => {
     await Clipboard.setStringAsync(depositAddress);
     setModalState({
       type: "success",
-      text: `${tokenSymbol.toUpperCase()} deposit address copied to clipboard`,
+      text: t("receive.address_copied", { token: tokenSymbol.toUpperCase() }),
     });
     setModalVisible(true);
   };
@@ -96,7 +98,7 @@ const ReceiveItems = () => {
               >
                 <SvgIcon name="leftArrow2" width="14" height="14" />
               </Pressable>
-              <Text className="text-lg font-semibold text-white">Receive</Text>
+              <Text className="text-lg font-semibold text-white">{t("receive.title")}</Text>
             </View>
 
             <View className="relative mt-10">

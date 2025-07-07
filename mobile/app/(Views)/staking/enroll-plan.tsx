@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ import { useSelector } from "react-redux";
 import { TokenBalances } from "@/src/types/balance";
 
 const EnrollPlan = () => {
+  const { t } = useTranslation();
   const { plan } = useLocalSearchParams();
 
   let parsedPlan: StakingPlan | null = null;
@@ -66,7 +68,7 @@ const EnrollPlan = () => {
   if (!parsedPlan) {
     return (
       <View className="bg-black-1000 flex-1 items-center justify-center">
-        <Text className="text-white">Invalid plan data</Text>
+        <Text className="text-white">{t("staking.invalid_plan_data")}</Text>
       </View>
     );
   }
@@ -74,7 +76,7 @@ const EnrollPlan = () => {
   const handleEnroll = async () => {
     if (!selectedToken) {
       setModalState({
-        text: "Please select a token",
+        text: t("staking.please_select_token"),
         type: "error",
       });
       setPopupVisible(true);
@@ -82,7 +84,7 @@ const EnrollPlan = () => {
     }
     if (!amount || parseFloat(amount) < parseFloat(parsedPlan!.minDeposit)) {
       setModalState({
-        text: `Minimum deposit is ${parsedPlan!.minDeposit}`,
+        text: t("staking.minimum_deposit_error", { minDeposit: parsedPlan!.minDeposit }),
         type: "error",
       });
       setPopupVisible(true);
@@ -91,9 +93,10 @@ const EnrollPlan = () => {
 
     if (new Decimal(amount).gt(freeBalance[selectedToken])) {
       setModalState({
-        text: `Amount exceeds avaiable balance ${
-          freeBalance[selectedToken]
-        } ${selectedToken.toUpperCase()}`,
+        text: t("staking.amount_exceeds_balance", { 
+          balance: freeBalance[selectedToken], 
+          token: selectedToken.toUpperCase() 
+        }),
         type: "error",
       });
       setPopupVisible(true);
@@ -106,7 +109,7 @@ const EnrollPlan = () => {
     setOtpModalVisible(false);
     if (!otp || otp.length < 6) {
       setModalState({
-        text: "Invalid OTP",
+        text: t("common.invalid_otp"),
         type: "error",
       });
       setPopupVisible(true);
@@ -124,14 +127,14 @@ const EnrollPlan = () => {
 
     if (typeof result === "string") {
       setModalState({
-        text: result || "Enrollment failed",
+        text: result || t("staking.enrollment_failed"),
         type: "error",
       });
       setPopupVisible(true);
       return;
     }
     setModalState({
-      text: "Enrolled successfully",
+      text: t("staking.enrolled_successfully"),
       type: "success",
     });
     setPopupVisible(true);
@@ -157,7 +160,7 @@ const EnrollPlan = () => {
                 <SvgIcon name="leftArrow" />
               </Pressable>
               <Text className="text-lg font-semibold text-white">
-                Enroll Plan
+                {t("staking.enroll_plan")}
               </Text>
             </View>
 
@@ -170,26 +173,26 @@ const EnrollPlan = () => {
               <View className="bg-black-700 rounded-xl p-3 mb-4">
                 <View className="flex-row justify-between mb-3">
                   <Text className="text-gray-400 text-base">
-                    Interest Rate (APY)
+                    {t("staking.interest_rate_apy")}
                   </Text>
                   <Text className="text-green-500 text-xl font-bold">
                     {parsedPlan.interestRate}%
                   </Text>
                 </View>
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">Lockup Days</Text>
+                  <Text className="text-gray-400 text-base">{t("staking.lockup_days")}</Text>
                   <Text className="text-white text-lg font-medium">
                     {parsedPlan.lockupDays}
                   </Text>
                 </View>
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">Min Deposit</Text>
+                  <Text className="text-gray-400 text-base">{t("staking.min_deposit")}</Text>
                   <Text className="text-white text-lg font-medium">
                     {parsedPlan.minDeposit}
                   </Text>
                 </View>
                 <View className="flex-row justify-between">
-                  <Text className="text-gray-400 text-base">Unstaking Fee</Text>
+                  <Text className="text-gray-400 text-base">{t("staking.unstaking_fee")}</Text>
                   <Text className="text-white text-lg font-medium">
                     {parsedPlan.unstakingFee}
                   </Text>
@@ -198,7 +201,7 @@ const EnrollPlan = () => {
 
               {/* Selected Token */}
               <View className="mb-4">
-                <Text className="text-gray-400 mb-2">Token</Text>
+                <Text className="text-gray-400 mb-2">{t("components.token")}</Text>
                 <TouchableOpacity
                   onPress={() => setTokenModalVisible(true)}
                   className="border border-gray-700 rounded-xl px-4 py-2 bg-black-900 flex-row items-center"
@@ -217,13 +220,13 @@ const EnrollPlan = () => {
                       </Text>
                     </>
                   ) : (
-                    <Text className="text-white">Select Token</Text>
+                    <Text className="text-white">{t("staking.select_token")}</Text>
                   )}
                 </TouchableOpacity>
               </View>
               <View className="flex-row justify-between mb-2">
                 <Text className="text-gray-400 text-base">
-                  Available Balance:
+                  {t("components.available_balance")}:
                 </Text>
                 <Text className="text-white text-lg font-medium">
                   {selectedToken
@@ -233,7 +236,7 @@ const EnrollPlan = () => {
               </View>
               {/* Expected Final Amount */}
               <View className="mb-4 mt-4">
-                <Text className="text-gray-400">Interest at Maturity</Text>
+                <Text className="text-gray-400">{t("staking.interest_at_maturity")}</Text>
                 <View className="flex flex-row gap-2 items-center mt-2">
                   <Text className="text-green-500 text-2xl font-extrabold">
                     {expectedInterest}
@@ -246,12 +249,12 @@ const EnrollPlan = () => {
 
               {/* Amount Input */}
               <View className="mb-4">
-                <Text className="text-gray-400 mb-2">Amount</Text>
+                <Text className="text-gray-400 mb-2">{t("common.amount")}</Text>
                 <TextInput
                   keyboardType="numeric"
                   value={amount}
                   onChangeText={setAmount}
-                  placeholder="Enter amount to stake"
+                  placeholder={t("staking.enter_amount_to_stake")}
                   className="border border-gray-700 rounded-xl px-4 py-2 text-white bg-black-900"
                   placeholderTextColor="#999"
                 />
@@ -264,7 +267,7 @@ const EnrollPlan = () => {
                 className="bg-pink-1100 rounded-xl py-3 items-center"
               >
                 <Text className="text-white font-semibold text-base">
-                  Enroll
+                  {t("staking.enroll")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -275,7 +278,7 @@ const EnrollPlan = () => {
             <View className="flex-1 bg-black-1000 bg-opacity-95 justify-center items-center px-8">
               <View className="bg-black-800 rounded-xl p-4 w-full">
                 <Text className="text-white text-lg font-semibold mb-4">
-                  Select Token
+                  {t("staking.select_token")}
                 </Text>
 
                 {parsedPlan.supportedTokens.map((token) => (
@@ -305,7 +308,7 @@ const EnrollPlan = () => {
                   className="mt-4 bg-pink-1100 rounded-xl py-3 items-center"
                 >
                   <Text className="text-white font-semibold text-base">
-                    Cancel
+                    {t("common.cancel")}
                   </Text>
                 </TouchableOpacity>
               </View>

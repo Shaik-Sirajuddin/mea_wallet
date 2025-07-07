@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useTranslation } from "react-i18next";
 import { Image, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import HomeScreen from "./home";
@@ -14,6 +15,7 @@ import Staking from "./staking";
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const [popoUpVisible, setPopUpVisible] = useState(false);
 
   //check for authentication
@@ -189,7 +191,7 @@ export default function TabLayout() {
       <InfoAlert
         setVisible={setPopUpVisible}
         visible={popoUpVisible}
-        text="Session Expired"
+        text={t("common.session_expired")}
         showAnimation={false}
         onDismiss={() => {
           router.replace("/(auth)/signup");

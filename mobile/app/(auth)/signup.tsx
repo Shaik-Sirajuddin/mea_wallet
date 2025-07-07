@@ -105,24 +105,24 @@ const Signup: React.FC = () => {
       if (!result) return;
     }
     if (!email) {
-      setInputError("Email is required");
+      setInputError(t("auth.signup.email_required"));
       setErrorType(ErrorType.INVALID_EMAIL);
       return;
     }
     if (!validateEmail(email)) {
-      setInputError("Please enter a valid email");
+      setInputError(t("auth.signup.valid_email"));
       setErrorType(ErrorType.INVALID_EMAIL);
       return;
     }
 
     // Wallet Validation
     if (!wallet) {
-      setInputError("Wallet is required");
+      setInputError(t("auth.signup.wallet_required"));
       setErrorType(ErrorType.INVALID_ADDRESS);
       return;
     }
     if (!isValidPublicKey(wallet)) {
-      setInputError("Invalid PublicKey");
+      setInputError(t("auth.signup.invalid_public_key"));
       setErrorType(ErrorType.INVALID_ADDRESS);
       return;
     }
@@ -134,18 +134,18 @@ const Signup: React.FC = () => {
     // Password validation
     if (!password) {
       setErrorType(ErrorType.INVALID_PASSWORD);
-      setInputError("Password is required");
+      setInputError(t("auth.signup.password_required"));
       return;
     }
     if (password.length < 6) {
       setErrorType(ErrorType.INVALID_PASSWORD);
-      setInputError("Password must be at least 6 characters");
+      setInputError(t("auth.signup.password_min_length"));
       return;
     }
 
     if (password !== verifyPassword) {
       setErrorType(ErrorType.MISMATCH_PASSWORD);
-      setInputError("Password mismatch");
+      setInputError(t("auth.signup.password_mismatch"));
       return;
     }
 
@@ -153,7 +153,7 @@ const Signup: React.FC = () => {
       setInfoAlertState({
         ...infoAlertState,
         type: "error",
-        text: "Terms of service not accepted",
+        text: t("auth.signup.terms_not_accepted"),
       });
       setInfoAlertVisible(true);
       return;
@@ -163,7 +163,7 @@ const Signup: React.FC = () => {
       setInfoAlertState({
         ...infoAlertState,
         type: "error",
-        text: "Privacy Policy not accepted",
+        text: t("auth.signup.privacy_not_accepted"),
       });
       setInfoAlertVisible(true);
       return;
@@ -194,7 +194,7 @@ const Signup: React.FC = () => {
     setInfoAlertState({
       ...infoAlertState,
       type: "success",
-      text: "Registered Successfully",
+      text: t("auth.signup.registered_successfully"),
     });
     console.log("sign up completed");
     setInfoAlertVisible(true);
@@ -255,12 +255,12 @@ const Signup: React.FC = () => {
             <View className="flex-row items-center gap-4 mt-12">
               <TouchableOpacity onPress={() => router.replace("/signin")}>
                 <Text className="text-xl font-semibold text-gray-400">
-                  Sign In
+                  {t("auth.signup.signin_link")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Text className="text-xl font-semibold text-white">
-                  Sign Up
+                  {t("auth.signup.title")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -270,7 +270,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium text-white">
-                  Email Address <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.email_address")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="w-full relative flex flex-row">
@@ -279,7 +280,7 @@ const Signup: React.FC = () => {
                   onChangeText={(text) => {
                     setEmail(text);
                   }}
-                  placeholder="Enter Email Address"
+                  placeholder={t("auth.signup.enter_email")}
                   placeholderTextColor="#FFFFFF"
                   className="flex-1text-[17px] text-white font-medium pl-8 pr-28 bg-black-1200 w-full h-[71px] rounded-[15px]"
                   keyboardType="email-address"
@@ -293,7 +294,9 @@ const Signup: React.FC = () => {
                       }}
                       className="text-white block font-medium leading-[22px] py-1 px-3 bg-pink-1100 absolute right-4 rounded-2xl"
                     >
-                      <Text className="text-white text-[17px]">Check</Text>
+                      <Text className="text-white text-[17px]">
+                        {t("auth.signup.check")}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -320,7 +323,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium text-white">
-                  Password <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.password")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="relative">
@@ -330,7 +334,7 @@ const Signup: React.FC = () => {
                     setPassword(text);
                   }}
                   secureTextEntry={!showPassword}
-                  placeholder="Enter Password"
+                  placeholder={t("auth.signup.enter_password")}
                   placeholderTextColor="#FFFFFF"
                   className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
@@ -338,7 +342,20 @@ const Signup: React.FC = () => {
                   onPress={() => setShowPassword((prev) => !prev)}
                   className="absolute p-2 top-1/2 right-4 -translate-y-1/2"
                 >
-                  <EyeIcon />
+                  {!showPassword && (
+                    <Image
+                      source={require("../../assets/images/eye.png")}
+                      className="w-6 h-6"
+                      tintColor={"white"}
+                    />
+                  )}
+                  {showPassword && (
+                    <Image
+                      source={require("../../assets/images/eye_close.png")}
+                      className="w-6 h-6"
+                      tintColor={"white"}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
               {inputError && errorType === ErrorType.INVALID_PASSWORD ? (
@@ -347,8 +364,7 @@ const Signup: React.FC = () => {
                 </Text>
               ) : null}
               <Text className="text-[15px] mt-2 font-medium leading-[22px] text-gray-1200 px-8">
-                Including lowercase letters, numbers, and special characters, 4
-                to 15 characters.
+                {t("auth.signup.password_hint")}
               </Text>
             </View>
 
@@ -357,7 +373,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium text-white">
-                  Verify password <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.verify_password")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="relative">
@@ -367,7 +384,7 @@ const Signup: React.FC = () => {
                     setVerifyPassword(text);
                   }}
                   secureTextEntry={!showVerifyPassword}
-                  placeholder="Enter Password"
+                  placeholder={t("auth.signup.enter_verify_password")}
                   placeholderTextColor="#FFFFFF"
                   className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
@@ -375,7 +392,20 @@ const Signup: React.FC = () => {
                   onPress={() => setShowVerifyPassword((prev) => !prev)}
                   className="absolute p-2 top-1/2 right-4 -translate-y-1/2"
                 >
-                  <EyeIcon />
+                  {!showVerifyPassword && (
+                    <Image
+                      source={require("../../assets/images/eye.png")}
+                      className="w-6 h-6"
+                      tintColor={"white"}
+                    />
+                  )}
+                  {showVerifyPassword && (
+                    <Image
+                      source={require("../../assets/images/eye_close.png")}
+                      className="w-6 h-6"
+                      tintColor={"white"}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
               {inputError && errorType === ErrorType.MISMATCH_PASSWORD ? (
@@ -390,7 +420,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                 <Text className="text-base font-medium text-white">
-                  Wallet Address <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.wallet_address")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="w-full relative">
@@ -399,7 +430,7 @@ const Signup: React.FC = () => {
                   onChangeText={(text) => {
                     setWallet(text);
                   }}
-                  placeholder="Wallet Address"
+                  placeholder={t("auth.signup.enter_wallet")}
                   placeholderTextColor="#FFFFFF"
                   className="text-[17px] text-white font-medium pl-8 pr-28 bg-black-1200 w-full h-[71px] rounded-[15px]"
                   keyboardType="email-address"
@@ -413,7 +444,9 @@ const Signup: React.FC = () => {
                       }}
                       className="text-white block font-medium leading-[22px] py-1 px-3 bg-pink-1100 absolute right-4 rounded-2xl"
                     >
-                      <Text className="text-white text-[17px]">Check</Text>
+                      <Text className="text-white text-[17px]">
+                        {t("auth.signup.check")}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -436,7 +469,7 @@ const Signup: React.FC = () => {
               ) : null}
 
               <Text className="text-[15px] mt-2 font-medium leading-[22px] text-gray-1200 px-8">
-                Please enter your Solana network wallet address.
+                {t("auth.signup.wallet_hint")}
               </Text>
             </View>
 
@@ -444,7 +477,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <InforIcon />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Terms of Use <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.terms_of_service")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="relative mb-2 h-[136px]">
@@ -476,7 +510,7 @@ const Signup: React.FC = () => {
                   <CheckboxIcon as={CheckIcon} />
                 </CheckboxIndicator>
                 <CheckboxLabel className="text-[15px] ml-2 font-medium leading-[22px] !text-gray-1200">
-                  I agree to the Privacy Policy
+                  {t("auth.signup.agree_terms")}
                 </CheckboxLabel>
               </Checkbox>
             </View>
@@ -485,7 +519,8 @@ const Signup: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-3">
                 <InforIcon />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  Privacy Policy <Text className="text-pink-1200">*</Text>
+                  {t("auth.signup.privacy_policy")}{" "}
+                  <Text className="text-pink-1200">*</Text>
                 </Text>
               </View>
               <View className="relative mb-2 h-[136px]">
@@ -517,7 +552,7 @@ const Signup: React.FC = () => {
                     <CheckboxIcon as={CheckIcon} />
                   </CheckboxIndicator>
                   <CheckboxLabel className="text-[15px] ml-2 font-medium leading-[22px] !text-gray-1200">
-                    I agree to the Terms of Use.
+                    {t("auth.signup.agree_privacy")}
                   </CheckboxLabel>
                 </Checkbox>
               </View>
@@ -529,7 +564,7 @@ const Signup: React.FC = () => {
             <PrimaryButton
               onPress={handleSignup}
               className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
-              text="Sign Up"
+              text={t("auth.signup.sign_up")}
               disabled={inputError !== null}
             />
           </View>

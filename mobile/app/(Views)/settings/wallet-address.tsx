@@ -7,6 +7,7 @@ import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
 import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -20,6 +21,7 @@ import {
 import { useSelector } from "react-redux";
 
 const WalletAddress = () => {
+  const { t } = useTranslation();
   const registeredAddresses = useSelector(
     (store: RootState) => store.deposit.depositAddresses
   );
@@ -46,7 +48,7 @@ const WalletAddress = () => {
     setModalState({
       ...modalState,
       type: "success",
-      text: "Wallet address added successfully",
+      text: t("settings.wallet_address_added"),
     });
     setModalVisible(true);
     syncWalletAddress();
@@ -80,7 +82,7 @@ const WalletAddress = () => {
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
             <Text className="text-lg font-semibold text-white">
-              Wallet Address
+              {t("settings.wallet_address")}
             </Text>
           </View>
 
@@ -98,7 +100,7 @@ const WalletAddress = () => {
               {/* Input with Copy Button */}
               <View className="relative my-8">
                 <TextInput
-                  placeholder="Enter Wallet Address"
+                  placeholder={t("settings.enter_wallet_address")}
                   placeholderTextColor="#FFFFFF"
                   className="text-base pr-20 text-white font-semibold px-4 border border-gray-1000 w-full  h-[53px] rounded-[6px]"
                   onChangeText={(text) => {
@@ -110,7 +112,7 @@ const WalletAddress = () => {
                   className="absolute top-1/2 -translate-y-1/2 right-3 bg-pink-1100 py-[5px] px-[8px] rounded-2xl"
                 >
                   <Text className="text-white text-[14px] font-medium leading-[22px]">
-                    Add
+                    {t("settings.add")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -122,7 +124,7 @@ const WalletAddress = () => {
                     <Text className="text-white flex text-xs">1</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    This wallet address is used for deposits.
+                    {t("settings.wallet_address_instruction_1")}
                   </Text>
                 </View>
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -130,7 +132,7 @@ const WalletAddress = () => {
                     <Text className="text-white flex text-xs">2</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    You can add up to 5 wallet addresses.
+                    {t("settings.wallet_address_instruction_2")}
                   </Text>
                 </View>
                 <View className="flex-row items-center mb-1 gap-2.5">
@@ -138,8 +140,7 @@ const WalletAddress = () => {
                     <Text className="text-white flex text-xs">3</Text>
                   </View>
                   <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    Only wallet addresses created on the Solana network can be
-                    used.
+                    {t("settings.wallet_address_instruction_3")}
                   </Text>
                 </View>
               </View>
