@@ -281,4 +281,13 @@ export default {
       responseHandler.error(res, error);
     }
   },
+  validateSession: async (req: Request, res: Response) => {
+    try {
+      responseHandler.success(res, {
+        loggedIn: true,
+      });
+    } catch (error) {
+      responseHandler.error(res, error);
+    }
+  },
 };

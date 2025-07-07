@@ -1,9 +1,86 @@
 {
+  "auth": {
+    "get_started": {
+      "title": "To get started, create a new wallet or import an existing one.",
+      "create_wallet": "Log In",
+      "existing_wallet": "Join The Membership"
+    },
+    "signin": {
+      "title": "Sign In",
+      "signup_link": "Sign Up",
+      "email_address": "Email Address",
+      "password": "Password",
+      "enter_email": "Enter Email Address",
+      "enter_password": "Enter Password",
+      "sign_in": "Sign In",
+      "forgot_password": "Forgot Password",
+      "sign_up": "Sign Up",
+      "email_required": "Email is required",
+      "password_required": "Password is required",
+      "login_error": "Login Error"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "signin_link": "Sign In",
+      "email_address": "Email Address",
+      "wallet_address": "Wallet Address",
+      "password": "Password",
+      "verify_password": "Verify password",
+      "enter_email": "Enter Email Address",
+      "enter_wallet": "Wallet Address",
+      "enter_password": "Enter Password",
+      "enter_verify_password": "Enter Password",
+      "sign_up": "Sign Up",
+      "email_required": "Email is required",
+      "valid_email": "Please enter a valid email",
+      "wallet_required": "Wallet is required",
+      "invalid_public_key": "Invalid PublicKey",
+      "password_required": "Password is required",
+      "password_min_length": "Password must be at least 6 characters",
+      "password_mismatch": "Password mismatch",
+      "terms_not_accepted": "Terms of service not accepted",
+      "privacy_not_accepted": "Privacy Policy not accepted",
+      "registered_successfully": "Registered Successfully",
+      "terms_of_service": "Terms of Use",
+      "privacy_policy": "Privacy Policy",
+      "agree_terms": "I agree to the Privacy Policy",
+      "agree_privacy": "I agree to the Terms of Use.",
+      "check": "Check",
+      "password_hint": "Including lowercase letters, numbers, and special characters, 4 to 15 characters.",
+      "wallet_hint": "Please enter your Solana network wallet address."
+    },
+    "forget_password": {
+      "title": "Find Password",
+      "enter_email": "Enter Email Address",
+      "confirm": "Confirm",
+      "sign_in": "Sign In",
+      "sign_up": "Sign Up",
+      "email_required": "Email is required",
+      "valid_email": "Please enter a valid email",
+      "notice": "Notice",
+      "notice_text": "A temporary password will be sent to your Email Address.",
+      "reset_sent": "A password reset link has been sent to email"
+    },
+    "success": {
+      "title": "We're all set!",
+      "subtitle": "The wallet is now fully available.",
+      "start": "Start"
+    }
+  },
   "home": {
     "notify": "notify"
   },
   "aggrements": {
-    "terms_of_use": "Wallet Terms of Use\n\nArticle 1: General Provisions\n1. Wallet (hereinafter “Wallet”) provides centralized digital asset management services based on blockchain.\n2. By using the wallet, the user is deemed to agree to the Terms of Use.\n3. These Terms of Use stipulate the rights and obligations between the user and the wallet, and the user must comply with them.\n\nArticle 2: Service provision\n1. Wallet provides services to safely store and manage users’ digital assets.\n2. The wallet provides functions such as sending, receiving, and viewing digital assets at the user's request.\n3. The wallet strives to provide safe services according to the password and security measures set by the user.\n\nArticle 3: User rights and obligations\n1. Users must comply with these Terms of Use and use their wallet safely.\n2. Users must maintain their wallet account information accurately and not disclose it to others.\n3. Users must not use the wallet to violate laws or infringe on the rights of others.",
-    "privacy_policy": "Wallet personal information collection details\n\nArticle 1: Items of personal information collected\nThe wallet may collect the following personal information items:\n1. Personal information such as real name, date of birth, gender, etc. to verify the user’s identity\n2. Personal information such as email address and phone number as user's contact information\n3. Personal information such as user’s wallet usage history and transaction information\n\nArticle 2: Purpose of collection and use of personal information\nThe wallet uses the collected personal information for the following purposes:\n1. Personal information is used for the purpose of user identification and service provision.\n2. Personal information is used to communicate smoothly with users and respond to their inquiries.\n3. Personal information is used for the purpose of improving and maintaining services.\n4. Personal information is used to comply with laws and regulations and prevent illegal use."
+    "terms_of_use": "Wallet Terms of Use\n\nArticle 1: General Provisions\n1. Wallet (hereinafter \"Wallet\") provides centralized digital asset management services based on blockchain.\n2. By using the wallet, the user is deemed to agree to the Terms of Use.\n3. These Terms of Use stipulate the rights and obligations between the user and the wallet, and the user must comply with them.\n\nArticle 2: Service provision\n1. Wallet provides services to safely store and manage users' digital assets.\n2. The wallet provides functions such as sending, receiving, and viewing digital assets at the user's request.\n3. The wallet strives to provide safe services according to the password and security measures set by the user.\n\nArticle 3: User rights and obligations\n1. Users must comply with these Terms of Use and use their wallet safely.\n2. Users must maintain their wallet account information accurately and not disclose it to others.\n3. Users must not use the wallet to violate laws or infringe on the rights of others.",
+    "privacy_policy": "Wallet personal information collection details\n\nArticle 1: Items of personal information collected\nThe wallet may collect the following personal information items:\n1. Personal information such as real name, date of birth, gender, etc. to verify the user's identity\n2. Personal information such as email address and phone number as user's contact information\n3. Personal information such as user's wallet usage history and transaction information\n\nArticle 2: Purpose of collection and use of personal information\nThe wallet uses the collected personal information for the following purposes:\n1. Personal information is used for the purpose of user identification and service provision.\n2. Personal information is used to communicate smoothly with users and respond to their inquiries.\n3. Personal information is used for the purpose of improving and maintaining services.\n4. Personal information is used to comply with laws and regulations and prevent illegal use."
+  },
+  "customer_support": {
+    "title": "Contact Us",
+    "homepage": "Homepage",
+    "telegram": "Telegram",
+    "no_contact": "No contact information available"
+  },
+  "error": {
+    "open_url_failed": "Failed to open URL"
   }
 }

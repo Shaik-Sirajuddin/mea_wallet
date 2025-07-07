@@ -1,4 +1,4 @@
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Image,
@@ -96,45 +96,59 @@ const ReceiveItems = () => {
               >
                 <SvgIcon name="leftArrow2" width="14" height="14" />
               </Pressable>
+<<<<<<< Updated upstream
               <Text className="text-lg font-semibold text-white">Receive</Text>
+=======
+              <Text className="text-lg font-semibold text-white">
+                {t("receive.title")}
+              </Text>
+>>>>>>> Stashed changes
             </View>
 
             <View className="relative mt-10">
               {Object.entries(balances).map(([tokenSymbol]) => (
-                <View
+                <Pressable
                   key={tokenSymbol}
-                  className="flex flex-row items-center mb-2 justify-between bg-black-1200 rounded-[15px] p-4"
+                  onPress={() => {
+                    console.log("navigate called");
+                    router.push({
+                      pathname: "/deposit-view",
+                      params: {
+                        symbol: tokenSymbol,
+                      },
+                    });
+                  }}
+                  className="mb-2"
                 >
-                  <View className="flex flex-row items-center gap-3">
-                    <Image
-                      source={tokenImageMap[tokenSymbol]}
-                      className="w-12 h-12 rounded-full"
-                      resizeMode="cover"
-                    />
-                    <View>
-                      <Text className="text-[17px] font-medium leading-[22px] text-white">
-                        {tokenSymbol.toUpperCase()}
-                      </Text>
-                      <View className="flex-row items-center gap-1">
-                        <Text className="text-[15px] font-medium leading-[22px] text-white">
-                          {truncateAddress(depositAddress)}
+                  <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4">
+                    <View className="flex flex-row items-center gap-3">
+                      <Image
+                        source={tokenImageMap[tokenSymbol]}
+                        className="w-12 h-12 rounded-full"
+                        resizeMode="cover"
+                      />
+                      <View>
+                        <Text className="text-[17px] font-medium leading-[22px] text-white">
+                          {tokenSymbol.toUpperCase()}
                         </Text>
+                        <View className="flex-row items-center gap-1">
+                          <Text className="text-[15px] font-medium leading-[22px] text-white">
+                            {truncateAddress(depositAddress)}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
 
-                  <View className="flex-row gap-2">
-                    {/* <Pressable className="w-10 h-10 rounded-full active:bg-pink-1100 items-center justify-center bg-black-1000">
-                      <SvgIcon name="QRIcon" />
-                    </Pressable> */}
-                    <Pressable
-                      onPress={() => performCopy(tokenSymbol)}
-                      className="w-10 h-10 active:bg-pink-1100 rounded-full items-center justify-center bg-black-1000"
-                    >
-                      <SvgIcon name="copyIcon" />
-                    </Pressable>
+                    {/* <View className="flex-row gap-2">
+                      <Pressable
+                        onPress={() => performCopy(tokenSymbol)}
+                        className="w-10 h-10 active:bg-pink-1100 rounded-full items-center justify-center bg-black-1000"
+                      >
+                        <SvgIcon name="copyIcon" />
+                      </Pressable>
+                    </View> */}
                   </View>
-                </View>
+                </Pressable>
               ))}
             </View>
           </View>

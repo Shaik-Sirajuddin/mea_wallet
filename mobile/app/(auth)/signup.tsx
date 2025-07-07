@@ -43,12 +43,10 @@ enum ErrorType {
 
 const Signup: React.FC = () => {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("test1@gmail.com");
-  const [wallet, setWallet] = useState(
-    "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo"
-  );
-  const [password, setPassword] = useState("test1@gmail.com");
-  const [verifyPassword, setVerifyPassword] = useState("test1@gmail.com");
+  const [email, setEmail] = useState("");
+  const [wallet, setWallet] = useState("");
+  const [password, setPassword] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showVerifyPassword, setShowVerifyPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);

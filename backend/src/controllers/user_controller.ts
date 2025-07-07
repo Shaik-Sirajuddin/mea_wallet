@@ -60,7 +60,6 @@ export default {
       responseHandler.error(res, error);
     }
   },
-
   get2FASecret: async (req: Request, res: Response) => {
     try {
       let user = (await User.findByPk(req.userId, {
@@ -88,7 +87,6 @@ export default {
       responseHandler.error(res, error);
     }
   },
-
   initiate2FASetup: async (req: Request, res: Response) => {
     try {
       let { otp } = req.body;

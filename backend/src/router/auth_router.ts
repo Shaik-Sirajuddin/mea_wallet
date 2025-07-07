@@ -1,6 +1,7 @@
 import express from "express";
 import authController from "../controllers/auth_controller";
 import rateLimit from "express-rate-limit";
+import { authorized } from "../middleware/auth_middleware";
 /***
  * TODO :
  * 2fa :
@@ -12,6 +13,7 @@ const authRouter = express.Router();
 
 authRouter.post("/sign-up", authController.signUp);
 authRouter.post("/login", authController.login);
+authRouter.get("/validate-session", authorized, authController.validateSession);
 authRouter.post("/reset-pass", authController.requestPasswordReset);
 authRouter.post("/verify-reset-hash", authController.verifyResetToken);
 authRouter.post("/confirm-pass-reset", authController.confirmReset);

@@ -7,7 +7,12 @@ import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert from "../components/InfoAlert";
 
 const ForgetPassword: React.FC = () => {
+<<<<<<< Updated upstream
   const [email, setEmail] = useState("test@gmail.com");
+=======
+  const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+>>>>>>> Stashed changes
   const [popupVisible, setPopUpVisible] = useState(false);
 
   const [emailError, setEmailError] = useState<string | null>(null);

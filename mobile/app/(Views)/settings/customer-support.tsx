@@ -1,50 +1,119 @@
-import { router, useNavigation } from "expo-router";
-import React from "react";
-import { Pressable, Text, View } from "react-native";
-import SvgIcon from "../../components/SvgIcon";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  Linking,
+} from "react-native";
+import { router } from "expo-router";
+import SvgIcon from "@/app/components/SvgIcon";
+import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
+import useSetting from "@/hooks/useSetting";
+import { useTranslation } from "react-i18next";
 
 const CustomerSupport = () => {
-  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const [settings, setSettings] = useState<{
+    homepage: string;
+    telegram: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const fetchSettings = async () => {
+    setLoading(true);
+    const res = await useSetting.getSettings();
+
+    if (typeof res === "string") {
+      setModalState({
+        text: res,
+        type: "error",
+      });
+      setPopupVisible(true);
+    } else {
+      setSettings(res);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const handleOpenURL = (url: string) => {
+    Linking.openURL(url).catch((err) => {
+      setModalState({
+        text: t("error.open_url_failed"),
+        type: "error",
+      });
+      setPopupVisible(true);
+      console.error("URL open error:", err);
+    });
+  };
 
   return (
-    <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto  pt-8 pb-10">
-        <View className="w-full">
-          <View className="items-center relative">
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="absolute -left-2 top-0 z-10 p-2"
-            >
-              <SvgIcon name="leftArrow" width="21" height="21" />
-            </Pressable>
-            <Text className="text-lg font-semibold text-white">
-              Customer Support
-            </Text>
-          </View>
-
-          <View className="relative mt-10">
-            <Pressable
-              onPress={() => router.push("/(Views)/settings/contact-form")}
-              className="bg-black-1200 mb-4 rounded-2xl flex-row items-center justify-between pt-3 pb-4 px-3"
-            >
-              <Text className="text-base font-semibold leading-5 text-white">
-                Contact
-              </Text>
-              <SvgIcon name="rightArrow" width="8" />
-            </Pressable>
-
-            <Pressable
-              onPress={() => router.push("/(Views)/settings/faq-view")}
-              className="bg-black-1200 mb-4 rounded-2xl flex-row items-center justify-between pt-3 pb-4 px-3"
-            >
-              <Text className="text-base font-semibold leading-5 text-white">
-                FAQ
-              </Text>
-              <SvgIcon name="rightArrow" width="8" />
-            </Pressable>
-          </View>
+    <View className="bg-black-1000 flex-1">
+      <View className="w-full mx-auto">
+        <View className="items-center relative mb-6">
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="absolute left-0 top-2"
+          >
+            <SvgIcon name="leftArrow" />
+          </TouchableOpacity>
+          <Text className="text-lg font-semibold text-white">
+            {t("customer_support.title")}
+          </Text>
         </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#fff" className="mt-10" />
+        ) : settings ? (
+          <ScrollView className="mt-6">
+            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mb-4">
+              <Text className="text-white text-lg font-semibold mb-2">
+                {t("customer_support.homepage")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleOpenURL(settings.homepage)}
+                className="bg-pink-1100 rounded-xl py-2 px-4 items-center"
+              >
+                <Text className="text-white font-medium">
+                  {settings.homepage}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4">
+              <Text className="text-white text-lg font-semibold mb-2">
+                {t("customer_support.telegram")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleOpenURL(settings.telegram)}
+                className="bg-pink-1100 rounded-xl py-2 px-4 items-center"
+              >
+                <Text className="text-white font-medium">
+                  {settings.telegram}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        ) : (
+          <Text className="text-white text-center mt-10">
+            {t("customer_support.no_contact")}
+          </Text>
+        )}
       </View>
+
+      <InfoAlert
+        {...modalState}
+        visible={popupVisible}
+        setVisible={setPopupVisible}
+      />
     </View>
   );
 };

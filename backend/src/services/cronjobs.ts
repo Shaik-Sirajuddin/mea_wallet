@@ -102,6 +102,6 @@ const syncTradingPairPrices = async () => {
 };
 export const setUpCronJobs = () => {
   nodeCron.schedule("* * * * * *", () => {
-    syncTradingPairPrices();
+    // syncTradingPairPrices();
   });
 };
