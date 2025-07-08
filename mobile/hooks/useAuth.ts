@@ -79,10 +79,15 @@ export default {
     });
   },
 
-  loginStatus: async () => {
-    return await networkRequest<LoginStatusResponse>(
+  loginStatus: async (): Promise<LoginStatusResponse | string> => {
+    let raw = await networkRequest<LoginStatusResponse>(
       `${apiBaseUrl}/api/login-status`
     );
+    if (typeof raw === "string") return raw;
+    return {
+      loggedIn: raw.loggedIn,
+      UserEmail: atob(raw.UserEmail),
+    };
   },
 
   logout: async () => {

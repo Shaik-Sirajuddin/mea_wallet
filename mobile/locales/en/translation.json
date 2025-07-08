@@ -2,8 +2,8 @@
   "auth": {
     "get_started": {
       "title": "To get started, create a new wallet or import an existing one.",
-      "create_wallet": "Create a new wallet",
-      "existing_wallet": "The wallet already exists"
+      "create_wallet": "Join The Membership",
+      "existing_wallet": "Log In"
     },
     "signin": {
       "title": "Sign In",
@@ -158,7 +158,11 @@
     "enter_inquiry": "Please enter your inquiry details",
     "send": "Send",
     "select_avatar": "Select Avatar",
-    "emojis": "Emojis"
+    "emojis": "Emojis",
+    "no_image_selected": "You did not select any image.",
+    "failed_get_image_data": "Failed to get image data.",
+    "image_too_large": "Image is too large. Max allowed is {{size}}MB.",
+    "profile_image_updated": "Profile image updated successfully."
   },
   "receive": {
     "title": "Receive",
@@ -392,5 +396,11 @@
   },
   "error": {
     "open_url_failed": "Failed to open URL"
+  },
+  "password_validation": {
+    "length_error": "Password must be between 4 and 15 characters.",
+    "number_missing": "Password must contain at least one number.",
+    "symbol_missing": "Password must contain at least one symbol.",
+    "invalid_characters": "Password can only contain lowercase letters, numbers, and allowed symbols."
   }
 }

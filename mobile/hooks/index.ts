@@ -7,9 +7,6 @@ import { STORAGE_KEYS } from "@/storage/keys";
  */
 
 //todo : implement concurrency here
-let csrfToken =
-  "7a13497c3d850adf511a4e8c8c1a8effba462d1457caae27a5f77c7743eafa47";
-
 const hasHeader = (init: RequestInit, headerName: string): boolean => {
   if (!init.headers) return false;
   // Case 3: headers is a plain object
@@ -40,17 +37,17 @@ export const networkRequestWithParser = async <T>(
     });
     let res = await response.json();
     if (!response.ok) {
-      console.log(res.status)
+      console.log(res.status);
       return res.status as string;
     }
     return res as T;
   } catch (error: any) {
-    console.log("Request failed at parser" , error)
+    console.log("Request failed at parser", error);
     if (error.message && typeof error.message === "string") {
       return error.message as string;
     }
     return "";
-  } 
+  }
 };
 
 export const networkRequest = async <T>(
@@ -64,7 +61,6 @@ export const networkRequest = async <T>(
       return "invalid body type";
     }
     let body = new URLSearchParams(init.body ?? {});
-    body.append("csrfToken", csrfToken);
     body.append("apikey", apiKey);
     init.body = body.toString();
 

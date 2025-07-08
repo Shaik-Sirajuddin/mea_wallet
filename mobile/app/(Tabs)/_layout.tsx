@@ -11,12 +11,15 @@ import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { router } from "expo-router";
 import Staking from "./staking";
+import { useDispatch } from "react-redux";
+import { setUserEmail } from "@/src/features/user/userSlice";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const { t } = useTranslation();
   const [popoUpVisible, setPopUpVisible] = useState(false);
+  const dispatch = useDispatch();
 
   //check for authentication
   const checkAuthenticated = async () => {
@@ -26,7 +29,9 @@ export default function TabLayout() {
       //todo : can be specific for error handling
       console.log(result);
       setPopUpVisible(true);
+      return;
     }
+    dispatch(setUserEmail(result.UserEmail));
   };
 
   useEffect(() => {

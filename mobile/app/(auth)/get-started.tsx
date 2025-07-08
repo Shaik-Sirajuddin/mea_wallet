@@ -23,19 +23,19 @@ const GetStarted = () => {
         </View>
         <View className="w-full">
           <Link
-            href="/signup"
+            href="/signin"
             className="mb-[9px] text-center w-full text-white py-2.5 bg-pink-1100 border border-pink-1100 rounded-[15px] flex items-center justify-center active:bg-transparent active:text-pink-1100 hover:text-pink-1100 hover:bg-transparent"
           >
             <Text className="text-base font-semibold leading-[22px]">
-              {t("auth.get_started.create_wallet")}
+              {t("auth.get_started.existing_wallet")}
             </Text>
           </Link>
           <TouchableOpacity
-            onPress={() => router.push("/signin")}
+            onPress={() => router.push("/signup")}
             className="w-full h-[45px] bg-black-1100 rounded-[15px] flex items-center justify-center"
           >
             <Text className="text-base font-semibold text-white leading-[22px]">
-              {t("auth.get_started.existing_wallet")}
+              {t("auth.get_started.create_wallet")}
             </Text>
           </TouchableOpacity>
         </View>

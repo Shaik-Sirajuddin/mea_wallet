@@ -11,9 +11,11 @@ const resources = {
 };
 
 const initI18n = async () => {
-  const userDefaultLang =
-    (await storage.retreive("default.language")) ??
-    Localization.getLocales()[0].languageCode!;
+  // const userDefaultLang =
+  //   (await storage.retreive("default.language")) ??
+  //   Localization.getLocales()[0].languageCode!;
+
+  const userDefaultLang = "en";
 
   i18n.use(initReactI18next).init({
     resources,

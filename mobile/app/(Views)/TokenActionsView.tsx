@@ -19,7 +19,7 @@ const TokenActionsView = () => {
     { label: t("token_actions.chart"), url: "/chart-view" },
   ];
 
-const normalizePath = (path: string) => path.replace(/\/$/, "");
+  const normalizePath = (path: string) => path.replace(/\/$/, "");
 
   // useEffect(() => {
   //   router.push({
@@ -47,7 +47,9 @@ const normalizePath = (path: string) => path.replace(/\/$/, "");
           >
             <SvgIcon name="leftArrow2" width="14" height="14" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">{t("token_actions.native")}</Text>
+          <Text className="text-lg font-semibold text-white">
+            {t("token_actions.native")}
+          </Text>
         </View>
 
         <View className="relative mt-10">

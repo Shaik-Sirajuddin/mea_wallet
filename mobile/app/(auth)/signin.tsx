@@ -23,8 +23,8 @@ enum ErrorType {
 }
 const Signin: React.FC = () => {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("test");
-  const [password, setPassword] = useState("Testtest");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   // Validation state

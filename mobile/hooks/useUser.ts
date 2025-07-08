@@ -1,9 +1,9 @@
-import { apiBaseUrl } from "@/lib/constants";
+import { apiBaseUrl, imageBucket } from "@/lib/constants";
 import { networkRequest } from ".";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
 import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
-import { TwoFADetails } from "@/src/api/types/user";
+import { TwoFADetails, UserDetails } from "@/src/api/types/user";
 import { StatusResponse } from "@/src/api/types/auth";
 import Decimal from "decimal.js";
 
@@ -21,6 +21,10 @@ export interface WithdrawSettings {
 export interface BalanceResult {
   free: TokenBalances;
   lockup: Omit<TokenBalances, "sol">;
+}
+
+interface UserInfoResponseRaw {
+  Thumbnail: string;
 }
 
 export default {
@@ -114,5 +118,30 @@ export default {
       method: "POST",
       body: new URLSearchParams({ otp_code }).toString(),
     });
+  },
+  getUserInfo: async (): Promise<UserDetails | string> => {
+    let raw = await networkRequest<UserInfoResponseRaw>(
+      `${apiBaseUrl}/api/user-info`,
+      {
+        method: "POST",
+        body: new URLSearchParams({}).toString(),
+      }
+    );
+    if (typeof raw === "string") return raw;
+    let data = {
+      image: imageBucket + "/" + raw.Thumbnail,
+    };
+    return data;
+  },
+  updateProfileImage: async (
+    image: string
+  ): Promise<StatusResponse | string> => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/edit-profile`,
+      {
+        method: "POST",
+        body: new URLSearchParams({ file: image }).toString(),
+      }
+    );
   },
 };

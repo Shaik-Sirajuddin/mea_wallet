@@ -32,8 +32,7 @@ export function trimTrailingZeros(value: string): string {
   }
 }
 
-export function parseNumberForView(value: string) {
-  const maxLength = 12;
+export function parseNumberForView(value: string, maxLength: number = 12) {
   if (value.length <= maxLength) {
     return value;
   }
@@ -84,3 +83,58 @@ export const truncateAddress = (
   }
   return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
 };
+
+type PasswordValidationResult = {
+  valid: boolean;
+  error:
+    | "length_error"
+    | "number_missing"
+    | "symbol_missing"
+    | "invalid_characters"
+    | null;
+};
+
+export function validatePasswordWithReason(password: string): PasswordValidationResult {
+  const result: PasswordValidationResult = {
+    valid: false,
+    error: null,
+  };
+
+  // Check length
+  if (password.length < 4 || password.length > 15) {
+    result.error = "length_error";
+    return result;
+  }
+
+  // Allowed symbols definition
+  const allowedSymbols = "!@#$%^&*()-_=+[]{}|;:',.<>/?`~";
+
+  // Check for invalid characters (only lowercase letters, numbers, and allowed symbols)
+  const allowedRegex = new RegExp(`^[a-z0-9${escapeRegExp(allowedSymbols)}]+$`);
+  if (!allowedRegex.test(password)) {
+    result.error = "invalid_characters";
+    return result;
+  }
+
+  // Check for at least one number
+  if (!/[0-9]/.test(password)) {
+    result.error = "number_missing";
+    return result;
+  }
+
+  // Check for at least one symbol
+  const symbolRegex = new RegExp(`[${escapeRegExp(allowedSymbols)}]`);
+  if (!symbolRegex.test(password)) {
+    result.error = "symbol_missing";
+    return result;
+  }
+
+  // Passed all checks
+  result.valid = true;
+  return result;
+}
+
+// Helper function to escape regex special characters in allowedSymbols
+function escapeRegExp(str: string): string {
+  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+}

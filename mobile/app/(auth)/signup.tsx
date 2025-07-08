@@ -27,6 +27,7 @@ import storage from "@/storage";
 import useDeposit from "@/hooks/useDeposit";
 import SvgIcon from "../components/SvgIcon";
 import { useTranslation } from "react-i18next";
+import { validatePasswordWithReason } from "@/utils/ui";
 
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -36,6 +37,7 @@ enum ErrorType {
   INVALID_EMAIL,
   INVALID_PASSWORD,
   INVALID_ADDRESS,
+  MISMATCH_PASS_REQ,
   MISMATCH_PASSWORD,
   NONUSAGE_EMAIL,
   NONUSABLE_ADDRESS,
@@ -97,11 +99,6 @@ const Signup: React.FC = () => {
 
   const validateForm = async () => {
     // Email validation
-    if (!uniqueEmailValidated) {
-      let result = await performEmailValidation();
-      console.log("email response", result);
-      if (!result) return;
-    }
     if (!email) {
       setInputError(t("auth.signup.email_required"));
       setErrorType(ErrorType.INVALID_EMAIL);
@@ -112,7 +109,11 @@ const Signup: React.FC = () => {
       setErrorType(ErrorType.INVALID_EMAIL);
       return;
     }
-
+    if (!uniqueEmailValidated) {
+      let result = await performEmailValidation();
+      console.log("email response", result);
+      if (!result) return;
+    }
     // Wallet Validation
     if (!wallet) {
       setInputError(t("auth.signup.wallet_required"));
@@ -198,11 +199,11 @@ const Signup: React.FC = () => {
     setInfoAlertVisible(true);
   };
   useEffect(() => {
-    if (inputError) {
+    if (inputError && errorType !== ErrorType.MISMATCH_PASS_REQ) {
       // Alert.alert("Invalid Input", inputError);
       setPopUPVisible(true);
     }
-  }, [inputError]);
+  }, [inputError, errorType]);
 
   useEffect(() => {
     if (inputError && errorType === ErrorType.INVALID_EMAIL) {
@@ -226,6 +227,20 @@ const Signup: React.FC = () => {
     }
     setUniqueAddressValidated(false);
   }, [wallet]);
+
+  useEffect(() => {
+    if (!password.length) return;
+    let validateResult = validatePasswordWithReason(password);
+    if (!validateResult.valid) {
+      setErrorType(ErrorType.MISMATCH_PASS_REQ);
+      setInputError(t("password_validation." + validateResult.error));
+    } else {
+      if (errorType === ErrorType.MISMATCH_PASS_REQ) {
+        setInputError(null);
+        setErrorType(null);
+      }
+    }
+  }, [password]);
   return (
     <View className="flex-1 bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto justify-between">
@@ -356,7 +371,9 @@ const Signup: React.FC = () => {
                   )}
                 </TouchableOpacity>
               </View>
-              {inputError && errorType === ErrorType.INVALID_PASSWORD ? (
+              {inputError &&
+              (errorType === ErrorType.INVALID_PASSWORD ||
+                errorType === ErrorType.MISMATCH_PASS_REQ) ? (
                 <Text className="text-red-500 text-xs mt-1 ml-2">
                   {inputError}
                 </Text>

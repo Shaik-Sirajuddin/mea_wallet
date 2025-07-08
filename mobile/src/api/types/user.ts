@@ -4,6 +4,9 @@ export interface TwoFADetails {
   isRegistered: boolean;
 }
 
+export interface UserDetails {
+  image: string;
+}
 export interface RegistrationResponse {
   status: string;
   message: string;

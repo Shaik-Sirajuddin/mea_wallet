@@ -6,7 +6,7 @@ export interface StatusResponse {
 
 export interface AuthResponse {
   status: "succ" | string;
-  token : string;
+  token: string;
 }
 
 export interface CsrfTokenResponse {
@@ -15,6 +15,7 @@ export interface CsrfTokenResponse {
 
 export interface LoginStatusResponse {
   loggedIn: boolean;
+  UserEmail: string;
 }
 
 export interface LogoutResponse {

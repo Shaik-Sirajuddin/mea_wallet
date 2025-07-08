@@ -21,6 +21,7 @@ import {
   setDepositAddresses,
   setRegisteredAddresses,
 } from "@/src/features/asset/depositSlice";
+import { parseNumberForView } from "@/utils/ui";
 
 const Deposit = () => {
   const { t } = useTranslation();
@@ -30,7 +31,9 @@ const Deposit = () => {
   const minDeposit = useSelector(
     (state: RootState) => state.token.minDeposit[symbol]
   );
-
+  const freeBalance = useSelector(
+    (state: RootState) => state.balance.free[symbol] || ""
+  );
   const [infoAlertVisible, setInfoAlertVisible] = useState(false);
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
@@ -60,7 +63,10 @@ const Deposit = () => {
     if (!depositAmount || parseFloat(depositAmount) < parseFloat(minDeposit)) {
       setInfoAlertState({
         type: "error",
-        text: t("deposit.min_deposit_error", { amount: minDeposit, symbol: displaySymbol }),
+        text: t("deposit.min_deposit_error", {
+          amount: minDeposit,
+          symbol: displaySymbol,
+        }),
       });
       setInfoAlertVisible(true);
       return;
@@ -87,7 +93,9 @@ const Deposit = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">{t("deposit.title")}</Text>
+            <Text className="text-lg font-semibold text-white">
+              {t("deposit.title")}
+            </Text>
           </View>
 
           <View className="relative mt-10">
@@ -101,7 +109,9 @@ const Deposit = () => {
 
               <View className="relative">
                 <View className="text-[15px] flex flex-row items-center justify-center text-center text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]">
-                  <Text className="text-white">1000,212</Text>
+                  <Text className="text-white">
+                    {parseNumberForView(freeBalance)}
+                  </Text>
                   <Text className="text-gray-1200 ml-1">{displaySymbol}</Text>
                 </View>
               </View>
@@ -116,7 +126,10 @@ const Deposit = () => {
 
                 <View className="relative items-center justify-center mb-2">
                   <TextInput
-                    placeholder={t("deposit.enter_amount_min", { amount: minDeposit, symbol: displaySymbol })}
+                    placeholder={t("deposit.enter_amount_min", {
+                      amount: minDeposit,
+                      symbol: displaySymbol,
+                    })}
                     placeholderTextColor="#fff"
                     value={depositAmount}
                     onChangeText={setDepositAmount}

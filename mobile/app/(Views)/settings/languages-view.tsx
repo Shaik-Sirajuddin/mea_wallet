@@ -9,7 +9,7 @@ const Language = () => {
   const navigation = useNavigation();
 
   const switchLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
+    // i18n.changeLanguage(lang);
   };
   return (
     <View className="bg-black-1000">

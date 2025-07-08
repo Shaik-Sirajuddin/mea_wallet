@@ -1,15 +1,18 @@
-import { TwoFADetails } from "@/src/api/types/user";
+import { TwoFADetails, UserDetails } from "@/src/api/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   isAuthenticated: boolean;
   authenticationVerified: boolean;
   twoFA?: TwoFADetails;
+  email: string;
+  details?: UserDetails;
 }
 
 const initialState: UserState = {
   isAuthenticated: false,
   authenticationVerified: false,
+  email: "",
 };
 
 const userSlice = createSlice({
@@ -25,8 +28,21 @@ const userSlice = createSlice({
     setTwoFAData: (state, action: PayloadAction<TwoFADetails>) => {
       state.twoFA = action.payload;
     },
+    setUserEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    },
+    setUserDetails: (state, action: PayloadAction<UserDetails>) => {
+      state.details = action.payload;
+    },
   },
 });
-export const { setIsAuthenticated, setIsAuthenticationVerified, setTwoFAData } =
-  userSlice.actions;
+
+export const {
+  setIsAuthenticated,
+  setIsAuthenticationVerified,
+  setTwoFAData,
+  setUserEmail,
+  setUserDetails,
+} = userSlice.actions;
+
 export default userSlice.reducer;

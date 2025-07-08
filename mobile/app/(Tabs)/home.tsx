@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
-  ScrollView,
+  ScrollView, 
   RefreshControl,
   Image,
   Pressable,
@@ -29,6 +29,7 @@ import {
 import { setQuotes } from "@/src/features/token/tokenSlice";
 import Decimal from "decimal.js";
 import { useNavigation } from "@react-navigation/native";
+import { setUserDetails } from "@/src/features/user/userSlice";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -45,10 +46,12 @@ export default function HomeScreen() {
   const lockedBalance = useSelector(
     (state: RootState) => state.balance.lockup || {}
   );
+  const email = useSelector((state: RootState) => state.user.email);
+  const details = useSelector((state: RootState) => state.user.details);
 
   const syncData = async () => {
     setRefreshing(true);
-    await Promise.all([fetchBalance(), fetchQuotes()]);
+    await Promise.all([fetchBalance(), fetchQuotes(), fetchProfile()]);
     setRefreshing(false);
   };
 
@@ -71,6 +74,14 @@ export default function HomeScreen() {
     dispatch(setLockupBalances(res.lockup));
   };
 
+  const fetchProfile = async () => {
+    let data = await useUser.getUserInfo();
+    if (typeof data === "string") {
+      console.log("failed to fetch profile");
+      return;
+    }
+    dispatch(setUserDetails(data));
+  };
   const onRefresh = async () => {
     syncData();
   };
@@ -133,12 +144,23 @@ export default function HomeScreen() {
               className="flex-row items-center gap-2"
             >
               <View className="bg-pink-1100 w-10 h-10 rounded-full items-center justify-center">
-                <Text className="text-lg font-medium text-white leading-[22px] tracking-[-0.36px]">
-                  1
-                </Text>
+                {!details && (
+                  <Text className="text-lg font-medium text-white leading-[22px] tracking-[-0.36px]">
+                    1
+                  </Text>
+                )}
+                {details && (
+                  <Image
+                    source={{
+                      uri: details.image,
+                    }}
+                    resizeMethod="scale"
+                    className="w-12 h-12 rounded-full bg-transparent"
+                  />
+                )}
               </View>
               <Text className="text-[22px] text-white font-medium tracking-[-0.44px] leading-[22px]">
-                mecca
+                {email}
               </Text>
             </Pressable>
 
@@ -318,14 +340,27 @@ export default function HomeScreen() {
       </View>
       <PopupModal visible={showEditProfile} setVisible={setShowEditProfile}>
         <View className="w-full px-4 flex-col items-center justify-center text-center">
-          <View className="w-16 h-16 bg-pink-1100 rounded-full items-center justify-center">
-            <Text className="text-[25px] font-medium text-white">1</Text>
-          </View>
+          {!details && (
+            <View className="w-16 h-16 bg-pink-1100 rounded-full items-center justify-center">
+              <Text className="text-[25px] font-medium text-white">1</Text>
+            </View>
+          )}
+          {details && (
+            <Image
+              source={{
+                uri: details.image,
+              }}
+              className="w-20 h-20 rounded-full bg-transparent mx-auto"
+            />
+          )}
           <Text className="text-[22px] font-medium text-white mt-3 mb-6">
-            mecca
+            {email}
           </Text>
           <PrimaryButton
-            onPress={() => router.push("/(Views)/settings/edit-profile")}
+            onPress={() => {
+              setShowEditProfile(false);
+              router.push("/(Views)/edit-profile");
+            }}
             text={t("home.edit_profile")}
           />
         </View>
