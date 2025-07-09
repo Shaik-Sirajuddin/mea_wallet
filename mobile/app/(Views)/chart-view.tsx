@@ -1,313 +1,283 @@
-import React, { useState } from "react";
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { ScrollView, Text, View, ActivityIndicator } from "react-native";
 import SvgIcon from "../components/SvgIcon";
-import { LineChart } from "react-native-gifted-charts";
+import { LineGraph, GraphPoint } from "react-native-graph";
+import {
+  GestureHandlerRootView,
+  Pressable,
+} from "react-native-gesture-handler";
+import { router, useLocalSearchParams } from "expo-router";
+import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
+import useChart from "@/hooks/useChart";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store";
+import { TokenQuotes } from "@/src/types/balance";
+import { TokenOverview } from "@/src/api/types/chart";
 
-interface ChartPoint {
-  value: number;
-  label: string;
-}
-const screenWidth = Dimensions.get("window").width;
+type SupportedPeriod = "1hour" | "1day" | "1week" | "1month" | "ytd" | "all";
 
 const ChartView = () => {
-  const [selectedPoint, setSelectedPoint] = useState<ChartPoint | null>(null);
+  const { symbol } = useLocalSearchParams<{ symbol: keyof TokenQuotes }>();
+  const [selectedPoint, setSelectedPoint] = useState<GraphPoint | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<SupportedPeriod>("1day");
+  const [points, setPoints] = useState<GraphPoint[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [tokenOverview, setTokenOverview] = useState<TokenOverview>({
+    price: 0,
+    symbol: symbol ?? "sol",
+    volume: 0,
+  });
 
-  const chartData: ChartPoint[] = [
-    { value: 120, label: "10:00" },
-    { value: 130, label: "10:05" },
-    { value: 105, label: "10:10" },
-    { value: 150, label: "10:15" },
-    { value: 145, label: "10:20" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-    { value: 160, label: "10:25" },
-  ];
-  const calculatedSpacing =
-    chartData.length > 1
-      ? screenWidth / (chartData.length - 1) // adjust -32 if you have horizontal padding/margin
-      : screenWidth;
+  const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
+    text: "",
+  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const quote = useSelector((state: RootState) => state.token.quotes[symbol]);
+
+  const displaySymbol = useMemo(() => {
+    return tokenOverview.symbol.toUpperCase();
+  }, [tokenOverview]);
+
+  const fetchChartData = async (period: SupportedPeriod) => {
+    if (!symbol) return;
+    setLoading(true);
+    const data = await useChart.getChartData(symbol, period);
+    if (typeof data === "string") {
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: data,
+      });
+      setModalVisible(true);
+      setPoints([]);
+    } else {
+      setPoints(data);
+    }
+    setLoading(false);
+  };
+
+  const fetchOverView = async () => {
+    if (!symbol) return;
+    const result = await useChart.getTokenOverview(symbol);
+    if (typeof result === "string") {
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: result,
+      });
+      setModalVisible(true);
+      return;
+    }
+    setTokenOverview(result);
+  };
+
+  useEffect(() => {
+    fetchChartData(selectedPeriod);
+  }, [symbol, selectedPeriod]);
+
+  useEffect(() => {
+    fetchOverView();
+  }, [symbol]);
+
+  const handlePeriodChange = (period: SupportedPeriod) => {
+    setSelectedPeriod(period);
+  };
+
   return (
-    <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10">
-        <View className="w-full">
-          <ScrollView className="px-4">
-            <View className="relative mt-8">
-              <View className="items-center mb-7">
+    <GestureHandlerRootView>
+      <View className="bg-black-1000 flex-1">
+        <View className="w-full h-full mx-auto ">
+          <ScrollView className="">
+            <View className="relative mt-10 gap-2">
+              <View className="items-center">
                 <Text className="text-[17px] font-semibold text-white">
-                  MEA
+                  {displaySymbol}
                 </Text>
                 <Text className="text-[53px] font-semibold text-white">
-                  $149.69
+                  $
+                  {selectedPoint
+                    ? selectedPoint.value.toFixed(2)
+                    : tokenOverview.price.toFixed(2)}
                 </Text>
 
-                <View className="flex-row items-center justify-center gap-1.5">
-                  <Text className="text-base font-medium text-pink-1200">
-                    +$1.02
-                  </Text>
-                  <Text className="text-lg leading-none font-medium text-pink-1200 bg-pink-1200/15 rounded-[5px] py-[5px] px-1">
-                    +0.69%
-                  </Text>
+                <View className=" w-full">
+                  {loading ? (
+                    <ActivityIndicator
+                      size="large"
+                      color="#D107FB"
+                      className="h-72"
+                    />
+                  ) : points.length === 0 ? (
+                    <Text className="text-center text-gray-1200 ">
+                      No data available
+                    </Text>
+                  ) : (
+                    <LineGraph
+                      className="h-72 w-full"
+                      animated={true}
+                      color={"#D107FB"}
+                      points={points}
+                      enablePanGesture={true}
+                      enableFadeInMask={true}
+                      enableIndicator={true}
+                      horizontalPadding={15}
+                      indicatorPulsating={true}
+                      onPointSelected={(point) => setSelectedPoint(point)}
+                      onGestureEnd={() => setSelectedPoint(null)}
+                    />
+                  )}
                 </View>
 
-                <View className="-mx-4 w-full">
-                  <LineChart
-                    data={chartData}
-                    areaChart
-                    curved
-                    color="#8e5ff5"
-                    thickness={2}
-                    startFillColor="#8e5ff5"
-                    startOpacity={0.8}
-                    endOpacity={0}
-                    initialSpacing={0}
-                    spacing={calculatedSpacing}
-                    rulesColor="transparent"
-                    hideAxesAndRules
-                    disableScroll
-                    hideDataPoints={true}
-                    pointerConfig={{
-                      pointerStripUptoDataPoint: true,
-                      pointerStripColor: "#8e5ff5",
-                      pointerStripWidth: 1,
-                      pointerColor: "#8e5ff5",
-                      activatePointersOnLongPress: false,
-                      pointerLabelComponent: (items: any) => {
-                        const item = items[0];
-                        return (
-                          <View
-                            style={{
-                              backgroundColor: "white",
-                              padding: 4,
-                              borderRadius: 4,
-                            }}
-                          >
-                            <Text>
-                              {item?.label} | ₹{item?.value}
-                            </Text>
-                          </View>
-                        );
-                      },
-                      pointerLabelWidth: 100,
-                    }}
-                    showXAxisIndices={false}
-                    xAxisThickness={0}
-                    yAxisExtraHeight={60}
+                <View className="flex-row my-7 items-center gap-2 justify-center flex-wrap">
+                  {["1hour", "1day", "1week", "1month", "ytd", "all"].map(
+                    (period) => (
+                      <Pressable
+                        key={period}
+                        onPress={() =>
+                          handlePeriodChange(period as SupportedPeriod)
+                        }
+                      >
+                        <Text
+                          className={`text-[13px] py-1 px-2 rounded-md font-medium ${
+                            selectedPeriod === period
+                              ? "bg-black-1300 text-pink-1200"
+                              : "text-gray-1200 active:bg-black-1300 active:text-pink-1200"
+                          }`}
+                        >
+                          {period.toUpperCase()}
+                        </Text>
+                      </Pressable>
+                    )
+                  )}
+                </View>
+
+                <View className="flex-row w-full justify-center mx-auto gap-[7px]">
+                  <ActionButton
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(Views)/deposit-view",
+                        params: { symbol },
+                      })
+                    }
+                    icon="receiceIcon"
+                    label="Receive"
+                  />
+                  <ActionButton
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(Views)/withdrawal-view",
+                        params: { symbol },
+                      })
+                    }
+                    icon="sendIcon"
+                    label="Send"
+                  />
+                  <ActionButton
+                    onPress={() =>
+                      router.push({ pathname: "/(Tabs)/swap-tokens" })
+                    }
+                    icon="swapIcon"
+                    label="Swap"
                   />
                 </View>
-
-                <View className="flex-row my-7 items-center gap-2 justify-center">
-                  <TouchableOpacity>
-                    <Text className="text-[13px] font-medium text-gray-1200 active:bg-black-1300 py-1 px-3 rounded-md active:text-pink-1200">
-                      1Hour
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text className="text-[13px] bg-black-1300 py-1 px-3 font-medium rounded-md text-pink-1200">
-                      1Day
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text className="text-[13px]  py-1 px-3 rounded-md font-medium text-gray-1200 active:bg-black-1300 active:text-pink-1200">
-                      1Week
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text className="text-[13px] py-1 px-3 rounded-md font-medium text-gray-1200 active:bg-black-1300 active:text-pink-1200">
-                      1Month
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text className="text-[13px] py-1 px-3 rounded-md font-medium text-gray-1200 active:bg-black-1300 active:text-pink-1200">
-                      YTD
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text className="text-[13px] py-1 px-3 rounded-md font-medium text-gray-1200 active:bg-black-1300 active:text-pink-1200">
-                      All
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View className="flex-row max-w-[280px] mx-auto gap-[7px]">
-                  <View className="bg-black-1300 rounded-2xl items-center p-[18px] py-[17px] flex-1">
-                    <SvgIcon name="receiceIcon" width="24" height="24" />
-                    <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Receive
-                    </Text>
-                  </View>
-                  <View className="bg-black-1300 rounded-2xl items-center p-[18px] py-[17px] flex-1">
-                    <SvgIcon name="sendIcon" width="24" height="24" />
-                    <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Send
-                    </Text>
-                  </View>
-                  <View className="bg-black-1300 rounded-2xl items-center p-[18px] py-[17px] flex-1">
-                    <SvgIcon name="swapIcon" width="24" height="24" />
-                    <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      Swap
-                    </Text>
-                  </View>
-                </View>
               </View>
 
-              <Text className="text-base font-medium text-gray-1200 mb-2.5">
-                Information
-              </Text>
-              <Text className="text-base font-normal leading-5 text-gray-1200 mb-2.5">
-                Solana is a highly functional open source project that banks on
-                blockchain technology&apos;s
-              </Text>
-              <TouchableOpacity>
-                <Text className="text-lg font-normal text-pink-1200 mb-9">
-                  Read more
-                </Text>
-              </TouchableOpacity>
-
-              <View>
-                <Text className="text-[19px] font-semibold leading-[22px] text-white mb-3">
-                  Information
-                </Text>
-
-                <View className="mb-[22px]">
-                  <View className="flex-row justify-between items-center rounded-t-2xl p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Symbol
-                    </Text>
-                    <Text className="text-white flex items-center gap-3">
-                      SOL
-                    </Text>
-                  </View>
-
-                  <View className="flex-row justify-between items-center p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Network
-                    </Text>
-                    <Text className="text-white flex items-center gap-3">
-                      Solana
-                    </Text>
-                  </View>
-
-                  <View className="flex-row justify-between items-center p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Market capitalization
-                    </Text>
-                    <Text className="text-white flex items-center gap-3">
-                      $77.84B
-                    </Text>
-                  </View>
-
-                  <View className="flex-row justify-between items-center p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Total supply
-                    </Text>
-                    <Text className="text-white flex items-center gap-3">
-                      599.17m
-                    </Text>
-                  </View>
-
-                  <View className="flex-row justify-between items-center rounded-b-2xl p-[15px] bg-black-1200">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Circulation volume
-                    </Text>
-                    <Text className="text-white flex items-center gap-3">
-                      217.31m
-                    </Text>
-                  </View>
-                </View>
-
-                <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
-                  24h performance
-                </Text>
-
-                <View className="mb-[22px]">
-                  <View className="flex-row justify-between items-center rounded-t-2xl p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Volume
-                    </Text>
-                    <View className=" text-white flex flex-row items-center gap-3">
-                      <Text className="text-white font-medium"> $77.84B</Text>
-                      <Text className="text-green-1000 font-medium">
-                        +7.90%
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View className="flex-row justify-between items-center p-[15px] bg-black-1200 mb-[1px]">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Transaction
-                    </Text>
-                    <View className=" text-white flex flex-row items-center gap-3">
-                      <Text className="text-white font-medium"> 217.31m</Text>
-                      <Text className="text-green-1000 font-medium">
-                        +7.90%
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View className="flex-row  justify-between items-center rounded-b-2xl p-[15px] bg-black-1200">
-                    <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-                      Trader
-                    </Text>
-                    <View className=" text-white flex flex-row items-center gap-3">
-                      <Text className="text-white font-medium"> 217.31m</Text>
-                      <Text className="text-red-1000 font-medium">+7.90%</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
+              <TokenInfoSection tokenOverview={tokenOverview} />
+              <PerformanceSection tokenOverview={tokenOverview} />
             </View>
           </ScrollView>
         </View>
+
+        <InfoAlert
+          {...modalState}
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          onDismiss={() => setModalState({ text: "" })}
+        />
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 };
+
+const ActionButton = ({
+  icon,
+  label,
+  onPress,
+}: {
+  icon: string;
+  label: string;
+  onPress: () => void;
+}) => (
+  <Pressable onPress={onPress}>
+    <View className="bg-black-1300 rounded-2xl items-center p-[18px] py-[17px] flex-1 w-28">
+      {/** @ts-ignore */}
+      <SvgIcon name={icon} width="24" height="24" />
+      <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
+        {label}
+      </Text>
+    </View>
+  </Pressable>
+);
+
+const TokenInfoSection = ({
+  tokenOverview,
+}: {
+  tokenOverview: TokenOverview;
+}) => (
+  <View>
+    <Text className="text-[19px] font-semibold leading-[22px] text-white mb-3">
+      Information
+    </Text>
+    {[
+      ["Symbol", tokenOverview.symbol.toUpperCase()],
+      ["Network", "Solana"],
+      ["Price", `$${tokenOverview.price.toFixed(2)}`],
+    ].map(([title, value], index, arr) => (
+      <View
+        key={title}
+        className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
+          index === 0 ? "rounded-t-2xl" : ""
+        } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
+      >
+        <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
+          {title}
+        </Text>
+        <Text className="text-white flex items-center gap-3">{value}</Text>
+      </View>
+    ))}
+  </View>
+);
+
+const PerformanceSection = ({
+  tokenOverview,
+}: {
+  tokenOverview: TokenOverview;
+}) => (
+  <View>
+    <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
+      24h performance
+    </Text>
+    <View className="mb-[22px]">
+      {[["Volume", `$${tokenOverview.volume.toLocaleString()}`, "+0.00%"]].map(
+        ([title, value, change], index, arr) => (
+          <View
+            key={title}
+            className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
+              index === 0 ? "rounded-t-2xl" : ""
+            } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
+          >
+            <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
+              {title}
+            </Text>
+            <View className="flex flex-row items-center gap-3">
+              <Text className="text-white font-medium">{value}</Text>
+              {/* <Text className="font-medium text-green-1000">{change}</Text> */}
+            </View>
+          </View>
+        )
+      )}
+    </View>
+  </View>
+);
 
 export default ChartView;

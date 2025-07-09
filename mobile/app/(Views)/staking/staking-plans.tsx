@@ -86,29 +86,41 @@ const StakingPlans = () => {
 
       {/* Details Table */}
       <View className="bg-black-700 rounded-xl p-3 mb-4">
-        <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-400 text-base">{t("staking.interest_rate")}</Text>
-          <Text className="text-green-500 text-xl font-bold">
-            {item.interestRate}%
-          </Text>
-        </View>
         <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">{t("staking.min_deposit")}</Text>
-          <Text className="text-white text-lg font-medium">
-            {item.minDeposit}
-          </Text>
+          <Text className="text-gray-400 text-base">{t("staking.state")}</Text>
+          <Text className="text-white text-lg font-medium">{item.state}</Text>
         </View>
+
         <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">{t("staking.lockup_days")}</Text>
+          <Text className="text-gray-400 text-base">
+            {t("staking.lockup_period")}
+          </Text>
           <Text className="text-white text-lg font-medium">
             {item.lockupDays}
           </Text>
         </View>
-
-        <View className="flex-row justify-between">
-          <Text className="text-gray-400 text-base">{t("staking.unstaking_fee")}</Text>
+        <View className="flex-row justify-between mb-3">
+          <Text className="text-gray-400 text-base">
+            {t("staking.compensation")}
+          </Text>
+          <Text className="text-green-500 text-xl font-bold">
+            {item.interestRate}%
+          </Text>
+        </View>
+        <View className="flex-row justify-between mb-3">
+          <Text className="text-gray-400 text-base">
+            {t("staking.early_withdrawl_fee")}
+          </Text>
           <Text className="text-white text-lg font-medium">
             {item.unstakingFee}
+          </Text>
+        </View>
+        <View className="flex-row justify-between">
+          <Text className="text-gray-400 text-base">
+            {t("staking.min_deposit")}
+          </Text>
+          <Text className="text-white text-lg font-medium">
+            {item.minDeposit}
           </Text>
         </View>
       </View>
@@ -127,7 +139,9 @@ const StakingPlans = () => {
           console.log("Enroll pressed for plan", item.id);
         }}
       >
-        <Text className="text-white font-semibold text-base">{t("staking.enroll")}</Text>
+        <Text className="text-white font-semibold text-base">
+          {t("staking.staking")}
+        </Text>
       </Pressable>
     </View>
   );
@@ -143,7 +157,7 @@ const StakingPlans = () => {
             <SvgIcon name="leftArrow" />
           </Pressable>
           <Text className="text-lg font-semibold text-white">
-            {t("staking.plans")}
+            {t("staking.staking_list")}
           </Text>
         </View>
 
@@ -161,7 +175,9 @@ const StakingPlans = () => {
                 activeOpacity={1}
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
-                <Text className="text-white font-semibold">{t("common.load_more")}</Text>
+                <Text className="text-white font-semibold">
+                  {t("common.load_more")}
+                </Text>
               </TouchableOpacity>
             ) : null
           }

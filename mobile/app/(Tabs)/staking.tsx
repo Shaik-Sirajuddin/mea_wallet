@@ -10,7 +10,9 @@ export default function Staking() {
     <View className="bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto py-8 px-4">
         <View className="items-center relative">
-          <Text className="text-lg font-semibold text-white">{t("staking.title")}</Text>
+          <Text className="text-lg font-semibold text-white">
+            {t("staking.title")}
+          </Text>
         </View>
         <View className="mt-10">
           <Pressable
@@ -25,7 +27,7 @@ export default function Staking() {
               />
             </View>
             <Text className="text-base font-semibold leading-5 text-white">
-              {t("staking.plans")}
+              {t("staking.staking_list")}
             </Text>
           </Pressable>
           <Pressable
@@ -55,7 +57,7 @@ export default function Staking() {
               />
             </View>
             <Text className="text-base font-semibold leading-5 text-white">
-              {t("staking.staking_history")}
+              {t("history.transaction_history")}
             </Text>
           </Pressable>
         </View>

@@ -138,3 +138,4 @@ export function validatePasswordWithReason(password: string): PasswordValidation
 function escapeRegExp(str: string): string {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
+.0

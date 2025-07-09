@@ -27,7 +27,9 @@ export default function SettingsScreen() {
       <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
         <View className="text-center relative">
           <View className="items-center">
-            <Text className="text-lg font-semibold text-white">{t("settings.title")}</Text>
+            <Text className="text-lg font-semibold text-white">
+              {t("settings.title")}
+            </Text>
           </View>
           <View className="mt-10">
             <View className="w-full">

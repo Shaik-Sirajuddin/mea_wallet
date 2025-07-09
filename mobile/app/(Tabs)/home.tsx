@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
-  ScrollView, 
+  ScrollView,
   RefreshControl,
   Image,
   Pressable,
@@ -114,7 +114,7 @@ export default function HomeScreen() {
   const getPrice = (token: string) => {
     totalAssetValue();
     //@ts-expect-error here
-    return quotes[token];
+    return parseNumberForView(quotes[token]);
   };
 
   const getTokensValue = (token: string, balance: string) => {
@@ -204,7 +204,7 @@ export default function HomeScreen() {
                 <Pressable
                   onPress={() => {
                     //@ts-expect-error this
-                    navigation.navigate("swap");
+                    navigation.navigate("swap-tokens");
                   }}
                 >
                   <View className="w-full items-center p-[18px] py-[17px]">

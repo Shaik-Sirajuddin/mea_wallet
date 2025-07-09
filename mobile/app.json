@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "mecca",
-    "slug": "mecca",
+    "name": "Ping",
+    "slug": "ping",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/coin-icon2.png",
+    "icon": "./assets/images/app_icon.png",
     "scheme": "mecca",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -26,21 +26,20 @@
       "favicon": "./assets/images/logo.png"
     },
     "splash": {
-      "backgroundColor": "#000000",
-      "image": "./assets/images/logo.png"
+      "backgroundColor": "#F2C7F8",
+      "image": "./assets/images/app_icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
-          "imageWidth": 320,
+          "image": "./assets/images/app_icon.png",
           "resizeMode": "contain",
           "backgroundColor": "#F2C7F8"
         }
       ],
-      [   
+      [
         "expo-secure-store",
         {
           "configureAndroidBackup": true,

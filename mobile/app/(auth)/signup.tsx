@@ -597,7 +597,10 @@ const Signup: React.FC = () => {
         setVisible={setInfoAlertVisible}
         onDismiss={() => {
           if (registrationSucess) {
-            router.push("/(auth)/signin");
+            if (router.canDismiss()) {
+              router.dismissAll();
+            }
+            router.replace("/(auth)/signin");
           }
         }}
       />

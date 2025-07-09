@@ -259,7 +259,7 @@
     "staking_history": "Staking History",
     "my_staking": "My Staking",
     "plans": "Staking Plans",
-    "interest_rate": "Interest Rate (APY)",
+    "interest_rate": "Interest Rate",
     "min_deposit": "Min Deposit",
     "lockup_days": "Lockup Days",
     "unstaking_fee": "Unstaking Fee",
@@ -276,7 +276,28 @@
     "interest_at_maturity": "Interest at Maturity",
     "enter_amount_to_stake": "Enter amount to stake",
     "unstaking_success": "Unstaking Success",
-    "claim_success": "Claim Success"
+    "claim_success": "Claim Success",
+    "compensation": "Compensation",
+    "early_withdrawl_fee": "Early Withdrawl Fee",
+    "staking": "Staking",
+    "staking_list": "Staking List",
+    "product_name": "Product Name",
+    "mea": "MEA",
+    "mecca_members_only": "MECCA members only",
+    "asset": "Asset",
+    "date": "Date",
+    "expiration_date": "Expiration Date",
+    "staking_amount": "Staking Amount",
+    "lockup_period": "Lockup period",
+    "unstaking_amount": "Unstaking amount",
+    "actual_amount_received": "Actual amount received",
+    "unstaking_lockup_date": "Unstaking Lockup Date",
+    "existing_reserves": "Existing reserves",
+    "event": "Event",
+    "variable_amount": "Variable amount",
+    "current_amount": "Current amount",
+    "state": "State",
+    "memo": "Memo"
   },
   "history": {
     "title": "History",
@@ -337,7 +358,8 @@
     "unavailable": "Unavailable",
     "session_expired": "Session Expired",
     "load_more": "Load More",
-    "invalid_otp": "Invalid OTP"
+    "invalid_otp": "Invalid OTP",
+    "days": "days"
   },
   "components": {
     "camera_permission_required": "We need your permission to show the camera",

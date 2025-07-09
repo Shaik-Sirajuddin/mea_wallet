@@ -84,7 +84,9 @@ const EnrollPlan = () => {
     }
     if (!amount || parseFloat(amount) < parseFloat(parsedPlan!.minDeposit)) {
       setModalState({
-        text: t("staking.minimum_deposit_error", { minDeposit: parsedPlan!.minDeposit }),
+        text: t("staking.minimum_deposit_error", {
+          minDeposit: parsedPlan!.minDeposit,
+        }),
         type: "error",
       });
       setPopupVisible(true);
@@ -93,9 +95,9 @@ const EnrollPlan = () => {
 
     if (new Decimal(amount).gt(freeBalance[selectedToken])) {
       setModalState({
-        text: t("staking.amount_exceeds_balance", { 
-          balance: freeBalance[selectedToken], 
-          token: selectedToken.toUpperCase() 
+        text: t("staking.amount_exceeds_balance", {
+          balance: freeBalance[selectedToken],
+          token: selectedToken.toUpperCase(),
         }),
         type: "error",
       });
@@ -160,7 +162,7 @@ const EnrollPlan = () => {
                 <SvgIcon name="leftArrow" />
               </Pressable>
               <Text className="text-lg font-semibold text-white">
-                {t("staking.enroll_plan")}
+                {t("staking.staking_list")}
               </Text>
             </View>
 
@@ -171,37 +173,45 @@ const EnrollPlan = () => {
               </Text>
 
               <View className="bg-black-700 rounded-xl p-3 mb-4">
-                <View className="flex-row justify-between mb-3">
-                  <Text className="text-gray-400 text-base">
-                    {t("staking.interest_rate_apy")}
-                  </Text>
-                  <Text className="text-green-500 text-xl font-bold">
-                    {parsedPlan.interestRate}%
-                  </Text>
-                </View>
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">{t("staking.lockup_days")}</Text>
+                  <Text className="text-gray-400 text-base">
+                    {t("staking.lockup_period")}
+                  </Text>
                   <Text className="text-white text-lg font-medium">
                     {parsedPlan.lockupDays}
                   </Text>
                 </View>
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">{t("staking.min_deposit")}</Text>
+                  <Text className="text-gray-400 text-base">
+                    {t("staking.min_deposit")}
+                  </Text>
                   <Text className="text-white text-lg font-medium">
                     {parsedPlan.minDeposit}
                   </Text>
                 </View>
+                <View className="flex-row justify-between mb-3">
+                  <Text className="text-gray-400 text-base">
+                    {t("staking.compensation")}
+                  </Text>
+                  <Text className="text-green-500 text-xl font-bold">
+                    {parsedPlan.interestRate}%
+                  </Text>
+                </View>
                 <View className="flex-row justify-between">
-                  <Text className="text-gray-400 text-base">{t("staking.unstaking_fee")}</Text>
+                  <Text className="text-gray-400 text-base">
+                    {t("staking.early_withdrawl_fee")}
+                  </Text>
                   <Text className="text-white text-lg font-medium">
-                    {parsedPlan.unstakingFee}
+                    {parsedPlan.unstakingFee}%
                   </Text>
                 </View>
               </View>
 
               {/* Selected Token */}
               <View className="mb-4">
-                <Text className="text-gray-400 mb-2">{t("components.token")}</Text>
+                <Text className="text-gray-400 mb-2">
+                  {t("components.token")}
+                </Text>
                 <TouchableOpacity
                   onPress={() => setTokenModalVisible(true)}
                   className="border border-gray-700 rounded-xl px-4 py-2 bg-black-900 flex-row items-center"
@@ -220,7 +230,9 @@ const EnrollPlan = () => {
                       </Text>
                     </>
                   ) : (
-                    <Text className="text-white">{t("staking.select_token")}</Text>
+                    <Text className="text-white">
+                      {t("staking.select_token")}
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -236,7 +248,9 @@ const EnrollPlan = () => {
               </View>
               {/* Expected Final Amount */}
               <View className="mb-4 mt-4">
-                <Text className="text-gray-400">{t("staking.interest_at_maturity")}</Text>
+                <Text className="text-gray-400">
+                  {t("staking.interest_at_maturity")}
+                </Text>
                 <View className="flex flex-row gap-2 items-center mt-2">
                   <Text className="text-green-500 text-2xl font-extrabold">
                     {expectedInterest}
@@ -267,7 +281,7 @@ const EnrollPlan = () => {
                 className="bg-pink-1100 rounded-xl py-3 items-center"
               >
                 <Text className="text-white font-semibold text-base">
-                  {t("staking.enroll")}
+                  {t("staking.staking")}
                 </Text>
               </TouchableOpacity>
             </View>

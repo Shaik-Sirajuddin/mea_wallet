@@ -17,7 +17,7 @@ import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
 import FilterIcon from "@/assets/images/double-arrow.svg";
 import { StakingHistoryItem } from "@/src/api/types/staking";
-import { tokenImageMap } from "@/utils/ui";
+import { parseNumberForView, tokenImageMap } from "@/utils/ui";
 import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 
 const StakingHistory = () => {
@@ -30,6 +30,7 @@ const StakingHistory = () => {
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
   const [popupVisible, setPopupVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
+
   const filters = [
     {
       label: t("components.status"),
@@ -48,20 +49,22 @@ const StakingHistory = () => {
       ],
     },
   ];
+
   const initialFilterState: IFilterState = filters.reduce(
     (acc, curr) => ({
       ...acc,
-      [curr.label]: curr.options[0], // default to first option
+      [curr.label]: curr.options[0],
     }),
     {}
   );
   const [selectedFilters, setSelectedFilters] =
     useState<IFilterState>(initialFilterState);
+
   const handleApply = () => {
-    console.log("Selected Filters:", selectedFilters);
     setFilterVisible(false);
     syncHistory(1);
   };
+
   const syncHistory = async (requestedPage = 1) => {
     setLoading(true);
     const res = await useStaking.getStakingHistory(
@@ -101,7 +104,7 @@ const StakingHistory = () => {
   };
 
   const renderRow = (label: string, value: string) => (
-    <View className="flex-row justify-between mb-1">
+    <View className="flex-row justify-between bg-black-1200 p-4 rounded-2xl">
       <Text className="text-gray-400 text-base">{label}</Text>
       <Text className="text-white text-base max-w-[60%] text-right">
         {value}
@@ -110,34 +113,30 @@ const StakingHistory = () => {
   );
 
   const renderItem = ({ item }: { item: StakingHistoryItem }) => (
-    <View className="bg-black-1200 rounded-2xl px-6 py-4 mb-4 flex gap-2">
-      {renderRow(t("components.transaction_id"), String(item.id))}
+    <View className="rounded-2xl py-4  flex gap-2">
       {renderRow(
-        t("components.date"),
-        dayjs(item.date).format("YYYY-MM-DD HH:mm")
+        t("staking.date"),
+        dayjs(item.date).format("YYYY.MM.DD HH:mm:ss")
       )}
-      <View className="flex-row justify-between mb-1">
-        <Text className="text-gray-400 text-base">
-          {t("components.symbol")}
-        </Text>
-        <View className="flex flex-row gap-2 items-center">
-          <Image
-            source={
-              tokenImageMap[item.token.toLowerCase()] ||
-              tokenImageMap["default"]
-            }
-            className="w-8 h-8 rounded-full"
-            resizeMode="contain"
-          />
-          <Text className="text-white text-base  text-right">{item.token}</Text>
-        </View>
-      </View>
-      {renderRow(t("common.amount"), item.amount)}
-      {renderRow(t("components.previous_balance"), item.previousBalance)}
-      {renderRow(t("components.new_balance"), item.newBalance)}
-      {renderRow(t("components.note"), item.note || "-")}
-      {renderRow(t("components.status"), item.state || "-")}
-      {/* {renderRow("Maturity State", item.maturity_state || "-")} */}
+      {renderRow(t("staking.asset"), item.token.toUpperCase())}
+      {renderRow(
+        t("staking.existing_reserves"),
+        `${parseNumberForView(
+          item.previousBalance
+        )} ${item.token.toUpperCase()}`
+      )}
+      {renderRow(t("staking.event"), item.state || "-")}
+      {renderRow(
+        t("staking.variable_amount"),
+        `${parseNumberForView(item.amount)} ${item.token.toUpperCase()}`
+      )}
+      {renderRow(
+        t("staking.current_amount"),
+        `${parseNumberForView(item.newBalance)} ${item.token.toUpperCase()}`
+      )}
+      {renderRow(t("staking.state"), item.state || "-")}
+      {renderRow(t("staking.memo"), item.note || "-")}
+      <View className="bg-white h-[1px] mt-4"></View>
     </View>
   );
 
@@ -152,22 +151,24 @@ const StakingHistory = () => {
             <SvgIcon name="leftArrow" />
           </Pressable>
           <Text className="text-xl font-semibold text-white">
-            {t("staking.staking_history")}
+            {t("staking.staking")}
           </Text>
         </View>
-        <View className="flex flex-row justify-end mb-2">
-          <Pressable
-            onPress={() => {
-              setFilterVisible(true);
-            }}
-            className="p-4"
-          >
+
+        <View className="flex flex-row justify-between mb-2">
+          <View className="flex-row items-center gap-2">
+            <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+            <Text className="text-base font-medium text-white">
+              {t("history.transaction_history")}
+            </Text>
+          </View>
+          <Pressable onPress={() => setFilterVisible(true)} className="p-4">
             <FilterIcon />
           </Pressable>
         </View>
 
         <FlatList
-          className="px-4 mt-4"
+          className="mt-4"
           data={history}
           renderItem={renderItem}
           keyExtractor={(item) => String(item.id)}

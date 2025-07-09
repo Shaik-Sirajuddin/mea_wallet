@@ -42,7 +42,10 @@ const UserStakings = () => {
       label: t("components.status"),
       options: [
         { label: "--", value: "" },
-        { label: t("components.unstaking_application"), value: "언스테이킹신청" },
+        {
+          label: t("components.unstaking_application"),
+          value: "언스테이킹신청",
+        },
         { label: t("components.unstaking"), value: "언스테이킹" },
       ],
     },
@@ -130,7 +133,9 @@ const UserStakings = () => {
       return;
     }
     setModalState({
-      text: isEarlyUnstake ? t("staking.unstaking_success") : t("staking.claim_success"),
+      text: isEarlyUnstake
+        ? t("staking.unstaking_success")
+        : t("staking.claim_success"),
       type: "success",
     });
     setPopupVisible(true);
@@ -147,9 +152,18 @@ const UserStakings = () => {
           >
             <SvgIcon name="leftArrow" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">{t("staking.my_staking")}</Text>
+
+          <Text className="text-lg font-semibold text-white">
+            {t("staking.my_staking")}
+          </Text>
         </View>
-        <View className="flex flex-row justify-end mb-2">
+        <View className="flex flex-row justify-between items-center mb-2">
+          <View className="flex-row items-center gap-2">
+            <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+            <Text className="text-base font-medium text-white">
+              {t("history.transaction_history")}
+            </Text>
+          </View>
           <Pressable
             onPress={() => {
               setFilterVisible(true);
@@ -186,7 +200,9 @@ const UserStakings = () => {
                 activeOpacity={1}
                 className="bg-pink-1100 rounded-[15px] px-4 py-2 mt-4 items-center"
               >
-                <Text className="text-white font-semibold">{t("common.load_more")}</Text>
+                <Text className="text-white font-semibold">
+                  {t("common.load_more")}
+                </Text>
               </TouchableOpacity>
             ) : null
           }
@@ -195,7 +211,9 @@ const UserStakings = () => {
 
         {stakings.length === 0 && !loading && (
           <View className="flex w-full text-center h-screen items-center justify-center absolute">
-            <Text className="text-white text-base">{t("components.no_records_found")}</Text>
+            <Text className="text-white text-base">
+              {t("components.no_records_found")}
+            </Text>
           </View>
         )}
       </View>

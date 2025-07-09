@@ -106,7 +106,9 @@ const ConfirmWithdraw = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">{t("withdrawal.title")}</Text>
+            <Text className="text-lg font-semibold text-white">
+              {t("withdrawal.title")}
+            </Text>
           </View>
 
           <View className="relative mt-10">
@@ -192,7 +194,10 @@ const ConfirmWithdraw = () => {
           </View>
 
           <View className="flex flex-row gap-2 justify-center mt-auto">
-            <PrimaryButton text={t("withdrawal.withdraw")} onPress={processWithdraw} />
+            <PrimaryButton
+              text={t("withdrawal.withdraw")}
+              onPress={processWithdraw}
+            />
           </View>
         </View>
       </View>
@@ -203,7 +208,9 @@ const ConfirmWithdraw = () => {
         setVisible={setInfoAlertVisible}
         onDismiss={() => {
           if (withdrawlSuccess) {
-            router.dismissAll();
+            if (router.canDismiss()) {
+              router.dismissAll();
+            }
             router.replace("/(Tabs)/home");
           }
         }}

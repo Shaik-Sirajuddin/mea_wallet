@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
 import Decimal from "decimal.js";
-import { tokenImageMap } from "@/utils/ui";
+import { parseNumberForView, tokenImageMap } from "@/utils/ui";
 
 const LockUpScreen = () => {
   const { t } = useTranslation();
@@ -45,7 +45,9 @@ const LockUpScreen = () => {
         >
           <View className="w-full pb-20">
             <View className="items-center relative">
-              <Text className="text-lg font-semibold text-white">{t("home.lock_up")}</Text>
+              <Text className="text-lg font-semibold text-white">
+                {t("home.lock_up")}
+              </Text>
             </View>
 
             <View className="relative mt-10">
@@ -80,8 +82,8 @@ const LockUpScreen = () => {
                         </Text>
                       </View>
                     </View>
-                    <View className="absolute left-44 top-3 w-[90px] text-[15px] font-medium leading-none text-gray-1200 rounded border  px-[5px] border-gray-1400">
-                      <Text className="text-gray-1200 font-medium w-full text-center">
+                    <View className="absolute left-44 top-3  text-[15px] font-medium leading-none text-gray-1200 rounded border  px-[5px] border-gray-1400">
+                      <Text className="text-gray-1200 font-medium w-full text-center whitespace-nowrap">
                         {t("common.unavailable")}
                       </Text>
                     </View>
@@ -91,7 +93,7 @@ const LockUpScreen = () => {
                           ${tokenValue.toFixed(2)}
                         </Text>
                         <Text className="text-[15px] text-end font-normal leading-5 text-gray-1200">
-                          ${tokenPrice}
+                          ${parseNumberForView(tokenPrice)}
                         </Text>
                       </View>
                     </View>
