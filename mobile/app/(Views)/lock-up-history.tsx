@@ -89,7 +89,7 @@ const LockUpHistory = () => {
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    {t("lockup.token_lockup", { token: displaySymbol })}
+                    {t("lockup.history")}
                   </Text>
                 </View>
               </View>
@@ -99,7 +99,7 @@ const LockUpHistory = () => {
                   <Text className="text-gray-1200">{displaySymbol}</Text>
                 </Text>
               </View>
-              <View className="flex-1 flex justify-center">
+              <View className="flex-1 flex justify-center mb-6">
                 {loading && (
                   <View className="py-10 items-center">
                     <ActivityIndicator color="white" />
@@ -111,6 +111,12 @@ const LockUpHistory = () => {
                     {t("lockup.no_history")}
                   </Text>
                 )}
+
+                {!loading && history.length !== 0 && (
+                  <Text className="text-white text-center">
+                    {t("lockup.activity_details")}
+                  </Text>
+                )}
               </View>
 
               <View className="">
@@ -119,22 +125,20 @@ const LockUpHistory = () => {
                     <View key={index} className="mb-4">
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.amount")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {item.amount}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
                           {t("lockup.date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {new Date(item.registeredAt).toLocaleString()}
                         </Text>
                       </View>
-
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("lockup.quantity")}
+                        </Text>
+                        <Text className="text-[17px] font-medium text-white">
+                          {item.amount}
+                        </Text>
+                      </View>
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
                           {t("lockup.start_date")}
@@ -155,12 +159,13 @@ const LockUpHistory = () => {
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.status")}
+                          {t("lockup.state")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.status}
                         </Text>
                       </View>
+                      <View className="w-full h-[1px] bg-white mt-2"></View>
                     </View>
                   ))}
               </View>

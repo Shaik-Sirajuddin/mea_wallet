@@ -1,4 +1,4 @@
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, Text, View } from "react-native";
@@ -123,23 +123,16 @@ const EditProfile = () => {
 
           <View className="mt-10">
             <View className="w-[111px] mx-auto relative">
-              {!details && (
-                <View className="bg-pink-1100 mx-auto w-[111px] h-[111px] rounded-full flex items-center justify-center">
-                  <Text className="text-[45px] font-medium text-white tracking-[-0.36px]">
-                    1
-                  </Text>
-                </View>
-              )}
-              {details && (
-                <Image
-                  source={{ uri: details.image }}
-                  className="w-20 h-20 rounded-full bg-transparent mx-auto"
-                />
-              )}
-
+              <View className="bg-pink-1100 mx-auto w-[111px] h-[111px] rounded-full flex items-center justify-center">
+                <Text className="text-[45px] font-medium text-white tracking-[-0.36px]">
+                  {details ? details.image : ""}
+                </Text>
+              </View>
               <Pressable
                 className="absolute bottom-1 right-0"
-                onPress={pickImageAsync}
+                onPress={() => {
+                  router.push("/settings/select-avatar");
+                }}
               >
                 <SvgIcon name="editIcon" width="29" height="29" />
               </Pressable>

@@ -59,11 +59,11 @@ export default {
     if (typeof raw === "string") return raw;
 
     return {
-      mea: trimTrailingZeros(raw.mea_quote),
-      sol: trimTrailingZeros(raw.sol_quote),
-      fox9: trimTrailingZeros(raw.fox9_quote),
-      recon: trimTrailingZeros(raw.recon_quote),
-      usd: trimTrailingZeros(raw.usd_quote),
+      mea: trimTrailingZeros(raw.mea_quote.toString()),
+      sol: trimTrailingZeros(raw.sol_quote.toString()),
+      fox9: trimTrailingZeros(raw.fox9_quote.toString()),
+      recon: trimTrailingZeros(raw.recon_quote.toString()),
+      usd: trimTrailingZeros(raw.usd_quote.toString()),
     };
   },
   getWithdrawSettings: async (): Promise<WithdrawSettings | string> => {
@@ -129,7 +129,7 @@ export default {
     );
     if (typeof raw === "string") return raw;
     let data = {
-      image: imageBucket + "/" + raw.Thumbnail,
+      image: raw.Thumbnail,
     };
     return data;
   },
@@ -141,6 +141,16 @@ export default {
       {
         method: "POST",
         body: new URLSearchParams({ file: image }).toString(),
+      }
+    );
+  },
+
+  updateAvatar: async (emojiCode: string): Promise<StatusResponse | string> => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/edit-avatar`,
+      {
+        method: "POST",
+        body: new URLSearchParams({ file: emojiCode }).toString(),
       }
     );
   },

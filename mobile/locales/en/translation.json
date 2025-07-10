@@ -235,7 +235,11 @@
     "end_date": "End Date",
     "notice": "Notice",
     "notice_after_end_date": "After the end date, the coins become available for deposit or withdrawal.",
-    "notice_withdrawal_available": "The coins you received can be withdrawn normally through \"Withdrawal\"."
+    "notice_withdrawal_available": "The coins you received can be withdrawn normally through \"Withdrawal\".",
+    "quantity": "Quantity",
+    "state": "State",
+    "history": "History",
+    "activity_details": "The activity details are as follows"
   },
   "token_actions": {
     "native": "Native",
@@ -414,6 +418,7 @@
     "title": "Contact Us",
     "homepage": "Homepage",
     "telegram": "Telegram",
+    "email": "Email Address",
     "no_contact": "No contact information available"
   },
   "error": {
@@ -424,5 +429,12 @@
     "number_missing": "Password must contain at least one number.",
     "symbol_missing": "Password must contain at least one symbol.",
     "invalid_characters": "Password can only contain lowercase letters, numbers, and allowed symbols."
+  },
+  "edit_profile": {
+    "select_avatar": "Select Avatar",
+    "emoji_list_title": "Emojis",
+    "avatar_updated": "Avatar updated",
+    "avatar_up_to_date": "Avatar already up to date",
+    "save_button": "Save"
   }
 }

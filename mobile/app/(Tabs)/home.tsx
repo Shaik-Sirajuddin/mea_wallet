@@ -143,21 +143,10 @@ export default function HomeScreen() {
               onPress={() => setShowEditProfile(true)}
               className="flex-row items-center gap-2"
             >
-              <View className="bg-pink-1100 w-10 h-10 rounded-full items-center justify-center">
-                {!details && (
-                  <Text className="text-lg font-medium text-white leading-[22px] tracking-[-0.36px]">
-                    1
-                  </Text>
-                )}
-                {details && (
-                  <Image
-                    source={{
-                      uri: details.image,
-                    }}
-                    resizeMethod="scale"
-                    className="w-12 h-12 rounded-full bg-transparent"
-                  />
-                )}
+              <View className="bg-pink-1100 w-12 h-12 rounded-full items-center justify-center">
+                <Text className="text-2xl font-medium text-white leading-[22px] tracking-[-0.36px]">
+                  {details ? details.image : ""}
+                </Text>
               </View>
               <Text className="text-[22px] text-white font-medium tracking-[-0.44px] leading-[22px]">
                 {email}
@@ -340,19 +329,11 @@ export default function HomeScreen() {
       </View>
       <PopupModal visible={showEditProfile} setVisible={setShowEditProfile}>
         <View className="w-full px-4 flex-col items-center justify-center text-center">
-          {!details && (
-            <View className="w-16 h-16 bg-pink-1100 rounded-full items-center justify-center">
-              <Text className="text-[25px] font-medium text-white">1</Text>
-            </View>
-          )}
-          {details && (
-            <Image
-              source={{
-                uri: details.image,
-              }}
-              className="w-20 h-20 rounded-full bg-transparent mx-auto"
-            />
-          )}
+          <View className="w-16 h-16 bg-pink-1100 rounded-full items-center justify-center">
+            <Text className="text-[25px] font-medium text-white">
+              {details ? details.image : ""}
+            </Text>
+          </View>
           <Text className="text-[22px] font-medium text-white mt-3 mb-6">
             {email}
           </Text>

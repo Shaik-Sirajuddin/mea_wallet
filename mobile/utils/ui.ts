@@ -27,8 +27,8 @@ export function trimTrailingZeros(value: string): string {
     if (!value.includes(".")) return value; // no decimal point
     return value.replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
   } catch (error) {
-    console.log(error);
-    return "";
+    console.log(error,value);
+    return "0";
   }
 }
 
@@ -94,7 +94,9 @@ type PasswordValidationResult = {
     | null;
 };
 
-export function validatePasswordWithReason(password: string): PasswordValidationResult {
+export function validatePasswordWithReason(
+  password: string
+): PasswordValidationResult {
   const result: PasswordValidationResult = {
     valid: false,
     error: null,
@@ -138,4 +140,4 @@ export function validatePasswordWithReason(password: string): PasswordValidation
 function escapeRegExp(str: string): string {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
-.0
+0.0;

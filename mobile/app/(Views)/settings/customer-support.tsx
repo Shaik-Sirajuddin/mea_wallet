@@ -12,6 +12,7 @@ import SvgIcon from "@/app/components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import useSetting from "@/hooks/useSetting";
 import { useTranslation } from "react-i18next";
+import LabeledInput from "@/app/components/LabeledInput";
 
 const CustomerSupport = () => {
   const { t } = useTranslation();
@@ -74,33 +75,18 @@ const CustomerSupport = () => {
           <ActivityIndicator size="large" color="#fff" className="mt-10" />
         ) : settings ? (
           <ScrollView className="mt-6">
-            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mb-4">
-              <Text className="text-white text-lg font-semibold mb-2">
-                {t("customer_support.homepage")}
-              </Text>
-              <TouchableOpacity
-                onPress={() => handleOpenURL(settings.homepage)}
-                className="bg-pink-1100 rounded-xl py-2 px-4 items-center"
-              >
-                <Text className="text-white font-medium">
-                  {settings.homepage}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4">
-              <Text className="text-white text-lg font-semibold mb-2">
-                {t("customer_support.telegram")}
-              </Text>
-              <TouchableOpacity
-                onPress={() => handleOpenURL(settings.telegram)}
-                className="bg-pink-1100 rounded-xl py-2 px-4 items-center"
-              >
-                <Text className="text-white font-medium">
-                  {settings.telegram}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <LabeledInput
+              label={t("customer_support.email")}
+              value={settings.telegram}
+              onChangeText={() => {}}
+              readOnly
+            />
+            <LabeledInput
+              label={t("customer_support.homepage")}
+              value={settings.homepage}
+              onChangeText={() => {}}
+              readOnly
+            />
           </ScrollView>
         ) : (
           <Text className="text-white text-center mt-10">
