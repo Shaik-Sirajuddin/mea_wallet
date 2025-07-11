@@ -13,19 +13,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenQuotes } from "@/src/types/balance";
 import { TokenOverview } from "@/src/api/types/chart";
+import { parseNumberForView } from "@/utils/ui";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 type SupportedPeriod = "1hour" | "1day" | "1week" | "1month" | "ytd" | "all";
 
 const ChartView = () => {
+  const { t } = useTranslation();
   const { symbol } = useLocalSearchParams<{ symbol: keyof TokenQuotes }>();
   const [selectedPoint, setSelectedPoint] = useState<GraphPoint | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<SupportedPeriod>("1day");
   const [points, setPoints] = useState<GraphPoint[]>([]);
   const [loading, setLoading] = useState(false);
   const [tokenOverview, setTokenOverview] = useState<TokenOverview>({
-    price: 0,
+    price: 10,
     symbol: symbol ?? "sol",
-    volume: 0,
+    volume: 10,
   });
 
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
@@ -68,7 +72,14 @@ const ChartView = () => {
       setModalVisible(true);
       return;
     }
-    setTokenOverview(result);
+    if (symbol === "fox9") {
+      setTokenOverview({
+        ...result,
+        price: parseFloat(quote),
+      });
+    } else {
+      setTokenOverview(result);
+    }
   };
 
   useEffect(() => {
@@ -95,9 +106,11 @@ const ChartView = () => {
                 </Text>
                 <Text className="text-[53px] font-semibold text-white">
                   $
-                  {selectedPoint
-                    ? selectedPoint.value.toFixed(2)
-                    : tokenOverview.price.toFixed(2)}
+                  {parseNumberForView(
+                    selectedPoint
+                      ? selectedPoint.value.toFixed(5)
+                      : tokenOverview.price.toFixed(5)
+                  )}
                 </Text>
 
                 <View className=" w-full">
@@ -109,7 +122,7 @@ const ChartView = () => {
                     />
                   ) : points.length === 0 ? (
                     <Text className="text-center text-gray-1200 ">
-                      No data available
+                      {t("token_overview.no_data")}
                     </Text>
                   ) : (
                     <LineGraph
@@ -160,7 +173,7 @@ const ChartView = () => {
                       })
                     }
                     icon="receiceIcon"
-                    label="Receive"
+                    label={t("token_overview.receive")}
                   />
                   <ActionButton
                     onPress={() =>
@@ -170,20 +183,22 @@ const ChartView = () => {
                       })
                     }
                     icon="sendIcon"
-                    label="Send"
+                    label={t("token_overview.send")}
                   />
                   <ActionButton
                     onPress={() =>
                       router.push({ pathname: "/(Tabs)/swap-tokens" })
                     }
                     icon="swapIcon"
-                    label="Swap"
+                    label={t("token_overview.swap")}
                   />
                 </View>
               </View>
 
               <TokenInfoSection tokenOverview={tokenOverview} />
-              <PerformanceSection tokenOverview={tokenOverview} />
+              {symbol !== "fox9" && (
+                <PerformanceSection tokenOverview={tokenOverview} />
+              )}
             </View>
           </ScrollView>
         </View>
@@ -226,12 +241,15 @@ const TokenInfoSection = ({
 }) => (
   <View>
     <Text className="text-[19px] font-semibold leading-[22px] text-white mb-3">
-      Information
+      {t("token_overview.information")}
     </Text>
     {[
-      ["Symbol", tokenOverview.symbol.toUpperCase()],
-      ["Network", "Solana"],
-      ["Price", `$${tokenOverview.price.toFixed(2)}`],
+      [t("token_overview.symbol"), tokenOverview.symbol.toUpperCase()],
+      [t("token_overview.network"), "Solana"],
+      [
+        t("token_overview.price"),
+        `$${parseNumberForView(tokenOverview.price.toFixed(5))}`,
+      ],
     ].map(([title, value], index, arr) => (
       <View
         key={title}
@@ -255,27 +273,31 @@ const PerformanceSection = ({
 }) => (
   <View>
     <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
-      24h performance
+      {t("token_overview.performance_24h")}
     </Text>
     <View className="mb-[22px]">
-      {[["Volume", `$${tokenOverview.volume.toLocaleString()}`, "+0.00%"]].map(
-        ([title, value, change], index, arr) => (
-          <View
-            key={title}
-            className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
-              index === 0 ? "rounded-t-2xl" : ""
-            } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
-          >
-            <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-              {title}
-            </Text>
-            <View className="flex flex-row items-center gap-3">
-              <Text className="text-white font-medium">{value}</Text>
-              {/* <Text className="font-medium text-green-1000">{change}</Text> */}
-            </View>
+      {[
+        [
+          t("token_overview.volume"),
+          `$${tokenOverview.volume.toLocaleString()}`,
+          "+0.00%",
+        ],
+      ].map(([title, value, change], index, arr) => (
+        <View
+          key={title}
+          className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
+            index === 0 ? "rounded-t-2xl" : ""
+          } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
+        >
+          <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
+            {title}
+          </Text>
+          <View className="flex flex-row items-center gap-3">
+            <Text className="text-white font-medium">{value}</Text>
+            {/* <Text className="font-medium text-green-1000">{change}</Text> */}
           </View>
-        )
-      )}
+        </View>
+      ))}
     </View>
   </View>
 );

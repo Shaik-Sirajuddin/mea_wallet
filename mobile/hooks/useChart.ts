@@ -4,7 +4,7 @@ import { GraphPoint } from "react-native-graph";
 import { TokenOverview } from "@/src/api/types/chart";
 import { TokenQuotes } from "@/src/types/balance";
 
-export type SupportedSymbol = keyof TokenQuotes; // uses lowercase symbols e.g. "mea", "sol", "recon"
+export type SupportedSymbol = keyof TokenQuotes | "fox9"; // added fox9
 export type SupportedPeriod =
   | "1day"
   | "1hour"
@@ -22,7 +22,7 @@ const periodMap: Record<SupportedPeriod, string> = {
   "1week": "1Week",
   "1month": "1Month",
   ytd: "YTD",
-  all: "ALL",
+  all: "All",
 };
 
 /**
@@ -36,6 +36,8 @@ const mapToApiSymbol = (symbol: SupportedSymbol): string => {
       return "SOL";
     case "recon":
       return "RECON";
+    case "fox9":
+      return "FOX9";
     default:
       throw new Error(`Unsupported symbol: ${symbol}`);
   }
@@ -112,6 +114,26 @@ async function getChartData(
       }));
     }
 
+    if (apiSymbol === "FOX9") {
+      const params = new URLSearchParams();
+      params.append("gubn", apiPeriod);
+
+      const raw = await networkRequest<any>(
+        `${apiBaseUrl}/api/fox9/chart?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (typeof raw === "string") return raw;
+      if (!raw.data) return [];
+
+      return raw.data.map((item: any) => ({
+        date: new Date(item.time * 1000), // converting epoch seconds to JS Date
+        value: parseFloat(item.price),
+      }));
+    }
+
     throw new Error(`Unsupported symbol: ${symbol}`);
   } catch (error) {
     console.error("getChartData error:", error);
@@ -170,6 +192,15 @@ async function getTokenOverview(
         symbol: "SOL",
         price: parseFloat(raw.lastPrice),
         volume: parseFloat(raw.volume),
+      };
+    }
+
+    // Placeholder for FOX9 token overview if needed in future
+    if (apiSymbol === "FOX9") {
+      return {
+        symbol: "FOX9",
+        price: 0,
+        volume: 0,
       };
     }
 
