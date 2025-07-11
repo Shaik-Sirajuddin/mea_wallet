@@ -120,7 +120,9 @@ const GoogleOTP = () => {
           >
             <SvgIcon name="leftArrow" width="21" height="21" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">{t("settings.google_otp")}</Text>
+          <Text className="text-lg font-semibold text-white">
+            {t("settings.google_otp")}
+          </Text>
         </View>
 
         <View className="my-auto">

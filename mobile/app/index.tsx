@@ -1,10 +1,6 @@
-import { Alert, View } from "react-native";
-import GetStarted from "./(auth)/get-started";
+import { View } from "react-native";
 import "@/i18n/index";
-import Home from "./(Tabs)/home";
 import { useRoute } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
-import useAuth from "@/hooks/useAuth";
 import { router, useFocusEffect } from "expo-router";
 import { configureReanimatedLogger } from "react-native-reanimated";
 import React from "react";
@@ -34,18 +30,7 @@ export default function HomeScreen() {
       };
     }, [])
   );
-
-  // const intialize = async () => {
-  //   SplashScreen.hide();
-  // };
-  // useEffect(() => {
-  //   intialize();
-  // }, []);
-
   return (
-    <View className="flex-1 h-full font-pretendard w-full bg-pink-1000">
-      {/* <GetStarted /> */}
-      {/* {sessionTokenExists ? <Home /> : <GetStarted />} */}
-    </View>
+    <View className="flex-1 h-full font-pretendard w-full bg-pink-1000"></View>
   );
 }

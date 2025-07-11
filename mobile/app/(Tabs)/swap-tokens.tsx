@@ -206,11 +206,11 @@ const SwapTokens = () => {
   // Validate balance
   const validateBalance = useCallback(() => {
     if (!payAmount || new Decimal(payAmount ?? 0).lte(0)) {
-      return { isValid: false, message: "Enter amount to pay" };
+      return { isValid: false, message: t("swap.enter_amount_to_pay") };
     }
 
     if (fromToken === toToken) {
-      return { isValid: false, message: "Cannot swap same token" };
+      return { isValid: false, message: t("swap.cannot_swap_same_token") };
     }
 
     if (
@@ -219,19 +219,18 @@ const SwapTokens = () => {
       new Decimal(quotes[fromToken]).lte(0) ||
       new Decimal(quotes[toToken]).lte(0)
     ) {
-      return { isValid: false, message: "Quotes not available" };
+      return { isValid: false, message: t("swap.quotes_not_available") };
     }
 
     const userBalance = new Decimal(freeBalance[fromToken] || "0");
     const requiredAmount = new Decimal(payAmount);
 
     if (requiredAmount.gt(userBalance)) {
-      return { isValid: false, message: "Insufficient balance" };
+      return { isValid: false, message: t("swap.insufficient_balance") };
     }
 
     return { isValid: true, message: "" };
-  }, [payAmount, fromToken, toToken, freeBalance, quotes]);
-
+  }, [payAmount, fromToken, toToken, freeBalance, quotes, t]);
   const balanceCheck = useMemo(() => {
     let val = validateBalance();
     return val;
@@ -493,7 +492,9 @@ const SwapTokens = () => {
                   {/* Price */}
                   <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
-                      {t("swap.token_price", { token: fromToken.toUpperCase() })}
+                      {t("swap.token_price", {
+                        token: fromToken.toUpperCase(),
+                      })}
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {getTokenPrice(fromToken)}

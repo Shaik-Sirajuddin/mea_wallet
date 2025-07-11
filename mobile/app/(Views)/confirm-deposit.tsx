@@ -86,7 +86,7 @@ const Deposit2 = () => {
       setInfoAlertVisible(true);
       return;
     }
-    console.log(result)
+    console.log(result);
     setInfoAlertState({
       type: "success",
       text: t("deposit.application_submitted"),
@@ -115,7 +115,9 @@ const Deposit2 = () => {
             >
               <SvgIcon name="leftArrow" width="20" height="20" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">{t("deposit.title")}</Text>
+            <Text className="text-lg font-semibold text-white">
+              {t("deposit.title")}
+            </Text>
           </View>
 
           <View className="relative mt-10 flex-1 pb-4">
@@ -193,7 +195,10 @@ const Deposit2 = () => {
                     }}
                     dropdownIconColor="#fff"
                   >
-                    <Picker.Item label={t("deposit.select_wallet_address")} value="" />
+                    <Picker.Item
+                      label={t("deposit.select_wallet_address")}
+                      value=""
+                    />
                     {registeredAddresses.map((addr, index) => (
                       <Picker.Item key={index} label={addr} value={addr} />
                     ))}

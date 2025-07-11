@@ -27,12 +27,13 @@ export function trimTrailingZeros(value: string): string {
     if (!value.includes(".")) return value; // no decimal point
     return value.replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
   } catch (error) {
-    console.log(error,value);
+    console.log(error, value);
     return "0";
   }
 }
 
 export function parseNumberForView(value: string, maxLength: number = 12) {
+  value = trimTrailingZeros(value);
   if (value.length <= maxLength) {
     return value;
   }

@@ -42,7 +42,7 @@ const WalletAddress = () => {
         type: "error",
         text: result,
       });
-      setModalVisible(true)
+      setModalVisible(true);
       return;
     }
     setModalState({
@@ -62,7 +62,6 @@ const WalletAddress = () => {
     dispatch(setDepositAddresses(result));
   };
 
-  
   useEffect(() => {
     syncWalletAddress();
   }, []);

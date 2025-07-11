@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { CheckBox } from "@rneui/themed";
 import SvgIcon from "../components/SvgIcon";
+import { useTranslation } from "react-i18next";
 
 type FilterOption = {
   label: string;
@@ -10,10 +11,10 @@ type FilterOption = {
 
 type FilterViewProps = {
   filters: FilterOption[];
-  selected: { [label: string]: string }; // current selected values
-  onChange: (updated: { [label: string]: string }) => void; // called on change
-  onApply?: () => void; // optional apply handler
-  onClose?: () => void; // optional close handler
+  selected: { [label: string]: string };
+  onChange: (updated: { [label: string]: string }) => void;
+  onApply?: () => void;
+  onClose?: () => void;
 };
 
 const FilterView: React.FC<FilterViewProps> = ({
@@ -23,6 +24,8 @@ const FilterView: React.FC<FilterViewProps> = ({
   onApply,
   onClose,
 }) => {
+  const { t } = useTranslation();
+
   const toggleOption = (filterLabel: string, option: string) => {
     onChange({ ...selected, [filterLabel]: option });
   };
@@ -37,12 +40,16 @@ const FilterView: React.FC<FilterViewProps> = ({
           >
             <SvgIcon name="leftArrow" width="21" height="21" />
           </Pressable>
-          <Text className="text-lg font-semibold text-white">Filter</Text>
+          <Text className="text-lg font-semibold text-white">
+            {t("filter_page.title")}
+          </Text>
           <TouchableOpacity
             onPress={onApply}
             className="absolute right-0 items-end justify-end z-10 p-2"
           >
-            <Text className="text-pink-1200 text-[17px]">Apply</Text>
+            <Text className="text-pink-1200 text-[17px]">
+              {t("filter_page.apply")}
+            </Text>
           </TouchableOpacity>
         </View>
 

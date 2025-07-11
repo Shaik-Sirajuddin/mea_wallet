@@ -16,7 +16,7 @@ const DepositAddressList = ({ addresses }: Props) => {
   const { t } = useTranslation();
   const handleCopy = async (address: string) => {
     await Clipboard.setStringAsync(address);
-    Alert.alert(t('components.copied_to_clipboard'), address);
+    Alert.alert(t("components.copied_to_clipboard"), address);
   };
 
   return (

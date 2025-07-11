@@ -312,7 +312,7 @@ const StakingView = () => {
           </View>
         </View>
       </PopupModal>
-      <PopupModalFade
+      {/* <PopupModalFade
         visible={visiblePopupStaking}
         setVisible={setVisiblePopupStaking}
       >
@@ -335,8 +335,8 @@ const StakingView = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </PopupModalFade>
-
+      </PopupModalFade> */}
+      {/* 
       <PopupModalFade
         visible={visiblePopupUnStaking}
         setVisible={setVisiblePopupUnStaking}
@@ -360,7 +360,7 @@ const StakingView = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </PopupModalFade>
+      </PopupModalFade> */}
     </View>
   );
 };

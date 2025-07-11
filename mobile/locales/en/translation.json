@@ -49,22 +49,23 @@
       "password_hint": "Including lowercase letters, numbers, and special characters, 4 to 15 characters.",
       "wallet_hint": "Please enter your Solana network wallet address."
     },
-    "forget_password": {
-      "title": "Find Password",
-      "enter_email": "Enter Email Address",
-      "confirm": "Confirm",
-      "sign_in": "Sign In",
-      "sign_up": "Sign Up",
-      "email_required": "Email is required",
-      "valid_email": "Please enter a valid email",
-      "notice": "Notice",
-      "notice_text": "A temporary password will be sent to your Email Address.",
-      "reset_sent": "A password reset link has been sent to email"
-    },
     "success": {
       "title": "We're all set!",
       "subtitle": "The wallet is now fully available.",
       "start": "Start"
+    },
+    "forgot_password": {
+      "title": "Find Password",
+      "enter_email": "Enter Email Address",
+      "placeholder_email": "Enter Email Address",
+      "email_required": "Email is required",
+      "invalid_email": "Please enter a valid email",
+      "notice_title": "Notice",
+      "notice_desc": "A temporary password will be sent to your Email Address.",
+      "confirm": "Confirm",
+      "signin": "Sign In",
+      "signup": "Sign Up",
+      "reset_link_sent": "A password reset link has been sent to email"
     }
   },
   "home": {
@@ -106,9 +107,12 @@
     "confirm_swap": "Confirm Swap",
     "swap_completed": "Swap Completed",
     "swap_success": "Your swap has been successfully processed",
-    "insufficient_balance": "Insufficient balance",
     "amount_required": "Amount is required",
-    "select_token": "Select Token"
+    "select_token": "Select Token",
+    "enter_amount_to_pay": "Enter amount to pay",
+    "cannot_swap_same_token": "Cannot swap same token",
+    "quotes_not_available": "Quotes not available",
+    "insufficient_balance": "Insufficient balance"
   },
   "settings": {
     "title": "Setting",
@@ -436,5 +440,21 @@
     "avatar_updated": "Avatar updated",
     "avatar_up_to_date": "Avatar already up to date",
     "save_button": "Save"
+  },
+  "token_overview": {
+    "no_data": "No data available",
+    "receive": "Receive",
+    "send": "Send",
+    "swap": "Swap",
+    "information": "Information",
+    "symbol": "Symbol",
+    "network": "Network",
+    "price": "Price",
+    "performance_24h": "24h performance",
+    "volume": "Volume"
+  },
+  "filter_page": {
+    "title": "Filter",
+    "apply": "Apply"
   }
 }
