@@ -38,6 +38,7 @@ import {
   parseNumberForView,
   tokenImageMap,
   trimTrailingZeros,
+  updateIfValid,
 } from "@/utils/ui";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
 
@@ -240,14 +241,14 @@ const SwapTokens = () => {
   const handleOTPSubmit = async (otp: string | null) => {
     setOtpModalVisible(false);
 
-    if (!otp || otp.length < 6) {
-      setInfoAlertState({
-        text: t("swap.invalid_otp"),
-        type: "error",
-      });
-      setInfoAlertVisible(true);
-      return;
-    }
+    // if (!otp || otp.length < 6) {
+    //   setInfoAlertState({
+    //     text: t("swap.invalid_otp"),
+    //     type: "error",
+    //   });
+    //   setInfoAlertVisible(true);
+    //   return;
+    // }
 
     setIsLoading(true);
     try {
@@ -308,7 +309,8 @@ const SwapTokens = () => {
       setInfoAlertVisible(true);
       return;
     }
-    setOtpModalVisible(true);
+    handleOTPSubmit(null);
+    // setOtpModalVisible(true);
   };
 
   // Get token balance display
@@ -347,7 +349,9 @@ const SwapTokens = () => {
                       keyboardType="numeric"
                       placeholder="0"
                       value={payAmount}
-                      onChangeText={setPayAmount}
+                      onChangeText={(text) => {
+                        updateIfValid(text, setPayAmount);
+                      }}
                       style={{
                         fontSize: getFontSize(receiveAmount),
                       }}
@@ -601,7 +605,7 @@ const SwapTokens = () => {
         </View>
 
         {/* OTP Modal */}
-        <OtpModal visible={otpModalVisible} onClose={handleOTPSubmit} />
+        {/* <OtpModal visible={otpModalVisible} onClose={handleOTPSubmit} /> */}
 
         {/* Info Alert */}
         <InfoAlert

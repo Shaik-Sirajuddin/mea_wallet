@@ -199,7 +199,7 @@ const GoogleOTP = () => {
               {twoFAData && twoFAData.isRegistered === false && (
                 <View>
                   <TextInput
-                    placeholder={t("settings.enter_otp")}
+                    placeholder={t("components.enter_otp")}
                     placeholderTextColor="#FFFFFF"
                     className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
                     value={otp}

@@ -32,23 +32,23 @@ export interface RawUserStaking {
 }
 
 export interface UserStaking {
-  id: number;
-  tokenSymbol: string;
-  registeredAt: Date;
-  planName: string;
-  expectedWithdrawalDate: Date;
-  depositAmount: string;
-  usdtValue: string;
-  krwValue: string;
-  interestRate: string;
-  interestAtMaturity: string;
-  unstakingFee: string;
-  lockupDays: string;
-  maturityState: string;
-  expectedFinalAmount: string;
-  lockupDate: string;
-  stateStr: string;
-  state: string;
+id: number;
+tokenSymbol: string;
+registeredAt: Date;
+planName: string;
+expectedWithdrawalDate: Date;
+depositAmount: string;
+usdtValue: string;
+krwValue: string;
+interestRate: string;
+interestAtMaturity: string;
+unstakingFee: string;
+lockupDays: string;
+maturityState: string;
+expectedFinalAmount: string;
+lockupDate: string;
+stateStr: string;
+state: string;
 }
 
 export interface StakingHistoryItem {

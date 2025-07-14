@@ -152,7 +152,6 @@
     "otp_instruction_2": "Launch the Google Authenticator app and click the \"+\" button at the bottom.",
     "otp_instruction_3": "Click the \"Scan QR Code\" button and scan the \"QR Code\" to register Google OTP.",
     "otp_instruction_4": "Enter Google OTP code when withdrawing money.",
-    "enter_otp": "Enter OTP",
     "verify": "Verify",
     "recent_activity": "Recent Activity",
     "receipt_completed": "Receipt completed",
@@ -226,7 +225,11 @@
     "notice_precautions": "Notice: Precautions for cryptocurrency withdrawal",
     "notice_cannot_cancel": "Due to the nature of digital assets, withdrawal requests cannot be canceled once completed.",
     "notice_no_refund": "No refunds if money is sent incorrectly to another digital asset wallet.",
-    "withdraw": "Withdraw"
+    "withdraw": "Withdraw",
+    "invalid_address": "Please enter a valid withdrawal address.",
+    "invalid_amount": "Please enter a valid withdrawal amount.",
+    "insufficient_balance": "Insufficient balance. Available: {{balance}} {{symbol}}",
+    "next": "NEXT"
   },
   "lockup": {
     "amount": "Amount",
@@ -376,6 +379,7 @@
     "qr_code": "QR code",
     "scan_qr_instruction": "Scan the QR Code to detect Address",
     "apply": "Apply",
+    "enter_otp": "Enter OTP",
     "early_withdrawal_confirmation": "Early Withdrawal Confirmation",
     "claim_confirmation": "Claim Confirmation",
     "early_withdrawal_note": "Note: An early withdrawal fee of {{fee}}% on your deposit amount will be charged. No interest will be credited.",
@@ -456,5 +460,25 @@
   "filter_page": {
     "title": "Filter",
     "apply": "Apply"
+  },
+  "asset_history": {
+    "title": "History",
+    "history": "History",
+    "no_history": "No asset history found.",
+    "available_balance": "Available Balance",
+    "activity_details": "The activity details are as follows",
+    "notice": "Notice",
+    "notice_transfer_fee": "Transfer fee may apply to each withdrawal or transfer.",
+    "notice_confirmation_time": "Confirmation times vary based on network congestion.",
+    "total_date": "Total Date",
+    "division": "Division",
+    "amount": "Amount",
+    "fee": "Fee",
+    "previous_amount": "Previous Amount",
+    "amount_after": "Amount After",
+    "state": "State",
+    "from_address": "From Address",
+    "to_address": "To Address",
+    "txid": "Transaction ID"
   }
 }

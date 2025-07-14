@@ -1,7 +1,10 @@
 import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
-import { trimTrailingZeros } from "@/utils/ui";
-import { SwapPayload, SwapResponseRaw } from "@/src/api/types/asset";
+import {
+  AssetHistoryResponse,
+  AssetHistoryResponseRaw,
+  SwapPayload,
+} from "@/src/api/types/asset";
 import { StatusResponse } from "@/src/api/types/auth";
 import {
   LockupHistoryResponse,
@@ -108,7 +111,6 @@ export default {
           quote: payload.toCurrencyPrice, //to currency price
           quote2: payload.fromCurrencyPrice, //from currency price
           min_deposit_coin: payload.minDepositAmount, //mimumum sell quantity of from token
-          otp_code: payload.otpCode,
         }).toString(),
       }
     );
@@ -150,6 +152,45 @@ export default {
         status: item.state,
       })),
     };
+    return parsed;
+  },
+  getAssetHistory: async (symbol: string, page: number) => {
+    const params = new URLSearchParams();
+    params.append("symbol", symbol);
+    params.append("page", page.toString());
+
+    const raw = await networkRequest<AssetHistoryResponseRaw>(
+      `${apiBaseUrl}/api/history`,
+      {
+        method: "POST",
+        body: params.toString(),
+      }
+    );
+
+    if (typeof raw === "string") {
+      return raw;
+    }
+
+    const parsed: AssetHistoryResponse = {
+      status: raw.status,
+      blockStart: raw.block_start,
+      blockEnd: raw.block_end,
+      blockNum: raw.block_num,
+      totalBlock: raw.total_block,
+      items: raw.data.map((item) => ({
+        registeredAt: item.regdate,
+        type: item.gubn,
+        amount: item.amount,
+        withdrawFee: item.WithdrawFee,
+        previousBalance: item.prev_amount,
+        nextBalance: item.next_amount,
+        status: item.state,
+        fromAddress: item.from_address,
+        toAddress: item.to_address,
+        txHash: item.hash,
+      })),
+    };
+
     return parsed;
   },
 };

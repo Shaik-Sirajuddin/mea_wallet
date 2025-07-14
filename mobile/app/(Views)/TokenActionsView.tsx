@@ -15,7 +15,7 @@ const TokenActionsView = () => {
   const buttons = [
     { label: t("token_actions.deposit"), url: "/deposit-view" },
     { label: t("token_actions.withdrawal"), url: "/withdrawal-view" },
-    { label: t("token_actions.history"), url: "/history-view" },
+    { label: t("token_actions.history"), url: "/asset-history" },
     { label: t("token_actions.chart"), url: "/chart-view" },
   ];
 

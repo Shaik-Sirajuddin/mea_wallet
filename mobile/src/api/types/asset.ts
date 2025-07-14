@@ -9,7 +9,6 @@ export interface SwapPayload {
   fromCurrencyPrice: string; // Current price of sell coin
   toCurrencyPrice: string; // Current price of buy coin
   minDepositAmount: string; // Minimum deposit allowed
-  otpCode: string; // OTP code entered by user
 }
 
 export interface SwapResponseRaw {
@@ -24,4 +23,48 @@ export interface SwapResult {
   fromTokenBalance: string;
   toTokenBalance: string;
   swapFee: string;
+}
+
+export interface AssetHistoryResponseRaw {
+  status: string;
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: AssetHistoryItemRaw[];
+}
+
+export interface AssetHistoryItemRaw {
+  regdate: string;
+  gubn: string;
+  amount: string;
+  WithdrawFee: string;
+  prev_amount: string;
+  next_amount: string;
+  state: string;
+  from_address: string;
+  to_address: string;
+  hash: string;
+}
+
+export interface AssetHistoryResponse {
+  status: string;
+  blockStart: number;
+  blockEnd: number;
+  blockNum: number;
+  totalBlock: number;
+  items: AssetHistoryItem[];
+}
+
+export interface AssetHistoryItem {
+  registeredAt: string; // regdate
+  type: string; // gubn
+  amount: string;
+  withdrawFee: string;
+  previousBalance: string;
+  nextBalance: string;
+  status: string;
+  fromAddress: string;
+  toAddress: string;
+  txHash: string;
 }

@@ -9,26 +9,32 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import SvgIcon from "../components/SvgIcon";
-import { LockupHistoryItem } from "@/src/api/types/lockup";
+import { AssetHistoryItem } from "@/src/api/types/asset";
 import useAsset from "@/hooks/useAsset";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
+import { parseNumberForView, truncateAddress } from "@/utils/ui";
+import AssetHistoryList from "../components/AssetHistoryList";
 
-const LockUpHistory = () => {
+const AssetHistory = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
-  const lockedBalance = useSelector(
+
+  const freeBalance = useSelector(
     (state: RootState) =>
-      state.balance.lockup[symbol as keyof Omit<TokenBalances, "sol">]
+      state.balance.free[symbol as keyof TokenBalances] || "0"
   );
+
   const displaySymbol = useMemo(() => {
     return symbol.toUpperCase();
   }, [symbol]);
-  const [history, setHistory] = useState<LockupHistoryItem[]>([]);
+
+  const [history, setHistory] = useState<AssetHistoryItem[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [totalBlock, setTotalBlock] = useState(0);
@@ -37,13 +43,19 @@ const LockUpHistory = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
-
+  const performCopy = async (data: string) => {
+    await Clipboard.setStringAsync(data);
+    setInfoAlertState({
+      type: "success",
+      text: `Address ${truncateAddress(data)} copied to clipboard`,
+    });
+    setInfoAlertVisible(true);
+  };
   const fetchHistory = async () => {
-    console.log("symbol here", symbol);
     if (!symbol) return;
 
     setLoading(true);
-    const res = await useAsset.getLockupHistory(symbol.toUpperCase(), page);
+    const res = await useAsset.getAssetHistory(symbol.toUpperCase(), page);
 
     if (typeof res === "string") {
       setInfoAlertState({
@@ -51,8 +63,10 @@ const LockUpHistory = () => {
         text: res,
       });
       setInfoAlertVisible(true);
+      setLoading(false);
       return;
     }
+
     setHistory(res.items);
     setTotalBlock(res.totalBlock);
     setLoading(false);
@@ -66,7 +80,7 @@ const LockUpHistory = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full h-full mx-auto">
         <ScrollView>
-          <View className="w-full">
+          <View className="w-full ">
             <View className="items-center relative ">
               <Pressable
                 onPress={() => navigation.goBack()}
@@ -75,30 +89,29 @@ const LockUpHistory = () => {
                 <SvgIcon name="leftArrow" width="21" height="21" />
               </Pressable>
               <Text className="text-lg font-semibold text-white">
-                {t("lockup.title")}
+                {t("asset_history.title")}
               </Text>
             </View>
 
-            <View
-              style={{
-                minHeight: "65%",
-              }}
-              className="relative mt-10 flex flex-col justify-between"
-            >
+            <View className="relative mt-10 flex flex-col justify-between">
               <View>
                 <View className="flex flex-row items-center gap-2 mb-3">
                   <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
                   <Text className="text-base font-medium leading-[22px] text-white">
-                    {t("lockup.history")}
+                    {t("asset_history.history")}
                   </Text>
                 </View>
               </View>
+
+              {/* Available Balance */}
               <View className="flex items-center justify-center text-center px-8 bg-black-1200 w-full h-[71px] rounded-[15px] mb-6">
                 <Text className="text-white font-medium text-[15px]">
-                  {lockedBalance}{" "}
+                  {parseNumberForView(freeBalance)}{" "}
                   <Text className="text-gray-1200">{displaySymbol}</Text>
                 </Text>
               </View>
+
+              {/* Activity Details */}
               <View className="flex-1 flex justify-center mb-6">
                 {loading && (
                   <View className="py-10 items-center">
@@ -108,66 +121,144 @@ const LockUpHistory = () => {
 
                 {!loading && history.length === 0 && (
                   <Text className="text-white text-center py-10">
-                    {t("lockup.no_history")}
+                    {t("asset_history.no_history")}
                   </Text>
                 )}
 
                 {!loading && history.length !== 0 && (
                   <Text className="text-white text-center">
-                    {t("lockup.activity_details")}
+                    {t("asset_history.activity_details")}
                   </Text>
                 )}
               </View>
 
-              <View className="">
-                {!loading &&
+              {/* History List */}
+              <View>
+                {/* {!loading &&
                   history.map((item, index) => (
                     <View key={index} className="mb-4">
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.date")}
+                        <Text className="text-base font-medium text-gray-1200">
+                          {t("asset_history.total_date")}
                         </Text>
-                        <Text className="text-[17px] font-medium text-white">
+                        <Text className="text-base font-medium text-white">
                           {new Date(item.registeredAt).toLocaleString()}
                         </Text>
                       </View>
+
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.quantity")}
+                          {t("asset_history.division")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
-                          {item.amount}
-                        </Text>
-                      </View>
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.start_date")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {item.startDate}
+                          {item.type}
                         </Text>
                       </View>
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.end_date")}
+                          {t("asset_history.amount")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
-                          {item.endDate}
+                          {parseNumberForView(item.amount)} {displaySymbol}
                         </Text>
                       </View>
 
                       <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
                         <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("lockup.state")}
+                          {t("asset_history.fee")}
+                        </Text>
+                        <Text className="text-[17px] font-medium text-white">
+                          {parseNumberForView(item.withdrawFee)} {displaySymbol}
+                        </Text>
+                      </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.previous_amount")}
+                        </Text>
+                        <Text className="text-[17px] font-medium text-white">
+                          {parseNumberForView(item.previousBalance)}{" "}
+                          {displaySymbol}
+                        </Text>
+                      </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.amount_after")}
+                        </Text>
+                        <Text className="text-[17px] font-medium text-white">
+                          {parseNumberForView(item.nextBalance)} {displaySymbol}
+                        </Text>
+                      </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.state")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
                           {item.status}
                         </Text>
                       </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.from_address")}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            performCopy(item.fromAddress);
+                          }}
+                        >
+                          <Text className="text-[17px] font-medium text-white">
+                            {truncateAddress(item.fromAddress) || "--"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.to_address")}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            performCopy(item.toAddress);
+                          }}
+                        >
+                          <Text className="text-[17px] font-medium text-white">
+                            {truncateAddress(item.toAddress) || "--"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+                        <Text className="text-[17px] font-medium text-gray-1200">
+                          {t("asset_history.txid")}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            performCopy(item.txHash);
+                          }}
+                        >
+                          <Text className="text-[17px] font-medium text-white">
+                            {truncateAddress(item.txHash) || "--"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+
                       <View className="w-full h-[1px] bg-white mt-2"></View>
                     </View>
-                  ))}
+                  ))} */}
+                {!loading && (
+                  <AssetHistoryList
+                    history={history}
+                    displaySymbol={displaySymbol}
+                    performCopy={(value) => {
+                      performCopy(value);
+                    }}
+                    page={page}
+                  />
+                )}
               </View>
 
               {/* Pagination */}
@@ -201,7 +292,7 @@ const LockUpHistory = () => {
               <View className="flex-row mt-9 items-center gap-2 mb-3">
                 <SvgIcon name="infoIcon" />
                 <Text className="text-base font-medium leading-[22px] text-white">
-                  {t("lockup.notice")}
+                  {t("asset_history.notice")}
                 </Text>
               </View>
 
@@ -210,14 +301,14 @@ const LockUpHistory = () => {
                   <View className="flex-row">
                     <Text className="text-white mr-2">•</Text>
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200 flex-1">
-                      {t("lockup.notice_after_end_date")}
+                      {t("asset_history.notice_transfer_fee")}
                     </Text>
                   </View>
 
                   <View className="flex-row">
                     <Text className="text-white mr-2">•</Text>
                     <Text className="text-[15px] font-medium leading-5 text-gray-1200 flex-1">
-                      {t("lockup.notice_withdrawal_available")}
+                      {t("asset_history.notice_confirmation_time")}
                     </Text>
                   </View>
                 </View>
@@ -231,12 +322,9 @@ const LockUpHistory = () => {
         {...infoAlertState}
         visible={infoAlertVisible}
         setVisible={setInfoAlertVisible}
-        onDismiss={() => {
-          // Optionally refetch or handle dismiss logic here
-        }}
       />
     </View>
   );
 };
 
-export default LockUpHistory;
+export default AssetHistory;

@@ -144,206 +144,207 @@ const EnrollPlan = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-black-1000"
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
+    <View className="flex-1 bg-black-1000">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="bg-black-1000"
       >
-        <View className="bg-black-1000 flex-1">
-          <View className="w-full max-w-5xl mx-auto pb-4">
-            <View className="items-center relative mt-4 mb-6">
-              <Pressable
-                onPress={() => router.back()}
-                className="absolute left-0 top-2"
-              >
-                <SvgIcon name="leftArrow" />
-              </Pressable>
-              <Text className="text-lg font-semibold text-white">
-                {t("staking.staking_list")}
-              </Text>
-            </View>
-
-            {/* Plan Details */}
-            <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mb-4">
-              <Text className="text-white font-semibold text-lg mb-3">
-                {parsedPlan.name}
-              </Text>
-
-              <View className="bg-black-700 rounded-xl p-3 mb-4">
-                <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">
-                    {t("staking.lockup_period")}
-                  </Text>
-                  <Text className="text-white text-lg font-medium">
-                    {parsedPlan.lockupDays}
-                  </Text>
-                </View>
-                <View className="flex-row justify-between mb-2">
-                  <Text className="text-gray-400 text-base">
-                    {t("staking.min_deposit")}
-                  </Text>
-                  <Text className="text-white text-lg font-medium">
-                    {parsedPlan.minDeposit}
-                  </Text>
-                </View>
-                <View className="flex-row justify-between mb-3">
-                  <Text className="text-gray-400 text-base">
-                    {t("staking.compensation")}
-                  </Text>
-                  <Text className="text-green-500 text-xl font-bold">
-                    {parsedPlan.interestRate}%
-                  </Text>
-                </View>
-                <View className="flex-row justify-between">
-                  <Text className="text-gray-400 text-base">
-                    {t("staking.early_withdrawl_fee")}
-                  </Text>
-                  <Text className="text-white text-lg font-medium">
-                    {parsedPlan.unstakingFee}%
-                  </Text>
-                </View>
+        <ScrollView className="flex-grow-0" keyboardShouldPersistTaps="handled">
+          <View className="bg-black-1000 flex-1">
+            <View className="w-full mx-auto ">
+              <View className="items-center relative">
+                <Pressable
+                  onPress={() => router.back()}
+                  className="absolute left-0 top-2"
+                >
+                  <SvgIcon name="leftArrow" />
+                </Pressable>
+                <Text className="text-lg font-semibold text-white">
+                  {t("staking.staking_list")}
+                </Text>
               </View>
 
-              {/* Selected Token */}
-              <View className="mb-4">
-                <Text className="text-gray-400 mb-2">
-                  {t("components.token")}
+              {/* Plan Details */}
+              <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mt-10">
+                <Text className="text-white font-semibold text-lg mb-3">
+                  {parsedPlan.name}
                 </Text>
+
+                <View className="bg-black-700 rounded-xl p-3 mb-4">
+                  <View className="flex-row justify-between mb-2">
+                    <Text className="text-gray-400 text-base">
+                      {t("staking.lockup_period")}
+                    </Text>
+                    <Text className="text-white text-lg font-medium">
+                      {parsedPlan.lockupDays}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between mb-2">
+                    <Text className="text-gray-400 text-base">
+                      {t("staking.min_deposit")}
+                    </Text>
+                    <Text className="text-white text-lg font-medium">
+                      {parsedPlan.minDeposit}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between mb-3">
+                    <Text className="text-gray-400 text-base">
+                      {t("staking.compensation")}
+                    </Text>
+                    <Text className="text-green-500 text-xl font-bold">
+                      {parsedPlan.interestRate}%
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between">
+                    <Text className="text-gray-400 text-base">
+                      {t("staking.early_withdrawl_fee")}
+                    </Text>
+                    <Text className="text-white text-lg font-medium">
+                      {parsedPlan.unstakingFee}%
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Selected Token */}
+                <View className="mb-4">
+                  <Text className="text-gray-400 mb-2">
+                    {t("components.token")}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setTokenModalVisible(true)}
+                    className="border border-gray-700 rounded-xl px-4 py-2 bg-black-900 flex-row items-center"
+                  >
+                    {selectedToken ? (
+                      <>
+                        <View className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-gray-600 bg-black-900">
+                          <Image
+                            source={tokenImageMap[selectedToken]}
+                            className="w-full h-full"
+                            resizeMode="cover"
+                          />
+                        </View>
+                        <Text className="text-white text-base">
+                          {selectedToken.toUpperCase()}
+                        </Text>
+                      </>
+                    ) : (
+                      <Text className="text-white">
+                        {t("staking.select_token")}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+                <View className="flex-row justify-between mb-2">
+                  <Text className="text-gray-400 text-base">
+                    {t("components.available_balance")}:
+                  </Text>
+                  <Text className="text-white text-lg font-medium">
+                    {selectedToken
+                      ? freeBalance[selectedToken as keyof TokenBalances]
+                      : "--"}
+                  </Text>
+                </View>
+                {/* Expected Final Amount */}
+                <View className="mb-4 mt-4">
+                  <Text className="text-gray-400">
+                    {t("staking.interest_at_maturity")}
+                  </Text>
+                  <View className="flex flex-row gap-2 items-center mt-2">
+                    <Text className="text-green-500 text-2xl font-extrabold">
+                      {expectedInterest}
+                    </Text>
+                    <Text className="text-white text font-bold">
+                      {selectedToken?.toUpperCase()}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Amount Input */}
+                <View className="mb-4">
+                  <Text className="text-gray-400 mb-2">
+                    {t("common.amount")}
+                  </Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    value={amount}
+                    onChangeText={setAmount}
+                    placeholder={t("staking.enter_amount_to_stake")}
+                    className="border border-gray-700 rounded-xl px-4 py-2 text-white bg-black-900"
+                    placeholderTextColor="#999"
+                  />
+                </View>
+
+                {/* Enroll Button */}
                 <TouchableOpacity
-                  onPress={() => setTokenModalVisible(true)}
-                  className="border border-gray-700 rounded-xl px-4 py-2 bg-black-900 flex-row items-center"
+                  onPress={handleEnroll}
+                  activeOpacity={1}
+                  className="bg-pink-1100 rounded-xl py-3 items-center"
                 >
-                  {selectedToken ? (
-                    <>
-                      <View className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-gray-600 bg-black-900">
+                  <Text className="text-white font-semibold text-base">
+                    {t("staking.staking")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Token Selection Modal */}
+            <Modal visible={tokenModalVisible} transparent animationType="fade">
+              <View className="flex-1 bg-black-1000 bg-opacity-95 justify-center items-center px-8">
+                <View className="bg-black-800 rounded-xl p-4 w-full">
+                  <Text className="text-white text-lg font-semibold mb-4">
+                    {t("staking.select_token")}
+                  </Text>
+
+                  {parsedPlan.supportedTokens.map((token) => (
+                    <TouchableOpacity
+                      key={token}
+                      onPress={() => {
+                        setSelectedToken(token);
+                        setTokenModalVisible(false);
+                      }}
+                      className="flex-row items-center py-3 px-2 border-b border-gray-700"
+                    >
+                      <View className="w-10 h-10 rounded-full overflow-hidden mr-4 border border-gray-600 bg-black-900">
                         <Image
-                          source={tokenImageMap[selectedToken]}
+                          source={tokenImageMap[token]}
                           className="w-full h-full"
                           resizeMode="cover"
                         />
                       </View>
                       <Text className="text-white text-base">
-                        {selectedToken.toUpperCase()}
+                        {token.toUpperCase()}
                       </Text>
-                    </>
-                  ) : (
-                    <Text className="text-white">
-                      {t("staking.select_token")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-              <View className="flex-row justify-between mb-2">
-                <Text className="text-gray-400 text-base">
-                  {t("components.available_balance")}:
-                </Text>
-                <Text className="text-white text-lg font-medium">
-                  {selectedToken
-                    ? freeBalance[selectedToken as keyof TokenBalances]
-                    : "--"}
-                </Text>
-              </View>
-              {/* Expected Final Amount */}
-              <View className="mb-4 mt-4">
-                <Text className="text-gray-400">
-                  {t("staking.interest_at_maturity")}
-                </Text>
-                <View className="flex flex-row gap-2 items-center mt-2">
-                  <Text className="text-green-500 text-2xl font-extrabold">
-                    {expectedInterest}
-                  </Text>
-                  <Text className="text-white text font-bold">
-                    {selectedToken?.toUpperCase()}
-                  </Text>
-                </View>
-              </View>
+                    </TouchableOpacity>
+                  ))}
 
-              {/* Amount Input */}
-              <View className="mb-4">
-                <Text className="text-gray-400 mb-2">{t("common.amount")}</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  value={amount}
-                  onChangeText={setAmount}
-                  placeholder={t("staking.enter_amount_to_stake")}
-                  className="border border-gray-700 rounded-xl px-4 py-2 text-white bg-black-900"
-                  placeholderTextColor="#999"
-                />
-              </View>
-
-              {/* Enroll Button */}
-              <TouchableOpacity
-                onPress={handleEnroll}
-                activeOpacity={1}
-                className="bg-pink-1100 rounded-xl py-3 items-center"
-              >
-                <Text className="text-white font-semibold text-base">
-                  {t("staking.staking")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Token Selection Modal */}
-          <Modal visible={tokenModalVisible} transparent animationType="fade">
-            <View className="flex-1 bg-black-1000 bg-opacity-95 justify-center items-center px-8">
-              <View className="bg-black-800 rounded-xl p-4 w-full">
-                <Text className="text-white text-lg font-semibold mb-4">
-                  {t("staking.select_token")}
-                </Text>
-
-                {parsedPlan.supportedTokens.map((token) => (
                   <TouchableOpacity
-                    key={token}
-                    onPress={() => {
-                      setSelectedToken(token);
-                      setTokenModalVisible(false);
-                    }}
-                    className="flex-row items-center py-3 px-2 border-b border-gray-700"
+                    onPress={() => setTokenModalVisible(false)}
+                    className="mt-4 bg-pink-1100 rounded-xl py-3 items-center"
                   >
-                    <View className="w-10 h-10 rounded-full overflow-hidden mr-4 border border-gray-600 bg-black-900">
-                      <Image
-                        source={tokenImageMap[token]}
-                        className="w-full h-full"
-                        resizeMode="cover"
-                      />
-                    </View>
-                    <Text className="text-white text-base">
-                      {token.toUpperCase()}
+                    <Text className="text-white font-semibold text-base">
+                      {t("common.cancel")}
                     </Text>
                   </TouchableOpacity>
-                ))}
-
-                <TouchableOpacity
-                  onPress={() => setTokenModalVisible(false)}
-                  className="mt-4 bg-pink-1100 rounded-xl py-3 items-center"
-                >
-                  <Text className="text-white font-semibold text-base">
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
 
-          <InfoAlert
-            {...modalState}
-            visible={popupVisible}
-            setVisible={setPopupVisible}
-            onDismiss={() => {
-              if (enrollmentSucces) {
-                router.dismiss();
-                router.navigate("/(Tabs)/staking");
-              }
-            }}
-          />
-          <OtpModal visible={otpModalVisible} onClose={handleOtpSubmit} />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <InfoAlert
+              {...modalState}
+              visible={popupVisible}
+              setVisible={setPopupVisible}
+              onDismiss={() => {
+                if (enrollmentSucces) {
+                  router.dismiss();
+                  router.navigate("/(Tabs)/staking");
+                }
+              }}
+            />
+            <OtpModal visible={otpModalVisible} onClose={handleOtpSubmit} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 

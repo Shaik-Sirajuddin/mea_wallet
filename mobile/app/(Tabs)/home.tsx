@@ -235,7 +235,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
 
-            <View className="w-full">
+            <View className="w-full pb-8">
               {Object.entries(
                 showLokcupBalance ? lockedBalance : freeBalance
               ).map(([token, amount]) => (
@@ -287,43 +287,6 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-            {/* 
-            <View className="mt-[31px]">
-              <Text className="text-xl font-semibold leading-8 text-white mb-2.5">
-                Recent Activities
-              </Text>
-            </View>
-            <View className="w-full">
-              {["MEA", "SOL", "RECON"].map((token, idx) => (
-                <View
-                  key={idx}
-                  className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3"
-                >
-                  <View className="flex-row items-center gap-[11px]">
-                    <Image
-                      source={getTokenImage(token)}
-                      className="w-12 h-12 rounded-full"
-                    />
-                    <View>
-                      <Text className="text-[17px] font-medium leading-5 text-white">
-                        {token}
-                      </Text>
-                      <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                        0 {token}
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <Text className="text-[17px] font-medium leading-5 text-white text-right">
-                      $0.00
-                    </Text>
-                    <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
-                      $0.00
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View> */}
           </View>
         </ScrollView>
       </View>

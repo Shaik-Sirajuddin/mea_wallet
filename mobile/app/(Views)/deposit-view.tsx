@@ -21,7 +21,7 @@ import {
   setDepositAddresses,
   setRegisteredAddresses,
 } from "@/src/features/asset/depositSlice";
-import { parseNumberForView } from "@/utils/ui";
+import { parseNumberForView, updateIfValid } from "@/utils/ui";
 
 const Deposit = () => {
   const { t } = useTranslation();
@@ -132,7 +132,9 @@ const Deposit = () => {
                     })}
                     placeholderTextColor="#fff"
                     value={depositAmount}
-                    onChangeText={setDepositAmount}
+                    onChangeText={(value) => {
+                      updateIfValid(value, setDepositAmount);
+                    }}
                     className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
                     keyboardType="numeric"
                   />

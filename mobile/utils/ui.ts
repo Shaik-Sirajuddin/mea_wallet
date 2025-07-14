@@ -141,4 +141,20 @@ export function validatePasswordWithReason(
 function escapeRegExp(str: string): string {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
-0.0;
+
+export function isValidNumber(str: string) {
+  const regex = /^-?\d+(\.\d+)?$|^-?\d+\.$/;
+  return regex.test(str);
+}
+
+export const updateIfValid = (
+  value: string,
+  trigger: (value: string) => void
+) => {
+  if (isValidNumber(value) || value.length === 0) {
+    console.log("valid", value);
+    trigger(value);
+  } else {
+    console.log("notvalid", value);
+  }
+};
