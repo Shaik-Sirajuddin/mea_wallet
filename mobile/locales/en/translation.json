@@ -308,7 +308,8 @@
     "variable_amount": "Variable amount",
     "current_amount": "Current amount",
     "state": "State",
-    "memo": "Memo"
+    "memo": "Memo",
+    "product_details": "Here are the staking product details"
   },
   "history": {
     "title": "History",

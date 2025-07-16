@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   View,
@@ -99,7 +99,7 @@ export default function HomeScreen() {
   //   });
   // }, []);
 
-  const totalAssetValue = () => {
+  const totalAssetValue = useMemo(() => {
     let totalValue = new Decimal(0);
     for (let [token, amount] of Object.entries(freeBalance)) {
       //@ts-expect-error here
@@ -110,9 +110,8 @@ export default function HomeScreen() {
       totalValue = totalValue.add(new Decimal(amount).mul(quotes[token]));
     }
     return trimTrailingZeros(totalValue.toFixed(2));
-  };
+  }, [freeBalance, lockedBalance]);
   const getPrice = (token: string) => {
-    totalAssetValue();
     //@ts-expect-error here
     return parseNumberForView(quotes[token]);
   };
@@ -156,16 +155,16 @@ export default function HomeScreen() {
             <View className="items-center mt-[46px] mb-10">
               <SvgIcon name="spaceman" width="74" height="74" />
               <Text className="text-white text-[37px] mt-2 font-semibold">
-                ${parseNumberForView(totalAssetValue())}
+                ${parseNumberForView(totalAssetValue)}
               </Text>
-              <View className="flex-row items-center justify-center gap-1.5">
+              {/* <View className="flex-row items-center justify-center gap-1.5">
                 <Text className="text-base font-medium text-pink-1200">
-                  ${parseFloat(freeBalance.mea || "0") * 1.0}
+                  ${parseFloat(totalAssetValue || "0") * 1.0}
                 </Text>
                 <View className="text-lg font-medium leading-[12px] text-pink-1200 bg-pink-1200/15 rounded-[5px] py-[5px] px-1">
                   <Text className="text-pink-1200">+2.13%</Text>
                 </View>
-              </View>
+              </View> */}
             </View>
 
             <View className="flex-row max-w-[280px] mx-auto gap-[7px]">

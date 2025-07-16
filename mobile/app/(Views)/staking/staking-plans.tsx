@@ -149,7 +149,7 @@ const StakingPlans = () => {
   return (
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">
-        <View className="items-center relative ">
+        <View className="items-center relative">
           <Pressable
             onPress={() => router.back()}
             className="absolute left-0 top-2"
@@ -157,12 +157,24 @@ const StakingPlans = () => {
             <SvgIcon name="leftArrow" />
           </Pressable>
           <Text className="text-lg font-semibold text-white">
-            {t("staking.staking_list")}
+            {t("staking.staking")}
           </Text>
         </View>
+        <View className="flex flex-row justify-between items-center mb-2 mt-6">
+          <View className="flex-row items-center gap-2">
+            <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+            <Text className="text-base font-medium text-white">
+              {t("staking.staking_list")}
+            </Text>
+          </View>
+        </View>
+
+        <Text className="text-white text-center my-4">
+          {t("staking.product_details")}
+        </Text>
 
         <FlatList
-          className="mt-10"
+          className="mt-4"
           data={plans}
           renderItem={renderItem}
           keyExtractor={(item) => String(item.id)}

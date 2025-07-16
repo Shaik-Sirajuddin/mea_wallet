@@ -31,4 +31,3 @@ export interface LockupHistoryResponse {
   totalBlock: number;
   items: LockupHistoryItem[];
 }
- 

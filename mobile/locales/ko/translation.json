@@ -308,7 +308,8 @@
     "variable_amount": "변동 금액",
     "current_amount": "현재 금액",
     "state": "상태",
-    "memo": "메모"
+    "memo": "메모",
+    "product_details": "스테이킹 제품 세부 정보는 다음과 같습니다."
   },
   "history": {
     "title": "내역",
