@@ -2,7 +2,10 @@ import { useLocalSearchParams, useNavigation, router } from "expo-router";
 import React, { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -84,80 +87,89 @@ const Deposit = () => {
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto pb-0 ">
-        <View className="w-full h-full">
-          <View className="items-center relative">
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="absolute left-0 top-2 z-10 p-0"
-            >
-              <SvgIcon name="leftArrow" width="20" height="20" />
-            </Pressable>
-            <Text className="text-lg font-semibold text-white">
-              {t("deposit.title")}
-            </Text>
-          </View>
-
-          <View className="relative mt-10">
-            <View className="mt-2.5 mb-2">
-              <View className="flex flex-row items-center gap-2 mb-3">
-                <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
-                <Text className="text-base font-medium leading-[22px] text-white">
-                  {t("deposit.quantity_held")}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="bg-black-1000"
+      >
+        <ScrollView className="h-full" keyboardShouldPersistTaps="handled">
+          <View className="w-full h-full max-w-5xl mx-auto pb-0 ">
+            <View className="w-full h-full">
+              <View className="items-center relative">
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  className="absolute left-0 top-2 z-10 p-0"
+                >
+                  <SvgIcon name="leftArrow" width="20" height="20" />
+                </Pressable>
+                <Text className="text-lg font-semibold text-white">
+                  {t("deposit.title")}
                 </Text>
               </View>
 
-              <View className="relative">
-                <View className="text-[15px] flex flex-row items-center justify-center text-center text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]">
-                  <Text className="text-white">
-                    {parseNumberForView(freeBalance)}
-                  </Text>
-                  <Text className="text-gray-1200 ml-1">{displaySymbol}</Text>
+              <View className="relative mt-10">
+                <View className="mt-2.5 mb-2">
+                  <View className="flex flex-row items-center gap-2 mb-3">
+                    <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+                    <Text className="text-base font-medium leading-[22px] text-white">
+                      {t("deposit.quantity_held")}
+                    </Text>
+                  </View>
+
+                  <View className="relative">
+                    <View className="text-[15px] flex flex-row items-center justify-center text-center text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]">
+                      <Text className="text-white">
+                        {parseNumberForView(freeBalance)}
+                      </Text>
+                      <Text className="text-gray-1200 ml-1">
+                        {displaySymbol}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View className="mt-5 mb-4">
+                    <View className="flex flex-row items-center gap-2 mb-3">
+                      <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+                      <Text className="text-base font-medium leading-[22px] text-white">
+                        {t("deposit.deposit_quantity")}
+                      </Text>
+                    </View>
+
+                    <View className="relative items-center justify-center mb-2">
+                      <TextInput
+                        placeholder={t("deposit.enter_amount_min", {
+                          amount: minDeposit,
+                          symbol: displaySymbol,
+                        })}
+                        placeholderTextColor="#fff"
+                        value={depositAmount}
+                        onChangeText={(value) => {
+                          updateIfValid(value, setDepositAmount);
+                        }}
+                        className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
+                        keyboardType="numeric"
+                      />
+                      <TouchableOpacity className="absolute right-6">
+                        <SvgIcon name="smallSwapIcon" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
               </View>
 
-              <View className="mt-5 mb-4">
-                <View className="flex flex-row items-center gap-2 mb-3">
-                  <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
-                  <Text className="text-base font-medium leading-[22px] text-white">
-                    {t("deposit.deposit_quantity")}
-                  </Text>
-                </View>
-
-                <View className="relative items-center justify-center mb-2">
-                  <TextInput
-                    placeholder={t("deposit.enter_amount_min", {
-                      amount: minDeposit,
-                      symbol: displaySymbol,
-                    })}
-                    placeholderTextColor="#fff"
-                    value={depositAmount}
-                    onChangeText={(value) => {
-                      updateIfValid(value, setDepositAmount);
-                    }}
-                    className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
-                    keyboardType="numeric"
-                  />
-                  <TouchableOpacity className="absolute right-6">
-                    <SvgIcon name="smallSwapIcon" />
-                  </TouchableOpacity>
-                </View>
+              <View className="flex flex-row gap-2 justify-center mt-auto">
+                <PrimaryButton text={t("common.next")} onPress={handleNext} />
               </View>
             </View>
           </View>
 
-          <View className="flex flex-row gap-2 justify-center mt-auto">
-            <PrimaryButton text={t("common.next")} onPress={handleNext} />
-          </View>
-        </View>
-      </View>
-
-      <InfoAlert
-        {...infoAlertState}
-        visible={infoAlertVisible}
-        setVisible={setInfoAlertVisible}
-        onDismiss={() => {}}
-      />
+          <InfoAlert
+            {...infoAlertState}
+            visible={infoAlertVisible}
+            setVisible={setInfoAlertVisible}
+            onDismiss={() => {}}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };

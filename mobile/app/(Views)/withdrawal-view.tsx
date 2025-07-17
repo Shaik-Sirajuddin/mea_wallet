@@ -248,9 +248,9 @@ const WithDrawal = () => {
                           updateIfValid(value, setWithdrawAmount);
                         }}
                       />
-                      <TouchableOpacity className="absolute right-6">
+                      {/* <TouchableOpacity className="absolute right-6">
                         <SvgIcon name="smallSwapIcon" />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
                   </View>
 

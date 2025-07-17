@@ -110,7 +110,8 @@ export default function HomeScreen() {
       totalValue = totalValue.add(new Decimal(amount).mul(quotes[token]));
     }
     return trimTrailingZeros(totalValue.toFixed(2));
-  }, [freeBalance, lockedBalance]);
+  }, [freeBalance, lockedBalance, quotes]);
+  
   const getPrice = (token: string) => {
     //@ts-expect-error here
     return parseNumberForView(quotes[token]);

@@ -79,7 +79,7 @@ export default {
    */
   registerAddress: async (deposit_address: string) => {
     return await networkRequest<StatusResponse>(
-      `${apiBaseUrl}/api/register-deposit-address`,
+      `${apiBaseUrl}/api/address-add`,
       {
         method: "POST",
         body: new URLSearchParams({ deposit_address }).toString(),

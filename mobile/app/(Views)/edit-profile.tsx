@@ -111,10 +111,12 @@ const EditProfile = () => {
         <View className="text-center relative">
           <View className="items-center">
             <Pressable
-              className="absolute left-0 top-2"
+              className="absolute left-0 flex items-start justify-start p-6"
               onPress={() => navigation.goBack()}
             >
-              <SvgIcon name="leftArrow" width="21" height="21" />
+              <View className="absolute top-2">
+                <SvgIcon name="leftArrow" width="21" height="21" />
+              </View>
             </Pressable>
             <Text className="text-lg font-semibold text-white">
               {t("settings.edit_profile")}
