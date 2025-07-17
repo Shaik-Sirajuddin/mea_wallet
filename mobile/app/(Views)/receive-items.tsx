@@ -23,6 +23,7 @@ import {
 } from "@/src/features/asset/depositSlice";
 import { setMinDeposit } from "@/src/features/token/tokenSlice";
 import { t } from "i18next";
+import { BackButton } from "../components/BackButton";
 
 const ReceiveItems = () => {
   const navigation = useNavigation();
@@ -91,12 +92,8 @@ const ReceiveItems = () => {
         >
           <View className="w-full">
             <View className="items-center relative">
-              <Pressable
-                onPress={() => navigation.goBack()}
-                className="absolute left-1 top-2 z-10 p-2"
-              >
-                <SvgIcon name="leftArrow2" width="14" height="14" />
-              </Pressable>
+              <BackButton />
+
               <Text className="text-lg font-semibold text-white">
                 {t("receive.title")}
               </Text>

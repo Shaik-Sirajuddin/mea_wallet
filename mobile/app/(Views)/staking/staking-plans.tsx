@@ -1,5 +1,6 @@
 // src/app/(staking)/StakingPlans.tsx
 
+import { BackButton } from "@/app/components/BackButton";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
 import useStaking, { StakingPlan } from "@/hooks/useStaking";
@@ -150,12 +151,7 @@ const StakingPlans = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">
         <View className="items-center relative">
-          <Pressable
-            onPress={() => router.back()}
-            className="absolute left-0 top-2"
-          >
-            <SvgIcon name="leftArrow" />
-          </Pressable>
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
             {t("staking.staking")}
           </Text>

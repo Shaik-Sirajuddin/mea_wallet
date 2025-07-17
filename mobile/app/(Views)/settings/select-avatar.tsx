@@ -11,6 +11,7 @@ import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { setUserDetails } from "@/src/features/user/userSlice";
 import { router } from "expo-router";
+import { BackButton } from "@/app/components/BackButton";
 
 const SelectAvatar = () => {
   const { t } = useTranslation();
@@ -73,12 +74,7 @@ const SelectAvatar = () => {
       <View className="flex-1">
         <View className="w-full">
           <View className="items-center">
-            <Pressable
-              className="absolute left-0 top-2"
-              onPress={() => navigation.goBack()}
-            >
-              <SvgIcon name="leftArrow" width="21" height="21" />
-            </Pressable>
+            <BackButton />
             <Text className="text-lg font-semibold text-white">
               {t("edit_profile.select_avatar")}
             </Text>

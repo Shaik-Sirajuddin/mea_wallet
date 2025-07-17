@@ -19,6 +19,7 @@ import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
 import { parseNumberForView, truncateAddress } from "@/utils/ui";
 import AssetHistoryList from "../components/AssetHistoryList";
+import { BackButton } from "../components/BackButton";
 
 const AssetHistory = () => {
   const { t } = useTranslation();
@@ -82,12 +83,7 @@ const AssetHistory = () => {
         <ScrollView>
           <View className="w-full ">
             <View className="items-center relative ">
-              <Pressable
-                onPress={() => navigation.goBack()}
-                className="absolute left-0 top-2 z-10 "
-              >
-                <SvgIcon name="leftArrow" width="21" height="21" />
-              </Pressable>
+              <BackButton />
               <Text className="text-lg font-semibold text-white">
                 {t("asset_history.title")}
               </Text>

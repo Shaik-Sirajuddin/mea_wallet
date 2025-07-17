@@ -1,4 +1,4 @@
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
@@ -71,7 +71,7 @@ export default function SettingsScreen() {
                 </Text>
               </Pressable>
 
-              <Pressable
+              {/* <Pressable
                 onPress={() => router.push("/(Views)/settings/languages-view")}
                 className="flex-row items-center gap-3 px-3 py-5 mb-2 rounded-2xl border-2 border-transparent active:border-pink-1200 bg-black-1200 transition-all duration-500"
               >
@@ -81,7 +81,7 @@ export default function SettingsScreen() {
                 <Text className="text-base font-semibold leading-5 text-white">
                   {t("settings.language")}
                 </Text>
-              </Pressable>
+              </Pressable> */}
 
               <Pressable
                 onPress={() =>

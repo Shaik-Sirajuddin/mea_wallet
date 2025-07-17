@@ -20,7 +20,9 @@ const FaqView = () => {
             >
               <SvgIcon name="leftArrow" width="21" height="21" />
             </Pressable>
-            <Text className="text-lg font-semibold text-white">{t("settings.faq")}</Text>
+            <Text className="text-lg font-semibold text-white">
+              {t("settings.faq")}
+            </Text>
           </View>
 
           <View className="relative mt-10">

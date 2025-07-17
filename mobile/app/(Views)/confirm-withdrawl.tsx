@@ -19,6 +19,7 @@ import { RootState } from "@/src/store";
 import { truncateAddress } from "@/utils/ui";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import useWithdrawl from "@/hooks/useWithdrawl";
+import { BackButton } from "../components/BackButton";
 
 export type ConfirmWithdrawParams = {
   symbol: keyof TokenBalances;
@@ -108,12 +109,7 @@ const ConfirmWithdraw = () => {
           <View className="w-full h-full max-w-5xl mx-auto">
             <View className="w-full h-full">
               <View className="items-center relative">
-                <Pressable
-                  onPress={() => navigation.goBack()}
-                  className="absolute left-0 top-2 z-10 p-0"
-                >
-                  <SvgIcon name="leftArrow" width="20" height="20" />
-                </Pressable>
+                <BackButton />
                 <Text className="text-lg font-semibold text-white">
                   {t("withdrawal.title")}
                 </Text>

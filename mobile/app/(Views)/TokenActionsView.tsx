@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import { TokenQuotes } from "@/src/types/balance";
+import { BackButton } from "../components/BackButton";
 
 const TokenActionsView = () => {
   const { t } = useTranslation();
@@ -41,12 +42,7 @@ const TokenActionsView = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full h-full max-w-5xl mx-auto  pb-10">
         <View className="items-center relative">
-          <Pressable
-            onPress={() => router.back()}
-            className="absolute left-0 top-2 z-10"
-          >
-            <SvgIcon name="leftArrow2" width="14" height="14" />
-          </Pressable>
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
             {t("token_actions.native")}
           </Text>

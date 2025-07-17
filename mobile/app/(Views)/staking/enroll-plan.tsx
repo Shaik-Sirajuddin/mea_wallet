@@ -22,6 +22,7 @@ import Decimal from "decimal.js";
 import { RootState } from "@/src/store";
 import { useSelector } from "react-redux";
 import { TokenBalances } from "@/src/types/balance";
+import { BackButton } from "@/app/components/BackButton";
 
 const EnrollPlan = () => {
   const { t } = useTranslation();
@@ -153,12 +154,8 @@ const EnrollPlan = () => {
           <View className="bg-black-1000 flex-1">
             <View className="w-full mx-auto ">
               <View className="items-center relative">
-                <Pressable
-                  onPress={() => router.back()}
-                  className="absolute left-0 top-2"
-                >
-                  <SvgIcon name="leftArrow" />
-                </Pressable>
+                <BackButton />
+
                 <Text className="text-lg font-semibold text-white">
                   {t("staking.staking_list")}
                 </Text>

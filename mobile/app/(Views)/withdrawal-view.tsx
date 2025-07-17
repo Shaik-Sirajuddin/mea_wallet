@@ -30,6 +30,7 @@ import { useDispatch } from "react-redux";
 import Decimal from "decimal.js";
 import { t } from "i18next";
 import { updateIfValid } from "@/utils/ui";
+import { BackButton } from "../components/BackButton";
 
 const WithDrawal = () => {
   const navigation = useNavigation();
@@ -166,12 +167,7 @@ const WithDrawal = () => {
           <View className="w-full h-full max-w-5xl mx-auto">
             <View className="w-full h-full">
               <View className="items-center relative">
-                <Pressable
-                  onPress={() => navigation.goBack()}
-                  className="absolute left-0 top-2 z-10"
-                >
-                  <SvgIcon name="leftArrow" width="20" height="20" />
-                </Pressable>
+                <BackButton />
                 <Text className="text-lg font-semibold text-white">
                   {t("withdrawal.title")}
                 </Text>

@@ -10,6 +10,7 @@ import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import useUser from "@/hooks/useUser";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "@/src/features/user/userSlice";
+import { BackButton } from "../components/BackButton";
 
 const MAX_IMAGE_SIZE_MB = 1; // 🔧 adjust limit as needed
 
@@ -107,17 +108,10 @@ const EditProfile = () => {
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10">
+      <View className="w-full h-full max-w-5xl mx-auto">
         <View className="text-center relative">
           <View className="items-center">
-            <Pressable
-              className="absolute left-0 flex items-start justify-start p-6"
-              onPress={() => navigation.goBack()}
-            >
-              <View className="absolute top-2">
-                <SvgIcon name="leftArrow" width="21" height="21" />
-              </View>
-            </Pressable>
+            <BackButton />
             <Text className="text-lg font-semibold text-white">
               {t("settings.edit_profile")}
             </Text>

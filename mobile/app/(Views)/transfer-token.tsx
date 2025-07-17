@@ -14,6 +14,7 @@ import SvgIcon from "../components/SvgIcon";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { parseNumberForView, tokenImageMap } from "@/utils/ui";
+import { BackButton } from "../components/BackButton";
 
 const SelectToken = () => {
   const { t } = useTranslation();
@@ -39,12 +40,8 @@ const SelectToken = () => {
         >
           <View className="w-full ">
             <View className="items-center relative">
-              <Pressable
-                onPress={() => navigation.goBack()}
-                className="absolute left-0 top-0 z-10 p-2"
-              >
-                <SvgIcon name="leftArrow2" width="14" height="14" />
-              </Pressable>
+              <BackButton />
+
               <Text className="text-lg font-semibold text-white">
                 {t("swap.select_token")}
               </Text>

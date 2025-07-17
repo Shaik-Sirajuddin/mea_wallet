@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, TextInput, View } from "react-native";
 import SvgIcon from "../../components/SvgIcon";
+import { BackButton } from "@/app/components/BackButton";
 
 const AccountName = () => {
   const { t } = useTranslation();
@@ -14,12 +15,7 @@ const AccountName = () => {
       <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10">
         <View className="w-full">
           <View className="items-center relative">
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="absolute left-0 top-2"
-            >
-              <SvgIcon name="leftArrow" />
-            </Pressable>
+            <BackButton />
             <Text className="text-lg font-semibold text-white">
               {t("settings.account_name")}
             </Text>

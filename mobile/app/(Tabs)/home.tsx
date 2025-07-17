@@ -111,7 +111,7 @@ export default function HomeScreen() {
     }
     return trimTrailingZeros(totalValue.toFixed(2));
   }, [freeBalance, lockedBalance, quotes]);
-  
+
   const getPrice = (token: string) => {
     //@ts-expect-error here
     return parseNumberForView(quotes[token]);
@@ -136,7 +136,7 @@ export default function HomeScreen() {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          className="w-full pt-14"
+          className="w-full pt-10"
         >
           <View className="pb-44 px-4">
             <Pressable

@@ -19,6 +19,7 @@ import FilterIcon from "@/assets/images/double-arrow.svg";
 import { StakingHistoryItem } from "@/src/api/types/staking";
 import { parseNumberForView, tokenImageMap } from "@/utils/ui";
 import FilterModal, { IFilterState } from "@/app/components/FilterModal";
+import { BackButton } from "@/app/components/BackButton";
 
 const StakingHistory = () => {
   const { t } = useTranslation();
@@ -144,12 +145,7 @@ const StakingHistory = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">
         <View className="items-center relative mb-6">
-          <Pressable
-            onPress={() => router.back()}
-            className="absolute left-0 top-2"
-          >
-            <SvgIcon name="leftArrow" />
-          </Pressable>
+          <BackButton />
           <Text className="text-xl font-semibold text-white">
             {t("staking.staking")}
           </Text>

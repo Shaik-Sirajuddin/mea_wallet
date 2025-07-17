@@ -13,6 +13,7 @@ import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import useSetting from "@/hooks/useSetting";
 import { useTranslation } from "react-i18next";
 import LabeledInput from "@/app/components/LabeledInput";
+import { BackButton } from "@/app/components/BackButton";
 
 const CustomerSupport = () => {
   const { t } = useTranslation();
@@ -60,12 +61,7 @@ const CustomerSupport = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full mx-auto">
         <View className="items-center relative mb-6">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="absolute left-0 top-2"
-          >
-            <SvgIcon name="leftArrow" />
-          </TouchableOpacity>
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
             {t("customer_support.title")}
           </Text>

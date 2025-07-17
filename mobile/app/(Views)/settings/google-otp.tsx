@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import * as Clipboard from "expo-clipboard";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useTranslation } from "react-i18next";
+import { BackButton } from "@/app/components/BackButton";
 
 const GoogleOTP = () => {
   const { t } = useTranslation();
@@ -114,12 +115,7 @@ const GoogleOTP = () => {
     <View className="flex-1 bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto justify-center">
         <View className="items-center">
-          <Pressable
-            className="absolute left-0 top-2"
-            onPress={() => navigation.goBack()}
-          >
-            <SvgIcon name="leftArrow" width="21" height="21" />
-          </Pressable>
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
             {t("settings.google_otp")}
           </Text>

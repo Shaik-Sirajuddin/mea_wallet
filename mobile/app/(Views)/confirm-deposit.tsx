@@ -19,6 +19,7 @@ import { TokenBalances } from "@/src/types/balance";
 import PrimaryButton from "../components/PrimaryButton";
 import { truncateAddress } from "@/utils/ui";
 import useDeposit from "@/hooks/useDeposit";
+import { BackButton } from "../components/BackButton";
 
 const Deposit2 = () => {
   const { t } = useTranslation();
@@ -109,12 +110,8 @@ const Deposit2 = () => {
       <View className="w-full h-full max-w-5xl mx-auto pb-1">
         <View className="w-full h-full">
           <View className="items-center relative">
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="absolute left-0 top-2 z-10 p-0"
-            >
-              <SvgIcon name="leftArrow" width="20" height="20" />
-            </Pressable>
+            <BackButton />
+
             <Text className="text-lg font-semibold text-white">
               {t("deposit.title")}
             </Text>

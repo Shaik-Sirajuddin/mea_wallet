@@ -1,3 +1,4 @@
+import { BackButton } from "@/app/components/BackButton";
 import DepositAddressList from "@/app/components/DepositAddressList";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
@@ -74,12 +75,7 @@ const WalletAddress = () => {
       <View className="flex-1 bg-black-1000 h-full">
         <View className="w-full max-w-5xl mx-auto justify-between">
           <View className="items-center">
-            <Pressable
-              className="absolute left-0"
-              onPress={() => navigation.goBack()}
-            >
-              <SvgIcon name="leftArrow" width="21" height="21" />
-            </Pressable>
+            <BackButton />
             <Text className="text-lg font-semibold text-white">
               {t("settings.wallet_address")}
             </Text>

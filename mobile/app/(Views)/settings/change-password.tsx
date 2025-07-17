@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import useAuth from "@/hooks/useAuth";
 import OtpModal from "@/app/components/OTPModal";
+import { BackButton } from "@/app/components/BackButton";
 
 enum ErrorType {
   CURRENT_PASSWORD,
@@ -116,15 +117,10 @@ const ChangePassword: React.FC = () => {
         className="bg-black-1000"
       >
         <ScrollView className="flex-grow-0" keyboardShouldPersistTaps="handled">
-          <View className="w-full h-full max-w-5xl mx-auto pt-8 pb-10 justify-between">
+          <View className="w-full h-full max-w-5xl mx-auto justify-between">
             <View>
               <View className="items-center">
-                <Pressable
-                  className="absolute left-0 top-2"
-                  onPress={() => navigation.goBack()}
-                >
-                  <SvgIcon name="leftArrow" width="21" height="21" />
-                </Pressable>
+                <BackButton />
                 <Text className="text-lg font-semibold text-white">
                   {t("settings.password")}
                 </Text>

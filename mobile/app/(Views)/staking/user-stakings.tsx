@@ -21,6 +21,7 @@ import StakingItem from "@/app/components/StakingItem";
 import WithdrawalModal from "@/app/components/WithdrawModel";
 import FilterModal, { IFilterState } from "@/app/components/FilterModal";
 import FilterIcon from "@/assets/images/double-arrow.svg";
+import { BackButton } from "@/app/components/BackButton";
 
 const UserStakings = () => {
   const { t } = useTranslation();
@@ -146,13 +147,7 @@ const UserStakings = () => {
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">
         <View className="items-center relative mt-4 mb-6">
-          <Pressable
-            onPress={() => router.back()}
-            className="absolute left-0 top-2"
-          >
-            <SvgIcon name="leftArrow" />
-          </Pressable>
-
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
             {t("staking.my_staking")}
           </Text>
