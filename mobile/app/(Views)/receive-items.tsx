@@ -24,6 +24,8 @@ import {
 import { setMinDeposit } from "@/src/features/token/tokenSlice";
 import { t } from "i18next";
 import { BackButton } from "../components/BackButton";
+import TokenPreview from "../components/TokenPreview";
+import { TokenQuotes } from "@/src/types/balance";
 
 const ReceiveItems = () => {
   const navigation = useNavigation();
@@ -100,7 +102,7 @@ const ReceiveItems = () => {
             </View>
 
             <View className="relative mt-10">
-              {Object.entries(balances).map(([tokenSymbol]) => (
+              {Object.entries(balances).map(([tokenSymbol, balance]) => (
                 <Pressable
                   key={tokenSymbol}
                   onPress={() => {
@@ -131,17 +133,17 @@ const ReceiveItems = () => {
                           </Text>
                         </View>
                       </View>
+                      <View className="flex-1 flex items-end">
+                        <SvgIcon
+                          name="QRIcon"
+                          width="22"
+                          height="22"
+                          color="pink"
+                        />
+                      </View>
                     </View>
-
-                    {/* <View className="flex-row gap-2">
-                      <Pressable
-                        onPress={() => performCopy(tokenSymbol)}
-                        className="w-10 h-10 active:bg-pink-1100 rounded-full items-center justify-center bg-black-1000"
-                      >
-                        <SvgIcon name="copyIcon" />
-                      </Pressable>
-                    </View> */}
                   </View>
+                  {/* <TokenPreview token={tokenSymbol as keyof TokenQuotes}/> */}
                 </Pressable>
               ))}
             </View>

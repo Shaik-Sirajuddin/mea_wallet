@@ -203,6 +203,18 @@ const ConfirmWithdraw = () => {
                   onPress={processWithdraw}
                 />
               </View>
+              <View className="flex flex-row gap-2 justify-center mt-4">
+                <PrimaryButton
+                  text={t("common.cancel")}
+                  className="!bg-black-1400"
+                  onPress={() => {
+                    if (router.canDismiss()) {
+                      router.dismissAll();
+                    }
+                    router.replace("/(Tabs)/home");
+                  }}
+                />
+              </View>
             </View>
           </View>
 

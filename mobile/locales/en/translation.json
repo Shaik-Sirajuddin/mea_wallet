@@ -46,7 +46,7 @@
       "agree_terms": "I agree to the Privacy Policy",
       "agree_privacy": "I agree to the Terms of Use.",
       "check": "Check",
-      "password_hint": "Including lowercase letters, numbers, and special characters, 4 to 15 characters.",
+      "password_hint": "4 to 15 characters including uppercase and lowercase letters, numbers, and special characters.",
       "wallet_hint": "Please enter your Solana network wallet address."
     },
     "success": {

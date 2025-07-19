@@ -61,8 +61,8 @@ const SwapTokens = () => {
   const swapFee = useSelector((state: RootState) => state.token.swapFee);
 
   // Local state
-  const [fromToken, setFromToken] = useState<TokenType>("sol");
-  const [toToken, setToToken] = useState<TokenType>("mea");
+  const [fromToken, setFromToken] = useState<TokenType>("mea");
+  const [toToken, setToToken] = useState<TokenType>("recon");
   const [payAmount, setPayAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
   const [isCalculatingReceive, setIsCalculatingReceive] = useState(false);
@@ -398,9 +398,9 @@ const SwapTokens = () => {
 
                   {/* Row 3: Symbol selection and balance */}
                   <View className="flex-row items-center justify-between mt-4">
-                    <Pressable className="ml-2">
-                      <SvgIcon name="smallSwapIcon" />
-                    </Pressable>
+                    <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
+                      {quotes[fromToken]}$
+                    </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
                       {getTokenBalance(fromToken)}
                     </Text>
@@ -479,9 +479,9 @@ const SwapTokens = () => {
 
                   {/* Row 3: Swap icon + Balance */}
                   <View className="flex-row items-center justify-between">
-                    <Pressable>
-                      <SvgIcon name="smallSwapIcon" />
-                    </Pressable>
+                    <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
+                      {quotes[toToken]}$
+                    </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
                       {getTokenBalance(toToken)}
                     </Text>
@@ -494,7 +494,7 @@ const SwapTokens = () => {
                 {/* Info summary section */}
                 <View className="bg-black-1200 mt-4 rounded-[15px] px-4 py-3">
                   {/* Price */}
-                  <View className="flex-row justify-between mb-2">
+                  {/* <View className="flex-row justify-between mb-2">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
                       {t("swap.token_price", {
                         token: fromToken.toUpperCase(),
@@ -512,7 +512,7 @@ const SwapTokens = () => {
                     <Text className="text-[15px] font-medium leading-[22px] text-white">
                       {getTokenPrice(toToken)}
                     </Text>
-                  </View>
+                  </View> */}
 
                   {/* Payment amount */}
                   <View className="flex-row justify-between mb-2">
