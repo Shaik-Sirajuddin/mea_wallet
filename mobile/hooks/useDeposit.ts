@@ -87,6 +87,16 @@ export default {
     );
   },
 
+  deleteAddress: async (index: number) => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/wallet-delete`,
+      {
+        method: "POST",
+        body: new URLSearchParams({ no: (index + 1).toString() }).toString(),
+      }
+    );
+  },
+
   /**
    * Retrieves  user deposit addresses
    */

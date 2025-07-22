@@ -1,38 +1,36 @@
 import * as Clipboard from "expo-clipboard";
-import { useNavigation } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import {
-  Alert,
-  Image,
-  Pressable,
-  Share,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Share, Text, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import SvgIcon from "../components/SvgIcon";
+import { BackButton } from "../components/BackButton";
+import { truncateAddress } from "@/utils/ui";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store";
+import { TokenBalances } from "@/src/types/balance";
 
 const MeaAddress = () => {
-  const navigation = useNavigation();
+  const { symbol } = useLocalSearchParams<{
+    symbol: keyof TokenBalances;
+  }>();
+
+  const displaySymbol = symbol.toUpperCase();
+  const depositAddress = useSelector(
+    (state: RootState) => state.deposit.depositAddresses[0]
+  );
 
   const handleCopy = async () => {
-    await Clipboard.setStringAsync("FBTLx.....");
-    Alert.alert("Success", "Address copied to clipboard");
+    await Clipboard.setStringAsync(depositAddress);
   };
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10 flex-col justify-between">
+      <View className="w-full h-full max-w-5xl mx-auto flex-col justify-between">
         <View className="items-center relative">
-          <Pressable
-            onPress={() => navigation.goBack()}
-            className="absolute left-0 top-0 z-10 p-2"
-          >
-            <SvgIcon name="leftArrow" width="21" height="21" />
-          </Pressable>
+          <BackButton />
           <Text className="text-lg font-semibold text-white">
-            Your MEA Address
+            Your {displaySymbol} Address
           </Text>
         </View>
         <View className="relative mt-10">
@@ -44,30 +42,30 @@ const MeaAddress = () => {
             />
             <View className="px-20">
               <Text className="text-[21px] text-center leading-2.5 font-semibold text-white mb-2">
-                Your MEA Address
+                Your {displaySymbol} Address
               </Text>
               <Text className="text-base leading-5 text-center text-gray-1000 font-normal">
                 Use this address to receive tokens and collectibles on{" "}
-                <Text className="text-white font-medium">MEA.</Text>
+                <Text className="text-white font-medium">{displaySymbol}</Text>
               </Text>
             </View>
           </View>
         </View>
         <View>
           <TouchableOpacity
-            className="flex-row items-center justify-center gap-2 h-[45px] bg-black-1100 rounded-[15px] mb-3"
+            className="p-4 flex-row items-center justify-center gap-2 h-[45px] bg-black-1100 rounded-[15px] mb-3"
             onPress={handleCopy}
           >
             <Text className="text-base font-semibold text-white">
-              FBTLx.....
+              {truncateAddress(depositAddress)}
             </Text>
             <SvgIcon name="copyIcon" />
           </TouchableOpacity>
           <PrimaryButton
             onPress={() => {
               Share.share({
-                message: "FBTLx.....",
-                title: "My MEA Address",
+                message: depositAddress,
+                title: `My ${displaySymbol} Address`,
               });
             }}
             text="Share"

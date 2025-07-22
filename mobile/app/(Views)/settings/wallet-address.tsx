@@ -6,7 +6,8 @@ import useDeposit from "@/hooks/useDeposit";
 import { setDepositAddresses } from "@/src/features/asset/depositSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
-import { useNavigation } from "expo-router";
+import { truncateAddress } from "@/utils/ui";
+import * as Clipboard from "expo-clipboard";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,8 +33,6 @@ const WalletAddress = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newAddress, setNewAddress] = useState("");
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
-
   const addWalletAddress = async () => {
     let result = await useDeposit.registerAddress(newAddress);
     if (typeof result === "string") {
@@ -54,6 +53,37 @@ const WalletAddress = () => {
     setModalVisible(true);
     syncWalletAddress();
   };
+  const deleteAddress = async (index: number) => {
+    let result = await useDeposit.deleteAddress(index);
+    if (typeof result === "string") {
+      //show error
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: result,
+      });
+      setModalVisible(true);
+      return;
+    }
+    setModalState({
+      ...modalState,
+      type: "success",
+      text: t("settings.wallet_address_deleted"),
+    });
+    setModalVisible(true);
+    syncWalletAddress();
+  };
+
+  const handleCopy = async (address: string) => {
+    await Clipboard.setStringAsync(address);
+    setModalState({
+      ...modalState,
+      type: "success",
+      text: t("components.copied_to_clipboard"),
+    });
+    setModalVisible(true);
+  };
+
   const syncWalletAddress = async () => {
     let result = await useDeposit.getWalletAddresses();
     if (typeof result === "string") {
@@ -141,17 +171,17 @@ const WalletAddress = () => {
               </View>
             </View>
           </View>
-          <DepositAddressList addresses={registeredAddresses} />
-          {/* <View className="items-center mt-6">
-          <TouchableOpacity
-            activeOpacity={1}
-            className="w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
-          >
-            <Text className="text-base group-active:text-pink-1100 font-semibold">
-              Sharing Addresses
+          <View className="flex-row items-center gap-2 mb-2 mt-2">
+            <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+            <Text className="text-base font-medium text-white">
+              {t("common.wallet_address")} ({registeredAddresses.length})
             </Text>
-          </TouchableOpacity>
-        </View> */}
+          </View>
+          <DepositAddressList
+            handleDelete={deleteAddress}
+            handleCopy={handleCopy}
+            addresses={registeredAddresses}
+          />
         </View>
       </View>
       <InfoAlert

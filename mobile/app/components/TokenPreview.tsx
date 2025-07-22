@@ -8,6 +8,7 @@ import {
 import Decimal from "decimal.js";
 import { Image, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import SvgIcon from "./SvgIcon";
 
 const TokenPreview = ({
   token,

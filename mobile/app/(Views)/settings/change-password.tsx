@@ -129,7 +129,7 @@ const ChangePassword: React.FC = () => {
               <View className="mt-10 mb-2">
                 {/* Old Password Field */}
                 <LabelInput
-                  label={t("settings.password")}
+                  label={t("settings.old_password")}
                   required
                   isSecure
                   value={currentPassword}
@@ -153,7 +153,7 @@ const ChangePassword: React.FC = () => {
 
                 {/* New Password Field */}
                 <LabelInput
-                  label={t("settings.password_to_change")}
+                  label={t("settings.new_password")}
                   required
                   isSecure
                   value={newPassword}
@@ -164,7 +164,7 @@ const ChangePassword: React.FC = () => {
                       setErrorType(null);
                     }
                   }}
-                  placeholder={t("settings.enter_password_to_change")}
+                  placeholder={t("settings.enter_new_password")}
                   errorText={
                     inputError && errorType === ErrorType.NEW_PASSWORD
                       ? inputError
@@ -174,12 +174,12 @@ const ChangePassword: React.FC = () => {
 
                 {/* Confirm Password Field */}
                 <LabelInput
-                  label={t("settings.verify_password")}
+                  label={t("settings.confirm_new_password")}
                   required
                   isSecure
                   value={confirmPassword}
-                  onChangeText={(text) => {
-                    setConfirmPassword(text);
+                    onChangeText={(text) => {
+                      setConfirmPassword(text);
                     if (
                       inputError &&
                       errorType === ErrorType.CONFIRM_PASSWORD
@@ -188,7 +188,7 @@ const ChangePassword: React.FC = () => {
                       setErrorType(null);
                     }
                   }}
-                  placeholder={t("settings.confirm_password")}
+                  placeholder={t("settings.enter_new_password")}
                   errorText={
                     inputError && errorType === ErrorType.CONFIRM_PASSWORD
                       ? inputError

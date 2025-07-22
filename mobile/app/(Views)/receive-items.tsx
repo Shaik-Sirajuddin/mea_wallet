@@ -6,6 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -45,15 +46,6 @@ const ReceiveItems = () => {
   const depositAddress = useMemo(() => {
     return _depositAddresses[0] ?? "";
   }, [_depositAddresses]);
-
-  const performCopy = async (tokenSymbol: string) => {
-    await Clipboard.setStringAsync(depositAddress);
-    setModalState({
-      type: "success",
-      text: `${tokenSymbol.toUpperCase()} deposit address copied to clipboard`,
-    });
-    setModalVisible(true);
-  };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -134,12 +126,24 @@ const ReceiveItems = () => {
                         </View>
                       </View>
                       <View className="flex-1 flex items-end">
-                        <SvgIcon
-                          name="QRIcon"
-                          width="22"
-                          height="22"
-                          color="pink"
-                        />
+                        <TouchableOpacity
+                          className="px-4 py-3"
+                          onPress={() => {
+                            router.push({
+                              pathname: "/(Views)/mea-address",
+                              params: {
+                                symbol: tokenSymbol,
+                              },
+                            });
+                          }}
+                        >
+                          <SvgIcon
+                            name="QRIcon"
+                            width="26"
+                            height="26"
+                            color="pink"
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>

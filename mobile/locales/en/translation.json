@@ -135,10 +135,15 @@
     "password_change_success": "Password Change Successfully",
     "password_to_change": "Password to change",
     "enter_password": "Enter Password",
+    "enter_new_password": "Enter New Password",
     "enter_password_to_change": "Enter Password to change",
     "verify_password": "Verify password",
+    "old_password": "Old Password",
     "confirm_password": "Confirm Password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm New Password",
     "wallet_address_added": "Wallet address added successfully",
+    "wallet_address_deleted": "Address deleted successfully",
     "enter_wallet_address": "Enter Wallet Address",
     "add": "Add",
     "wallet_address_instruction_1": "This wallet address is used for deposits.",
@@ -165,7 +170,8 @@
     "no_image_selected": "You did not select any image.",
     "failed_get_image_data": "Failed to get image data.",
     "image_too_large": "Image is too large. Max allowed is {{size}}MB.",
-    "profile_image_updated": "Profile image updated successfully."
+    "profile_image_updated": "Profile image updated successfully.",
+    "no_addresses_found" : "No addresses found"
   },
   "receive": {
     "title": "Receive",
@@ -348,6 +354,7 @@
     "close": "Close",
     "save": "Save",
     "delete": "Delete",
+    "del": "Del",
     "edit": "Edit",
     "search": "Search",
     "filter": "Filter",

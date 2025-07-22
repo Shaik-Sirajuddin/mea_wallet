@@ -41,11 +41,11 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
 
       <View className="relative">
         <TextInput
+          placeholder={t("components.enter_label", { label })}
           {...rest}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={isSecure && !showSecure}
-          placeholder={t("components.enter_label", { label })}
           placeholderTextColor="#FFFFFF"
           className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
         />
