@@ -1,7 +1,6 @@
 export interface TokenBalances {
   mea: string;
   sol: string;
-  recon: string;
   fox9: string;
 }
 
@@ -9,7 +8,6 @@ export interface TokenQuotes {
   mea: string;
   sol: string;
   fox9: string;
-  recon: string;
   usd: string;
 }
 

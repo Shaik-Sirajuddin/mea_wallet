@@ -7,8 +7,8 @@ interface BalanceState {
 }
 
 const initialState: BalanceState = {
-  free: { sol: "0", mea: "0", recon: "0", fox9: "0" },
-  lockup: { mea: "0", recon: "0", fox9: "0" },
+  free: { sol: "0", mea: "0", fox9: "0" },
+  lockup: { mea: "0", fox9: "0" },
 };
 
 const balanceSlice = createSlice({

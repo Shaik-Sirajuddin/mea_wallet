@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, Text, View } from "react-native";
-import SvgIcon from "../components/SvgIcon";
 import { router } from "expo-router";
 
 export default function Staking() {

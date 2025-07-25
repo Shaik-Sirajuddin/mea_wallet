@@ -40,12 +40,10 @@ export default {
       free: {
         mea: trimTrailingZeros(raw.mea_balance),
         sol: trimTrailingZeros(raw.sol_balance),
-        recon: trimTrailingZeros(raw.recon_balance),
         fox9: trimTrailingZeros(raw.fox9_balance),
       },
       lockup: {
         mea: trimTrailingZeros(raw.mea_lockup),
-        recon: trimTrailingZeros(raw.recon_lockup),
         fox9: trimTrailingZeros(raw.fox9_lockup),
       },
     };
@@ -62,7 +60,6 @@ export default {
       mea: trimTrailingZeros(raw.mea_quote.toString()),
       sol: trimTrailingZeros(raw.sol_quote.toString()),
       fox9: trimTrailingZeros(raw.fox9_quote.toString()),
-      recon: trimTrailingZeros(raw.recon_quote.toString()),
       usd: trimTrailingZeros(raw.usd_quote.toString()),
     };
   },
@@ -77,13 +74,11 @@ export default {
     return {
       minWithdraw: {
         mea: trimTrailingZeros(raw.mea_min_withdraw_coin),
-        recon: trimTrailingZeros(raw.recon_min_withdraw_coin),
         fox9: trimTrailingZeros(raw.fox9_min_withdraw_coin),
         sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
       },
       withdrawFees: {
         mea: trimTrailingZeros(raw.mea_WithdrawFee),
-        recon: trimTrailingZeros(raw.recon_WithdrawFee),
         fox9: trimTrailingZeros(raw.fox9_WithdrawFee),
         sol: trimTrailingZeros(raw.sol_WithdrawFee),
       },

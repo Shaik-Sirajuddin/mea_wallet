@@ -38,7 +38,7 @@ const EnrollPlan = () => {
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState<
     keyof TokenBalances | null
-  >("recon");
+  >("fox9");
   const [tokenModalVisible, setTokenModalVisible] = useState(false);
   const [otpModalVisible, setOtpModalVisible] = useState(false);
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});

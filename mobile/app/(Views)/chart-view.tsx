@@ -16,6 +16,7 @@ import { TokenOverview } from "@/src/api/types/chart";
 import { parseNumberForView } from "@/utils/ui";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import TokenActions from "../components/TokenActions";
 
 type SupportedPeriod = "1hour" | "1day" | "1week" | "1month" | "ytd" | "all";
 
@@ -199,6 +200,7 @@ const ChartView = () => {
               {symbol !== "fox9" && (
                 <PerformanceSection tokenOverview={tokenOverview} />
               )}
+              <TokenActions />
             </View>
           </ScrollView>
         </View>
@@ -275,7 +277,7 @@ const PerformanceSection = ({
     <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
       {t("token_overview.performance_24h")}
     </Text>
-    <View className="mb-[22px]">
+    <View className="mb-[18px]">
       {[
         [
           t("token_overview.volume"),

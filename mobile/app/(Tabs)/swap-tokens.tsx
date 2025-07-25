@@ -71,7 +71,7 @@ const SwapTokens = () => {
 
   // Local state
   const [fromToken, setFromToken] = useState<TokenType>("mea");
-  const [toToken, setToToken] = useState<TokenType>("recon");
+  const [toToken, setToToken] = useState<TokenType>("fox9");
   const [payAmount, setPayAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
   const [isCalculatingReceive, setIsCalculatingReceive] = useState(false);
@@ -112,7 +112,7 @@ const SwapTokens = () => {
     { value: "sol", label: "SOL" },
     { value: "mea", label: "MEA" },
     { value: "fox9", label: "FOX9" },
-    { value: "recon", label: "RECON" },
+    // { value: "recon", label: "RECON" },
   ];
 
   // Fetch quotes and balance

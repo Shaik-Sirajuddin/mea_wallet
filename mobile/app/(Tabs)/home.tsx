@@ -252,7 +252,7 @@ export default function HomeScreen() {
                       return;
                     } else {
                       router.navigate({
-                        pathname: "/(Views)/TokenActionsView",
+                        pathname: "/(Views)/chart-view",
                         params: {
                           symbol: token,
                         },
