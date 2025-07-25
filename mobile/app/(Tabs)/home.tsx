@@ -148,7 +148,7 @@ export default function HomeScreen() {
                   {details ? details.image : ""}
                 </Text>
               </View>
-              <Text className="text-[22px] text-white font-medium tracking-[-0.44px] leading-[22px]">
+              <Text className="text-[22px] text-white font-medium tracking-[-0.44px]">
                 {email}
               </Text>
             </Pressable>

@@ -25,7 +25,11 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/store";
-import { setQuotes, setSwapFee } from "@/src/features/token/tokenSlice";
+import {
+  setMinDeposit,
+  setQuotes,
+  setSwapFee,
+} from "@/src/features/token/tokenSlice";
 import { setFreeBalances } from "@/src/features/balance/balanceSlice";
 import useUser from "@/hooks/useUser";
 import useAsset from "@/hooks/useAsset";
@@ -41,6 +45,11 @@ import {
   updateIfValid,
 } from "@/utils/ui";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
+import useDeposit from "@/hooks/useDeposit";
+import {
+  setDepositAddresses,
+  setRegisteredAddresses,
+} from "@/src/features/asset/depositSlice";
 
 type TokenType = keyof TokenBalances;
 
@@ -70,6 +79,9 @@ const SwapTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [adminCommission, setAdminCommission] = useState("0");
+  const minDeposit = useSelector(
+    (state: RootState) => new Decimal(state.token.minDeposit[fromToken])
+  );
 
   // Modal states
   const [otpModalVisible, setOtpModalVisible] = useState(false);
@@ -77,6 +89,23 @@ const SwapTokens = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
+
+  const syncDepositSettings = async () => {
+    const res = await useDeposit.getDepositSettings();
+    if (typeof res === "string") {
+      setInfoAlertState({
+        type: "error",
+        text: res,
+      });
+      setInfoAlertVisible(true);
+      return;
+    }
+
+    // Dispatch to redux store
+    dispatch(setMinDeposit(res.minDeposit));
+    dispatch(setRegisteredAddresses(res.userDepositAddresses));
+    dispatch(setDepositAddresses(res.managerDepositAddresses));
+  };
 
   // Available tokens
   const availableTokens: Array<{ value: TokenType; label: string }> = [
@@ -119,6 +148,7 @@ const SwapTokens = () => {
       await fetchQuotes();
       await fetchBalance();
       await fetchSwapFee();
+      await syncDepositSettings();
       setIsInitialLoading(false);
     };
     initialFetch();
@@ -264,7 +294,7 @@ const SwapTokens = () => {
         expectedReceivable: receiveAmount,
         fromCurrencyPrice: quotes[fromToken],
         toCurrencyPrice: quotes[toToken],
-        minDepositAmount: "0", // This would need to be fetched from settings
+        minDepositAmount: minDeposit.toString(), // This would need to be fetched from settings
         otpCode: otp,
       };
 
@@ -309,6 +339,19 @@ const SwapTokens = () => {
       setInfoAlertVisible(true);
       return;
     }
+    console.log(payAmount, minDeposit.toString());
+    if (payAmount && new Decimal(payAmount).lessThan(minDeposit)) {
+      setInfoAlertState({
+        ...infoAlertState,
+        text: t("swap.less_than_min_amount", {
+          amount: minDeposit.toString(),
+        }),
+        type: "error",
+      });
+      setInfoAlertVisible(true);
+      return;
+    }
+
     handleOTPSubmit(null);
     // setOtpModalVisible(true);
   };

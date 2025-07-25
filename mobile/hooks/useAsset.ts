@@ -147,8 +147,8 @@ export default {
       items: raw.data.map((item) => ({
         registeredAt: item.regdate,
         amount: item.amount,
-        startDate: item.sdate,
-        endDate: item.edate,
+        startDate: new Date(item.sdate),
+        endDate: new Date(item.edate),
         status: item.state,
       })),
     };
@@ -188,9 +188,19 @@ export default {
         fromAddress: item.from_address,
         toAddress: item.to_address,
         txHash: item.hash,
+        memo: item.memo,
       })),
     };
 
     return parsed;
+  },
+  autoCloseLockUp: async () => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/lockup-proc`,
+      {
+        method: "POST",
+        body: new URLSearchParams({}).toString(),
+      }
+    );
   },
 };

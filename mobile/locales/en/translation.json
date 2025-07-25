@@ -112,7 +112,8 @@
     "enter_amount_to_pay": "Enter amount to pay",
     "cannot_swap_same_token": "Cannot swap same token",
     "quotes_not_available": "Quotes not available",
-    "insufficient_balance": "Insufficient balance"
+    "insufficient_balance": "Insufficient balance",
+    "less_than_min_amount": "Amount is less than minimum {{amount}}"
   },
   "settings": {
     "title": "Setting",
@@ -171,7 +172,7 @@
     "failed_get_image_data": "Failed to get image data.",
     "image_too_large": "Image is too large. Max allowed is {{size}}MB.",
     "profile_image_updated": "Profile image updated successfully.",
-    "no_addresses_found" : "No addresses found"
+    "no_addresses_found": "No addresses found"
   },
   "receive": {
     "title": "Receive",
@@ -482,6 +483,7 @@
     "division": "Division",
     "amount": "Amount",
     "fee": "Fee",
+    "memo": "Memo",
     "previous_amount": "Previous Amount",
     "amount_after": "Amount After",
     "state": "State",

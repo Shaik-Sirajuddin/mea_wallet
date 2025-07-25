@@ -81,14 +81,17 @@ const AssetHistoryList: React.FC<AssetHistoryListProps> = ({
         truncateAddress(item.txHash) || "--",
         () => performCopy(item.txHash)
       )}
+      {renderRow(t("asset_history.memo"), item.memo || "--", () =>
+        performCopy(item.memo)
+      )}
       <View className="w-full h-[1px] bg-white mt-2"></View>
     </View>
   );
 
   return (
     <View>
-      {history.map((item , index) => {
-        return renderItem({ item , index });
+      {history.map((item, index) => {
+        return renderItem({ item, index });
       })}
     </View>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useTranslation } from "react-i18next";
 import { tokenImageMap } from "@/utils/ui";
@@ -17,7 +17,6 @@ const StakingItem: React.FC<Props> = ({
   handleEarlyUnstake,
 }) => {
   const { t } = useTranslation();
-
   return (
     <View className="mb-4">
       <DetailRow
@@ -65,13 +64,13 @@ const StakingItem: React.FC<Props> = ({
         value={`${item.state} ${item.stateStr}`}
       />
 
-      {item.state === "IN_PROGRESS" && (
+      {item.state === "proceeding" && (
         <TouchableOpacity
           onPress={() => handleEarlyUnstake(item.id)}
           className="bg-gray-700 rounded-xl py-2 mt-4 items-center"
         >
           <Text className="text-white font-semibold text-base">
-            {t("components.early_unstake")}
+            {t("staking.unstake")}
           </Text>
         </TouchableOpacity>
       )}

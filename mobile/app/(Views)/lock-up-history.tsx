@@ -1,8 +1,7 @@
-import { useNavigation, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Pressable,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -20,7 +19,6 @@ import { BackButton } from "../components/BackButton";
 
 const LockUpHistory = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
   const lockedBalance = useSelector(
     (state: RootState) =>
@@ -62,6 +60,27 @@ const LockUpHistory = () => {
   useEffect(() => {
     fetchHistory();
   }, [page, symbol]);
+
+  useEffect(() => {
+    let minCloseTime: Date | null = null;
+    for (let lockup of history) {
+      if (minCloseTime === null) {
+        minCloseTime = lockup.endDate;
+      } else {
+        if (minCloseTime.getTime() > lockup.endDate.getTime()) {
+          minCloseTime = lockup.endDate;
+        }
+      }
+    }
+    if (minCloseTime === null) {
+      return;
+    }
+    let intervalId = setInterval(() => {
+      console.log("auto close called");
+      useAsset.autoCloseLockUp();
+    }, Date.now() - minCloseTime.getTime());
+    return () => clearInterval(intervalId);
+  }, [history]);
 
   return (
     <View className="bg-black-1000 flex-1">
@@ -141,7 +160,7 @@ const LockUpHistory = () => {
                           {t("lockup.start_date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
-                          {item.startDate}
+                          {item.startDate.toLocaleDateString()}
                         </Text>
                       </View>
 
@@ -150,7 +169,7 @@ const LockUpHistory = () => {
                           {t("lockup.end_date")}
                         </Text>
                         <Text className="text-[17px] font-medium text-white">
-                          {item.endDate}
+                          {item.endDate.toLocaleDateString()}
                         </Text>
                       </View>
 

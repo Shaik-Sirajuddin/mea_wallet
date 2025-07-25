@@ -143,6 +143,27 @@ const UserStakings = () => {
     syncStakings(1);
   };
 
+  useEffect(() => {
+    let minCloseTime: Date | null = null;
+    for (let staking of stakings) {
+      if (minCloseTime === null) {
+        minCloseTime = staking.expectedWithdrawalDate;
+      } else {
+        if (minCloseTime.getTime() > staking.expectedWithdrawalDate.getTime()) {
+          minCloseTime = staking.expectedWithdrawalDate;
+        }
+      }
+    }
+    if (minCloseTime === null) {
+      return;
+    }
+    let intervalId = setTimeout(() => {
+      console.log("auto close called");
+      useStaking.autoCloseStaking();
+    }, Date.now() - minCloseTime.getTime());
+    return () => clearTimeout(intervalId);
+  }, [stakings]);
+
   return (
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-5xl mx-auto pb-2">

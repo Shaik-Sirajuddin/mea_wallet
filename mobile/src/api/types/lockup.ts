@@ -18,8 +18,8 @@ export interface LockupHistoryResponseRaw {
 export interface LockupHistoryItem {
   registeredAt: string; // renamed from regdate
   amount: string;
-  startDate: string; // renamed from sdate
-  endDate: string; // renamed from edate
+  startDate: Date; // renamed from sdate
+  endDate: Date; // renamed from edate
   status: string; // renamed from state
 }
 

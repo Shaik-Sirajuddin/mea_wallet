@@ -169,6 +169,15 @@ export default {
       totalPages: raw.total_block,
     };
   },
+  autoCloseStaking: async () => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/staking-deposit`,
+      {
+        method: "POST",
+        body: new URLSearchParams({}).toString(),
+      }
+    );
+  },
   closeStaking: async (id: number) => {
     const payload = {
       seqno: id.toString(),

@@ -45,6 +45,7 @@ export interface AssetHistoryItemRaw {
   from_address: string;
   to_address: string;
   hash: string;
+  memo: string;
 }
 
 export interface AssetHistoryResponse {
@@ -67,4 +68,5 @@ export interface AssetHistoryItem {
   fromAddress: string;
   toAddress: string;
   txHash: string;
+  memo: string;
 }
