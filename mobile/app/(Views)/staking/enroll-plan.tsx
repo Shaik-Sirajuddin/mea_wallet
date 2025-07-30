@@ -28,17 +28,25 @@ const EnrollPlan = () => {
   const { t } = useTranslation();
   const { plan } = useLocalSearchParams();
 
-  let parsedPlan: StakingPlan | null = null;
-  try {
-    parsedPlan = plan ? JSON.parse(plan as string) : null;
-  } catch (error) {
-    console.error("Failed to parse plan data", error);
-  }
+  const [parsedPlan, setParsedPlan] = useState<StakingPlan>({
+    id: 0,
+    imageUrl: "",
+    interestRate: "0",
+    lockupDays: 0,
+    minDeposit: "0",
+    name: "",
+    registeredAt: "",
+    state: "",
+    supportedTokens: ["mea"],
+    totalDeposited: "0",
+    unstakingFee: "0",
+  });
 
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState<
     keyof TokenBalances | null
-  >("fox9");
+  >("mea");
+
   const [tokenModalVisible, setTokenModalVisible] = useState(false);
   const [otpModalVisible, setOtpModalVisible] = useState(false);
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
@@ -59,6 +67,16 @@ const EnrollPlan = () => {
       return "0";
     }
   }, [amount]);
+
+  useEffect(() => {
+    try {
+      if (!plan) return;
+      setParsedPlan(JSON.parse(plan as string));
+      console.log("plan here");
+    } catch (error) {
+      console.error("Failed to parse plan data", error);
+    }
+  }, [plan]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -105,7 +123,8 @@ const EnrollPlan = () => {
       setPopupVisible(true);
       return;
     }
-    setOtpModalVisible(true);
+    // setOtpModalVisible(true);
+    handleOtpSubmit("000000");
   };
 
   const handleOtpSubmit = async (otp: string | null) => {

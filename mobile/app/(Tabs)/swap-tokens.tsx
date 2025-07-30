@@ -358,7 +358,9 @@ const SwapTokens = () => {
 
   // Get token balance display
   const getTokenBalance = (token: TokenType) => {
-    return `${freeBalance[token] || "0"} ${token.toUpperCase()}`;
+    return `${
+      parseNumberForView(freeBalance[token]) || "0"
+    } ${token.toUpperCase()}`;
   };
 
   // Get token price display
@@ -398,7 +400,7 @@ const SwapTokens = () => {
                       style={{
                         fontSize: getFontSize(receiveAmount),
                       }}
-                      className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+                      className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1500 bg-transparent border-0"
                     />
 
                     <View className="bg-gray-1300 flex rounded-[18px] h-10 pr-2 justify-start  flex-row items-center pl-2">
@@ -415,7 +417,7 @@ const SwapTokens = () => {
                       >
                         <SelectTrigger className="!border-transparent w-[90px] text-center !gap-0  leading-none !p-0">
                           <SelectInput
-                            className="ml-0 !text-base leading-none text-center !font-medium !p-0 placeholder:!text-gray-1200 !text-gray-1200"
+                            className="ml-0 !text-base leading-none text-center !font-medium !p-0 placeholder:!text-gray-1500 !text-gray-1200"
                             placeholder="SOL"
                           />
                           <SelectIcon className="mr-0" as={ChevronDownIcon} />
@@ -442,7 +444,7 @@ const SwapTokens = () => {
                   {/* Row 3: Symbol selection and balance */}
                   <View className="flex-row items-center justify-between mt-4">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
-                      {quotes[fromToken]}$
+                      {parseNumberForView(quotes[fromToken])}$
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
                       {getTokenBalance(fromToken)}
@@ -523,7 +525,7 @@ const SwapTokens = () => {
                   {/* Row 3: Swap icon + Balance */}
                   <View className="flex-row items-center justify-between">
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 ml-3">
-                      {quotes[toToken]}$
+                      {parseNumberForView(quotes[toToken])}$
                     </Text>
                     <Text className="text-[15px] font-medium leading-[22px] text-gray-1200">
                       {getTokenBalance(toToken)}
@@ -613,6 +615,12 @@ const SwapTokens = () => {
                       {toToken.toUpperCase()}
                     </Text>
                   </View>
+                </View>
+                <View className="flex flex-row gap-2 items-center mt-4 ">
+                  <SvgIcon name="infoIcon" width="14"/>
+                  <Text className="text-sm leading-[22px] font-normal text-gray-1200">
+                    {"Note : Quotes are auto refreshed"}
+                  </Text>
                 </View>
               </View>
             </View>

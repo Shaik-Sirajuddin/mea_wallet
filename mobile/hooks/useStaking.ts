@@ -58,7 +58,6 @@ export interface ApplyStakingResponse {
 let tokenBalance: TokenBalances = {
   fox9: "0",
   mea: "0",
-  recon: "0",
   sol: "0",
 };
 
@@ -88,6 +87,12 @@ export default {
       const supportedTokens = TOKEN_SYMBOLS.filter(
         (symbol) => item[symbol] === "Y"
       );
+      if (
+        item["btc"] === "Y" &&
+        !supportedTokens.find((item) => item === "mea")
+      ) {
+        supportedTokens.push("mea");
+      }
 
       return {
         id: item.seqno,

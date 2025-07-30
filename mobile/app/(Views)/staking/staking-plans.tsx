@@ -149,7 +149,7 @@ const StakingPlans = () => {
 
   return (
     <View className="bg-black-1000 flex-1">
-      <View className="w-full max-w-5xl mx-auto pb-2">
+      <View className="w-full max-w-5xl mx-auto">
         <View className="items-center relative">
           <BackButton />
           <Text className="text-lg font-semibold text-white">
@@ -170,7 +170,7 @@ const StakingPlans = () => {
         </Text>
 
         <FlatList
-          className="mt-4"
+          className="mt-4 h-full"
           data={plans}
           renderItem={renderItem}
           keyExtractor={(item) => String(item.id)}
@@ -189,6 +189,7 @@ const StakingPlans = () => {
               </TouchableOpacity>
             ) : null
           }
+          contentContainerStyle={{ paddingBottom: 130 }}
         />
       </View>
 
