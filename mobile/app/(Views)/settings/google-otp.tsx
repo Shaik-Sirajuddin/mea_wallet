@@ -196,7 +196,7 @@ const GoogleOTP = () => {
                 <View>
                   <TextInput
                     placeholder={t("components.enter_otp")}
-                    placeholderTextColor="#FFFFFF"
+                    placeholderTextColor="#6b7280"
                     className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
                     value={otp}
                     onChangeText={setOtp}

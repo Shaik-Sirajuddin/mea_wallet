@@ -55,7 +55,7 @@ const WithDrawal = () => {
   );
 
   const [withdrawalAddress, setWithdrawalAddress] = useState("");
-  const [withdrawAmount, setWithdrawAmount] = useState("0");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
 
   const options = [
     { label: "10%", value: 0.1 },
@@ -202,9 +202,9 @@ const WithDrawal = () => {
                         value={withdrawalAddress}
                         onChangeText={setWithdrawalAddress}
                         placeholder={t("withdrawal.withdrawal_address")}
-                        placeholderTextColor="#fff"
+                        placeholderTextColor="#6b7280"
                         keyboardType="default"
-                        className="text-[15px] text-white font-medium px-8 pr-20 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                        className="text-[15px] placeholder:text-gray-500 text-white font-medium px-8 pr-20 bg-black-1200 w-full h-[71px] rounded-[15px]"
                       />
                       <View className="flex justify-center items-center absolute right-5 top-0 bottom-0 z-10">
                         <TouchableOpacity
@@ -236,8 +236,8 @@ const WithDrawal = () => {
                           amount: minWithdrawl,
                           symbol: displaySymbol,
                         })}
-                        placeholderTextColor="#fff"
-                        className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
+                        placeholderTextColor="#6b7280"
+                        className="text-[17px] placeholder:text-gray-500 text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
                         keyboardType="numeric"
                         value={withdrawAmount}
                         onChangeText={(value) => {

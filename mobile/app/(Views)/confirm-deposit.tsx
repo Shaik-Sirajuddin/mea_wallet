@@ -132,8 +132,7 @@ const Deposit2 = () => {
                     value={truncateAddress(depositAddress)}
                     editable={false}
                     selectTextOnFocus={true}
-                    placeholderTextColor="#fff"
-                    className="text-[15px] text-white font-medium px-8 border-2 border-gray-1200 w-full h-[71px] rounded-[15px]"
+                    className="text-[15px] placeholder:text-gray-500 text-white font-medium px-8 border-2 border-gray-1200 w-full h-[71px] rounded-[15px]"
                   />
                   <TouchableOpacity
                     className="absolute top-1/2 -translate-y-1/2 right-5 bg-pink-1100 px-[13px] py-[5px] rounded-2xl"
@@ -159,7 +158,7 @@ const Deposit2 = () => {
                 <View className="relative mb-2">
                   <TextInput
                     placeholder={t("deposit.txid_address")}
-                    placeholderTextColor="#ffffff"
+                    placeholderTextColor="#6b7280"
                     value={txid}
                     onChangeText={setTxid}
                     className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
@@ -240,7 +239,7 @@ const Deposit2 = () => {
         setVisible={setInfoAlertVisible}
         onDismiss={() => {
           if (depoistSubmitted) {
-            router.push("/(Tabs)/home");
+            router.push("/(Views)/asset-history");
           }
         }}
       />

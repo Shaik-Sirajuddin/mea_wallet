@@ -392,15 +392,19 @@ const SwapTokens = () => {
                   <View className="flex flex-row items-center h-20">
                     <TextInput
                       keyboardType="numeric"
-                      placeholder="0"
+                      placeholder={"minimum : " + minDeposit.toString()}
                       value={payAmount}
                       onChangeText={(text) => {
                         updateIfValid(text, setPayAmount);
                       }}
                       style={{
-                        fontSize: getFontSize(receiveAmount),
+                        fontSize: getFontSize(
+                          payAmount.length > 0
+                            ? payAmount
+                            : "Minimum " + minDeposit.toString()
+                        ),
                       }}
-                      className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1500 bg-transparent border-0"
+                      className="!placeholder:text-[12px] flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-500 bg-transparent border-0"
                     />
 
                     <View className="bg-gray-1300 flex rounded-[18px] h-10 pr-2 justify-start  flex-row items-center pl-2">
@@ -481,7 +485,7 @@ const SwapTokens = () => {
                       style={{
                         fontSize: getFontSize(receiveAmount),
                       }}
-                      className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+                      className="flex-1 text-[28px] font-medium text-pink-1200 placeholder:text-gray-500 bg-transparent border-0"
                     />
 
                     <View className="bg-gray-1300 flex rounded-[18px] h-10 pr-2 justify-start flex-row items-center pl-2 ml-2">
@@ -617,7 +621,7 @@ const SwapTokens = () => {
                   </View>
                 </View>
                 <View className="flex flex-row gap-2 items-center mt-4 ">
-                  <SvgIcon name="infoIcon" width="14"/>
+                  <SvgIcon name="infoIcon" width="14" />
                   <Text className="text-sm leading-[22px] font-normal text-gray-1200">
                     {"Note : Quotes are auto refreshed"}
                   </Text>

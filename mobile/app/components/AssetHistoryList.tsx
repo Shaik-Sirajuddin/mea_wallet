@@ -5,7 +5,7 @@ import { parseNumberForView, truncateAddress } from "@/utils/ui";
 import { AssetHistoryItem } from "@/src/api/types/asset";
 
 interface AssetHistoryListProps {
-  history: AssetHistoryItem[]; // ideally define AssetHistoryItem[]
+  history: AssetHistoryItem[];
   displaySymbol: string;
   performCopy: (value: string) => void;
   page: number;
@@ -21,17 +21,35 @@ const AssetHistoryList: React.FC<AssetHistoryListProps> = ({
 
   const renderRow = (
     label: string,
-    value: string,
+    // Change value type to React.ReactNode
+    value: React.ReactNode,
+    lightText: string = "",
     onPress: (() => void) | null = null
   ) => (
     <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
       <Text className="text-base font-medium text-gray-1200">{label}</Text>
       {onPress ? (
         <TouchableOpacity onPress={onPress}>
-          <Text className="text-base font-medium text-white">{value}</Text>
+          {/* Conditionally render based on value type */}
+          {typeof value === "string" ? (
+            <Text className="text-base font-medium text-white">{value}</Text>
+          ) : (
+            value
+          )}
         </TouchableOpacity>
       ) : (
-        <Text className="text-base font-medium text-white">{value}</Text>
+        <View className="flex flex-row">
+          {/* Conditionally render based on value type */}
+          {typeof value === "string" ? (
+            <Text className="text-base font-medium text-white">{value}</Text>
+          ) : (
+            value
+          )}
+          <Text className="text-base font-medium text-gray-1200">
+            {" "}
+            {lightText}
+          </Text>
+        </View>
       )}
     </View>
   );
@@ -46,42 +64,52 @@ const AssetHistoryList: React.FC<AssetHistoryListProps> = ({
     <View className="mb-4" key={page.toString() + "_" + index.toString()}>
       {renderRow(
         t("asset_history.total_date"),
-        new Date(item.registeredAt).toLocaleString()
+        new Date(item.registeredAt).toLocaleDateString(),
+        new Date(item.registeredAt).toLocaleTimeString()
       )}
-      {renderRow(t("asset_history.division"), item.type)}
+      {renderRow(t("asset_history.division"), "", item.type)}
       {renderRow(
         t("asset_history.amount"),
-        `${parseNumberForView(item.amount)} ${displaySymbol}`
+        `${parseNumberForView(item.amount)}`,
+        `${displaySymbol}`
       )}
       {renderRow(
         t("asset_history.fee"),
-        `${parseNumberForView(item.withdrawFee)} ${displaySymbol}`
+        `${parseNumberForView(item.withdrawFee)}`,
+        `${displaySymbol}`
       )}
       {renderRow(
         t("asset_history.previous_amount"),
-        `${parseNumberForView(item.previousBalance)} ${displaySymbol}`
+        `${parseNumberForView(item.previousBalance)}`,
+        `${displaySymbol}`
       )}
       {renderRow(
         t("asset_history.amount_after"),
-        `${parseNumberForView(item.nextBalance)} ${displaySymbol}`
+        `${parseNumberForView(item.nextBalance)}`,
+        `${displaySymbol}`
       )}
       {renderRow(t("asset_history.state"), item.status)}
       {renderRow(
         t("asset_history.from_address"),
         truncateAddress(item.fromAddress) || "--",
+        "",
         () => performCopy(item.fromAddress)
       )}
       {renderRow(
         t("asset_history.to_address"),
         truncateAddress(item.toAddress) || "--",
+        "",
         () => performCopy(item.toAddress)
       )}
       {renderRow(
         t("asset_history.txid"),
-        truncateAddress(item.txHash) || "--",
+        <Text className="text-blue-400 font-bold">
+          {truncateAddress(item.txHash) || "--"}
+        </Text>,
+        "",
         () => performCopy(item.txHash)
       )}
-      {renderRow(t("asset_history.memo"), item.memo || "--", () =>
+      {renderRow(t("asset_history.memo"), item.memo || "--", "", () =>
         performCopy(item.memo)
       )}
       <View className="w-full h-[1px] bg-white mt-2"></View>

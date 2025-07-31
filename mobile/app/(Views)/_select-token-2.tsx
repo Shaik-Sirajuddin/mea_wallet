@@ -33,7 +33,7 @@ const SelectToken2 = () => {
             <View className="flex-row items-center justify-between">
               <TextInput
                 placeholder="To: username or address"
-                className="text-base font-medium leading-[22px] text-gray-1200 placeholder:text-gray-1200"
+                className="text-base font-medium leading-[22px] text-gray-1200 placeholder:text-gray-500"
               ></TextInput>
               <Pressable onPress={() => {}} className="p-2">
                 <SvgIcon name="addressToIcon" width={"18px"} height={"18px"} />

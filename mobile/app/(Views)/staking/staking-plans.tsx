@@ -2,9 +2,9 @@
 
 import { BackButton } from "@/app/components/BackButton";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import SvgIcon from "@/app/components/SvgIcon";
 import useStaking, { StakingPlan } from "@/hooks/useStaking";
 import { tokenImageMap } from "@/utils/ui";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,54 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// --- Reusable Row Component for consistent styling ---
+interface StyledDetailRowProps {
+  label: string;
+  value: React.ReactNode; // Can be string, number, or component
+  lightText?: string; // Optional light text to appear next to the value
+}
+
+// This component handles the common "label left, value right" pattern with specific styling
+const StyledDetailRow: React.FC<StyledDetailRowProps> = ({
+  label,
+  value,
+  lightText,
+}) => (
+  <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+    <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-1200">
+      {label}
+    </Text>
+    <View className="flex-row items-center max-w-[60%] justify-end flex-wrap">
+      {/* Render value, ensuring it's always white and right-aligned */}
+      {typeof value === "string" || typeof value === "number" ? (
+        <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white text-right break-all">
+          {value}
+        </Text>
+      ) : (
+        // If value is a component, render it directly
+        value
+      )}
+      {/* Render lightText if provided */}
+      {lightText ? (
+        <Text className="text-gray-1200 text-[15px] ml-1">{lightText}</Text>
+      ) : null}
+    </View>
+  </View>
+);
+// --- End Reusable Row Component ---
+
+// Define common shadow styles for buttons here
+const buttonShadowStyle = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 5, // A common value for a medium-large shadow like 'shadow-lg'
+  },
+  shadowOpacity: 0.34,
+  shadowRadius: 6.27,
+  elevation: 10, // Corresponds to shadow on Android for similar depth
+};
 
 const StakingPlans = () => {
   const { t } = useTranslation();
@@ -42,7 +90,7 @@ const StakingPlans = () => {
       if (requestedPage === 1) {
         setPlans(res.plans);
       } else {
-        setPlans((prev) => [...prev, ...res.plans]);
+        setPlans((prev) => [...prev, ...res.items]);
       }
       setTotalPages(res.totalPages);
     }
@@ -63,87 +111,106 @@ const StakingPlans = () => {
   }, []);
 
   const renderItem = ({ item }: { item: StakingPlan }) => (
-    <View className="bg-black-1200 border-black-1200 border-2 rounded-2xl p-4 mb-3">
-      {/* Plan Name */}
-      <Text className="text-white font-semibold text-lg mb-3">{item.name}</Text>
+    // Outer container for each staking plan, matching the design's border and padding
+    <View className="mb-6 border-b border-gray-200 pb-4">
+      {/* Plan Name Row: Label on left, empty space on right as per design */}
+      <View className="flex items-start justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
+        <View className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-1200">
+          <Text className="text-white ">{item.name}</Text>
+        </View>
+        <View className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-white text-right break-all" />
+      </View>
 
-      {/* Supported Tokens as overlapping images */}
-      <View className="flex flex-row mb-3">
-        {item.supportedTokens.map((symbol, index) => (
-          <View
-            key={symbol}
-            className={`w-9 h-9 rounded-full overflow-hidden border-2 border-black-800 ${
-              index !== 0 ? "-ml-3" : ""
-            }`}
+      {/* Supported Tokens Row: Specific background and padding */}
+      <View className="flex items-start bg-[#2B2B2B] rounded-[15px] p-[10px] mb-1">
+        <View className="flex flex-row">
+          {item.supportedTokens.map((symbol, index) => (
+            <View
+              key={symbol}
+              className={`w-8 h-8 rounded-full overflow-hidden border-2 border-white ${
+                index !== 0 ? "-ml-3" : "ml-0"
+              }`}
+            >
+              <Image
+                source={tokenImageMap[symbol]}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Detail Rows using the new StyledDetailRow component */}
+      <StyledDetailRow label={t("staking.state")} value={item.state} />
+      <StyledDetailRow
+        label={t("staking.lockup_period")}
+        value={item.lockupDays}
+        lightText={t("common.days")}
+      />
+      <StyledDetailRow
+        label={t("staking.compensation")}
+        value={item.interestRate}
+        lightText="%"
+      />
+      <StyledDetailRow
+        label={t("staking.early_withdrawl_fee")}
+        value={item.unstakingFee}
+        lightText="%"
+      />
+      <StyledDetailRow
+        label={t("staking.min_deposit")}
+        value={item.minDeposit}
+        lightText={item.supportedTokens[0] || ""}
+      />
+
+      {/* Enroll Buttons: Matching the gradient and layout */}
+      <View className="flex justify-center flex-row gap-4 mt-4">
+        {/* STAKING Button - Using LinearGradient and explicit shadow style */}
+        <Pressable
+          onPress={() => {
+            router.push({
+              pathname: "/(Views)/staking/enroll-plan",
+              params: {
+                plan: JSON.stringify(item),
+              },
+            });
+            console.log("STAKING button pressed for plan", item.id);
+          }}
+          className="rounded-full flex-1 overflow-hidden" // Removed shadow-lg
+        >
+          <LinearGradient
+            colors={["#8B5CF6", "#9333EA", "#4F46E5"]} // from-purple-500, via-purple-600, to-indigo-600
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            className="py-2 px-4 rounded-full items-center"
           >
-            <Image
-              source={tokenImageMap[symbol]}
-              className="w-full h-full"
-              resizeMode="cover"
-            />
-          </View>
-        ))}
+            <Text className="text-white font-bold text-base">
+              {t("staking.staking").toUpperCase()}
+            </Text>
+          </LinearGradient>
+        </Pressable>
+
+        {/* UNSTAKING Button - Using LinearGradient and explicit shadow style */}
+        <Pressable
+          onPress={() => {
+            router.push("/(Views)/staking/user-stakings");
+            console.log("UNSTAKING button pressed for plan", item.id);
+          }}
+          className="rounded-full transition-transform hover:scale-105 flex-1 overflow-hidden" // Removed shadow-lg
+        >
+          <LinearGradient
+            colors={["#D1D5DB", "#9CA3AF", "#6B7280"]} // from-gray-300, via-gray-400, to-gray-600
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            className="py-2 px-4 rounded-full items-center"
+          >
+            <Text className="text-black font-bold text-base">
+              {t("components.unstaking").toUpperCase()}
+            </Text>
+          </LinearGradient>
+        </Pressable>
       </View>
-
-      {/* Details Table */}
-      <View className="bg-black-700 rounded-xl p-3 mb-4">
-        <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">{t("staking.state")}</Text>
-          <Text className="text-white text-lg font-medium">{item.state}</Text>
-        </View>
-
-        <View className="flex-row justify-between mb-2">
-          <Text className="text-gray-400 text-base">
-            {t("staking.lockup_period")}
-          </Text>
-          <Text className="text-white text-lg font-medium">
-            {item.lockupDays}
-          </Text>
-        </View>
-        <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-400 text-base">
-            {t("staking.compensation")}
-          </Text>
-          <Text className="text-green-500 text-xl font-bold">
-            {item.interestRate}%
-          </Text>
-        </View>
-        <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-400 text-base">
-            {t("staking.early_withdrawl_fee")}
-          </Text>
-          <Text className="text-white text-lg font-medium">
-            {item.unstakingFee}
-          </Text>
-        </View>
-        <View className="flex-row justify-between">
-          <Text className="text-gray-400 text-base">
-            {t("staking.min_deposit")}
-          </Text>
-          <Text className="text-white text-lg font-medium">
-            {item.minDeposit}
-          </Text>
-        </View>
-      </View>
-
-      {/* Enroll Button */}
-      <Pressable
-        className="bg-pink-1100 rounded-xl py-2 items-center"
-        onPress={() => {
-          // Implement enroll navigation or logic here
-          router.push({
-            pathname: "/(Views)/staking/enroll-plan",
-            params: {
-              plan: JSON.stringify(item),
-            },
-          });
-          console.log("Enroll pressed for plan", item.id);
-        }}
-      >
-        <Text className="text-white font-semibold text-base">
-          {t("staking.staking")}
-        </Text>
-      </Pressable>
     </View>
   );
 
@@ -170,7 +237,7 @@ const StakingPlans = () => {
         </Text>
 
         <FlatList
-          className="mt-4 h-full"
+          className="mt-4 h-full "
           data={plans}
           renderItem={renderItem}
           keyExtractor={(item) => String(item.id)}

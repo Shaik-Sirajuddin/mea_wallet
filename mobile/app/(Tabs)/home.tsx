@@ -206,39 +206,85 @@ export default function HomeScreen() {
               </View>
             </View>
 
-            <View className="flex-row items-center gap-[17px] my-5">
+            <View className="flex-row items-center gap-[17px] my-4">
               <TouchableOpacity
                 onPress={() => {
                   setShowLockUpBalance(false);
                 }}
               >
                 <Text
-                  className={`text-xl font-semibold leading-[33px] ${
-                    !showLokcupBalance ? "text-white" : "text-gray-1000"
-                  }`}
+                  className={`text-xl font-semibold leading-[33px] ${"text-white"}`}
                 >
                   {t("home.native")}
                 </Text>
               </TouchableOpacity>
+            </View>
+
+            <View className="w-full ">
+              {Object.entries(freeBalance).map(([token, amount]) => (
+                <TouchableOpacity
+                  key={token}
+                  onPress={() => {
+                    if (showLokcupBalance) {
+                      router.push({
+                        pathname: "/(Views)/lock-up-history",
+                        params: {
+                          symbol: token,
+                        },
+                      });
+                      return;
+                    } else {
+                      router.navigate({
+                        pathname: "/(Views)/chart-view",
+                        params: {
+                          symbol: token,
+                        },
+                      });
+                    }
+                  }}
+                >
+                  <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
+                    <View className="flex-row items-center gap-[11px]">
+                      <Image
+                        source={getTokenImage(token)}
+                        className="w-12 h-12 rounded-full"
+                      />
+                      <View>
+                        <Text className="text-[17px] font-medium leading-5 text-white">
+                          {token.toUpperCase()}
+                        </Text>
+                        <Text className="text-[15px] font-normal leading-5 text-gray-1200">
+                          {parseNumberForView(amount)} {token.toUpperCase()}
+                        </Text>
+                      </View>
+                    </View>
+                    <View>
+                      <Text className="text-[17px] font-medium leading-5 text-white text-right">
+                        ${getTokensValue(token, amount)}
+                      </Text>
+                      <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
+                        ${getPrice(token)}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View className="flex-row items-center gap-[17px] my-4">
               <TouchableOpacity
                 onPress={() => {
                   setShowLockUpBalance(true);
                 }}
               >
                 <Text
-                  className={`text-xl font-semibold leading-[33px] ${
-                    showLokcupBalance ? "text-white" : "text-gray-1000"
-                  }`}
+                  className={`text-xl font-semibold leading-[33px] ${"text-white"}`}
                 >
                   {t("home.lock_up")}
                 </Text>
               </TouchableOpacity>
             </View>
-
             <View className="w-full pb-8">
-              {Object.entries(
-                showLokcupBalance ? lockedBalance : freeBalance
-              ).map(([token, amount]) => (
+              {Object.entries(lockedBalance).map(([token, amount]) => (
                 <TouchableOpacity
                   key={token}
                   onPress={() => {

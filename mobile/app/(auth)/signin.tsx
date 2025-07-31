@@ -144,8 +144,8 @@ const Signin: React.FC = () => {
                   }
                 }}
                 placeholder={t("auth.signin.enter_email")}
-                placeholderTextColor="#FFFFFF"
-                className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                placeholderTextColor="#6b7280"
+                className="text-[17px] text-white font-medium px-8  bg-black-1200 w-full h-[71px] rounded-[15px]"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -179,8 +179,8 @@ const Signin: React.FC = () => {
                   }}
                   secureTextEntry={!showPassword}
                   placeholder={t("auth.signin.enter_password")}
-                  placeholderTextColor="#FFFFFF"
-                  className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                  placeholderTextColor="#6b7280"
+                  className="text-[17px] placeholder:text-gray-500 text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword((prev) => !prev)}

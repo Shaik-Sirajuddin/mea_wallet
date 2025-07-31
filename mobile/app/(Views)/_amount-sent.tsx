@@ -34,7 +34,7 @@ const AmountSent = () => {
                   placeholder="0"
                   value={amount}
                   onChangeText={setAmount}
-                  className="min-w-[65px] amount-input border-0 bg-transparent text-white placeholder:text-white text-[52px] uppercase font-semibold leading-[68px] text-white"
+                  className="min-w-[65px] placeholder:text-gray-500 amount-input border-0 bg-transparent text-white text-[52px] uppercase font-semibold leading-[68px] text-white"
                   selectionColor={"#D107FB"}
                 />
                 <Pressable className="absolute top-1/2 -translate-y-1/2 right-0">

@@ -126,7 +126,7 @@ const WalletAddress = () => {
               <View className="relative my-8">
                 <TextInput
                   placeholder={t("settings.enter_wallet_address")}
-                  placeholderTextColor="#FFFFFF"
+                  placeholderTextColor="#6b7280"
                   className="text-base pr-20 text-white font-semibold px-4 border border-gray-1000 w-full  h-[53px] rounded-[6px]"
                   onChangeText={(text) => {
                     setNewAddress(text);

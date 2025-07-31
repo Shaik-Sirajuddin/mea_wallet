@@ -11,7 +11,12 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
-import { tokenImageMap, truncateAddress } from "@/utils/ui";
+import {
+  parseNumberForView,
+  tokenImageMap,
+  trimTrailingZeros,
+  truncateAddress,
+} from "@/utils/ui";
 import SvgIcon from "../components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import * as Clipboard from "expo-clipboard";
@@ -27,6 +32,7 @@ import { t } from "i18next";
 import { BackButton } from "../components/BackButton";
 import TokenPreview from "../components/TokenPreview";
 import { TokenQuotes } from "@/src/types/balance";
+import Decimal from "decimal.js";
 
 const ReceiveItems = () => {
   const navigation = useNavigation();
@@ -43,6 +49,7 @@ const ReceiveItems = () => {
     (state: RootState) => state.deposit.depositAddresses
   );
   const balances = useSelector((state: RootState) => state.balance.free);
+  const quotes = useSelector((state: RootState) => state.token.quotes || {});
   const depositAddress = useMemo(() => {
     return _depositAddresses[0] ?? "";
   }, [_depositAddresses]);
@@ -73,6 +80,21 @@ const ReceiveItems = () => {
     syncDepositSettings();
   }, []);
 
+  const getPrice = (token: string) => {
+    //@ts-expect-error here
+    return parseNumberForView(quotes[token]);
+  };
+
+  const getTokensValue = (token: string, balance: string) => {
+    return trimTrailingZeros(
+      //@ts-expect-error here
+      new Decimal(quotes[token]).mul(balance).toFixed(2)
+    );
+  };
+  const getTokenImage = (token: string) => {
+    const key = token.toLowerCase();
+    return tokenImageMap[key] || require("@/assets/images/coin-img.png");
+  };
   return (
     <View
       className="bg-black-1000 flex-1"
@@ -94,7 +116,7 @@ const ReceiveItems = () => {
             </View>
 
             <View className="relative mt-10">
-              {Object.entries(balances).map(([tokenSymbol, balance]) => (
+              {Object.entries(balances).map(([tokenSymbol, amount]) => (
                 <Pressable
                   key={tokenSymbol}
                   onPress={() => {
@@ -108,44 +130,50 @@ const ReceiveItems = () => {
                   }}
                   className="mb-2"
                 >
-                  <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4">
-                    <View className="flex flex-row items-center gap-3">
+                  <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
+                    <View className="flex-row items-center gap-[11px]">
                       <Image
-                        source={tokenImageMap[tokenSymbol]}
+                        source={getTokenImage(tokenSymbol)}
                         className="w-12 h-12 rounded-full"
-                        resizeMode="cover"
                       />
                       <View>
-                        <Text className="text-[17px] font-medium leading-[22px] text-white">
+                        <Text className="text-[17px] font-medium leading-5 text-white">
                           {tokenSymbol.toUpperCase()}
                         </Text>
-                        <View className="flex-row items-center gap-1">
-                          <Text className="text-[15px] font-medium leading-[22px] text-white">
-                            {truncateAddress(depositAddress)}
-                          </Text>
-                        </View>
-                      </View>
-                      <View className="flex-1 flex items-end">
-                        <TouchableOpacity
-                          className="px-4 py-3"
-                          onPress={() => {
-                            router.push({
-                              pathname: "/(Views)/mea-address",
-                              params: {
-                                symbol: tokenSymbol,
-                              },
-                            });
-                          }}
-                        >
-                          <SvgIcon
-                            name="QRIcon"
-                            width="26"
-                            height="26"
-                            color="pink"
-                          />
-                        </TouchableOpacity>
+                        <Text className="text-[15px] font-normal leading-5 text-gray-1200">
+                          {parseNumberForView(amount)}{" "}
+                          {tokenSymbol.toUpperCase()}
+                        </Text>
                       </View>
                     </View>
+                    <View className="flex-1 flex items-end">
+                      <TouchableOpacity
+                        className="px-4 py-3"
+                        onPress={() => {
+                          router.push({
+                            pathname: "/(Views)/mea-address",
+                            params: {
+                              symbol: tokenSymbol,
+                            },
+                          });
+                        }}
+                      >
+                        <SvgIcon
+                          name="QRIcon"
+                          width="26"
+                          height="26"
+                          color="pink"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {/* <View>
+                      <Text className="text-[17px] font-medium leading-5 text-white text-right">
+                        ${getTokensValue(tokenSymbol, amount)}
+                      </Text>
+                      <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
+                        ${getPrice(tokenSymbol)}
+                      </Text>
+                    </View> */}
                   </View>
                   {/* <TokenPreview token={tokenSymbol as keyof TokenQuotes}/> */}
                 </Pressable>

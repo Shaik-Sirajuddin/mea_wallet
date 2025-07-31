@@ -126,7 +126,7 @@ const ConfirmWithdraw = () => {
                   <View className="relative mb-2">
                     <TextInput
                       placeholder={t("withdrawal.google_otp_code")}
-                      placeholderTextColor="#ffffff"
+                      placeholderTextColor="#6b7280"
                       value={otp}
                       onChangeText={setOtp}
                       className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
@@ -227,7 +227,7 @@ const ConfirmWithdraw = () => {
                 if (router.canDismiss()) {
                   router.dismissAll();
                 }
-                router.replace("/(Tabs)/home");
+                router.replace("/(Views)/asset-history");
               }
             }}
           />

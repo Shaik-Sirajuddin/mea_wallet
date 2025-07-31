@@ -69,8 +69,8 @@ const ForgetPassword: React.FC = () => {
                   if (emailError) setEmailError(null);
                 }}
                 placeholder={t("auth.forgot_password.placeholder_email")}
-                placeholderTextColor="#FFFFFF"
-                className="text-[17px] text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                placeholderTextColor="#6b7280"
+                className="text-[17px] placeholder:text-gray-500 text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />

@@ -29,7 +29,7 @@ const SwapTokens2 = () => {
             <TextInput 
               keyboardType="numeric"
               placeholder="0"
-              className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+              className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-500 bg-transparent border-0"
             />
             <Pressable>
               <SvgIcon name='smallSwapIcon' />
@@ -75,7 +75,7 @@ const SwapTokens2 = () => {
             <TextInput 
               keyboardType="numeric"
               placeholder="0"
-              className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-1200 bg-transparent border-0"
+              className="text-[32px] w-full font-medium leading-12 text-pink-1200 placeholder:text-gray-500 bg-transparent border-0"
             />
             <Pressable>
             <SvgIcon name='smallSwapIcon' />

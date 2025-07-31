@@ -202,6 +202,7 @@ export default {
       sort,
       gubn,
     };
+    console.log('started')
     const raw = await networkRequest<StakingHistoryApiResponse>(
       `${apiBaseUrl}/api/staking-history`,
       {
@@ -209,6 +210,7 @@ export default {
         body: new URLSearchParams(payload).toString(),
       }
     );
+    console.log('awaitng')
 
     if (typeof raw === "string") return raw;
     const parsedItems: StakingHistoryItem[] = raw.data.map((item) => ({

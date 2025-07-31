@@ -136,12 +136,12 @@ const Deposit = () => {
                           amount: minDeposit,
                           symbol: displaySymbol,
                         })}
-                        placeholderTextColor="#fff"
+                        placeholderTextColor="#6b7280"
                         value={depositAmount}
                         onChangeText={(value) => {
                           updateIfValid(value, setDepositAmount);
                         }}
-                        className="text-[17px] text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
+                        className="text-[17px] placeholder:text-gray-500 text-white font-medium pl-8 pr-14 border border-gray-1200 w-full h-[71px] rounded-[15px]"
                         keyboardType="numeric"
                       />
                       <TouchableOpacity className="absolute right-6">

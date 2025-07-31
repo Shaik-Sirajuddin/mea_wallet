@@ -22,8 +22,7 @@ const AccountName = () => {
           </View>
           <View className="relative mt-10">
             <TextInput
-              className="text-base font-semibold text-white px-4 bg-black-1200 h-14 rounded-[15px] w-full"
-              placeholderTextColor="white"
+              className="text-base font-semibold placeholder:text-gray-500 text-white px-4 bg-black-1200 h-14 rounded-[15px] w-full"
               value={name}
               onChangeText={setName}
             />

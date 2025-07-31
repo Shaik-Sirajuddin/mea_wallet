@@ -83,9 +83,8 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose }) => {
                 if (error) setError(null);
               }}
               placeholder={t('components.enter_otp')}
-              placeholderTextColor="#ccc"
               keyboardType="number-pad"
-              className="text-[17px] text-white font-medium px-4 bg-black-1200 w-full h-[55px] rounded-[10px] mb-2"
+              className="text-[17px] placeholder:text-gray-500 text-white font-medium px-4 bg-black-1200 w-full h-[55px] rounded-[10px] mb-2"
             />
 
             {error && (

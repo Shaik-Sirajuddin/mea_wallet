@@ -294,7 +294,7 @@ const Signup: React.FC = () => {
                     setEmail(text);
                   }}
                   placeholder={t("auth.signup.enter_email")}
-                  placeholderTextColor="#FFFFFF"
+                  placeholderTextColor="#6b7280"
                   className="flex-1text-[17px] text-white font-medium pl-8 pr-28 bg-black-1200 w-full h-[71px] rounded-[15px]"
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -348,7 +348,7 @@ const Signup: React.FC = () => {
                   }}
                   secureTextEntry={!showPassword}
                   placeholder={t("auth.signup.enter_password")}
-                  placeholderTextColor="#FFFFFF"
+                  placeholderTextColor="#6b7280"
                   className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
                 <TouchableOpacity
@@ -400,7 +400,7 @@ const Signup: React.FC = () => {
                   }}
                   secureTextEntry={!showVerifyPassword}
                   placeholder={t("auth.signup.enter_verify_password")}
-                  placeholderTextColor="#FFFFFF"
+                  placeholderTextColor="#6b7280"
                   className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
                 />
                 <TouchableOpacity
@@ -446,7 +446,7 @@ const Signup: React.FC = () => {
                     setWallet(text);
                   }}
                   placeholder={t("auth.signup.enter_wallet")}
-                  placeholderTextColor="#FFFFFF"
+                  placeholderTextColor="#6b7280"
                   className="text-[17px] text-white font-medium pl-8 pr-28 bg-black-1200 w-full h-[71px] rounded-[15px]"
                   keyboardType="email-address"
                   autoCapitalize="none"

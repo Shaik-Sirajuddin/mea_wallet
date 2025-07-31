@@ -46,7 +46,7 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={isSecure && !showSecure}
-          placeholderTextColor="#FFFFFF"
+          placeholderTextColor="#6b7280"
           className="text-[17px] text-white font-medium pl-8 pr-14 bg-black-1200 w-full h-[71px] rounded-[15px]"
         />
         {isSecure && (

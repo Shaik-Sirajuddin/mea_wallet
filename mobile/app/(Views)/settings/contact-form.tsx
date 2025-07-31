@@ -47,8 +47,7 @@ const ContactForm = () => {
           multiline
           maxLength={maxLength}
           placeholder={t("settings.enter_inquiry")}
-          placeholderTextColor="rgba(136,136,136,0.5)"
-          className="text-[15px] font-semibold leading-5 pt-10 text-gray-1200 rounded-2xl bg-black-1200 h-[286px] w-full text-center"
+          className="placeholder:text-gray-500 text-[15px] font-semibold leading-5 pt-10 text-gray-1200 rounded-2xl bg-black-1200 h-[286px] w-full text-center"
         />
         <View className="absolute bottom-4 right-4">
           <Text className="text-[15px] font-semibold leading-5 text-gray-1200/50">
