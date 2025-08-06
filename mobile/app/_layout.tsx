@@ -13,11 +13,12 @@ import { store } from "@/src/store";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { Provider as PaperProvider } from "react-native-paper";
+import { View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
   fade: true,
-  duration: 1000,
+  duration: 700,
 });
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -60,7 +61,7 @@ export default function RootLayout() {
               edges={["top", "bottom"]}
               style={{ flex: 1 }}
               onLayout={onLayoutRootView}
-              className="bg-black"
+              className="bg-black-1000"
             >
               <MyStatusBar />
               {/* <StatusBar style="auto" backgroundColor="black"/> */}
@@ -68,7 +69,7 @@ export default function RootLayout() {
                 screenOptions={{
                   headerShown: false,
                   contentStyle: {
-                    backgroundColor: "#000",
+                    backgroundColor: "#1F1F1F",
                   },
                 }}
               >

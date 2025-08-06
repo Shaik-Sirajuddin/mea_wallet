@@ -35,7 +35,7 @@ export default function TabLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: "#2a2a2a",
+            backgroundColor: "#1F1F1F",
             borderTopWidth: 0,
             paddingBottom: 28,
             paddingTop: 10,
@@ -45,6 +45,9 @@ export default function TabLayout() {
             shadowOpacity: 0.5,
             shadowRadius: 6,
             elevation: 4,
+          },
+          sceneStyle: {
+            backgroundColor: "#1F1F1F",
           },
           tabBarActiveTintColor: "#D107FB",
           tabBarInactiveTintColor: "#B9B9B9",

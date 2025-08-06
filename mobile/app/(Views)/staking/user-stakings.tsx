@@ -85,6 +85,7 @@ const UserStakings = () => {
   const [selectedFilters, setSelectedFilters] =
     useState<IFilterState>(initialFilterState);
 
+  const [filterVisible, setFilterVisible] = useState(false);
   const syncStakings = async (requestedPage = 1) => {
     setLoading(true);
     const res = await useStaking.getUserStakings(
@@ -202,63 +203,72 @@ const UserStakings = () => {
             <Text className="text-base font-medium text-white">
               {t("staking.my_staking")}
             </Text>
+            <View className="flex-1 items-end">
+              <TouchableOpacity
+                onPress={() => {
+                  setFilterVisible(!filterVisible);
+                }}
+              >
+                <FilterIcon />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-
         <View className="my-8">
           <Text className="text-[15px] text-center font-semibold leading-5 text-gray-1200">
             {t("staking.product_details")}
           </Text>
         </View>
-
-        {/* Filter Selection Section - Label on left, Select on right */}
-        <View className="px-0 my-4">
-          {filters.map((filter) => (
-            <View
-              key={filter.key}
-              className="flex flex-row items-center justify-between bg-gray-950 rounded-[15px] p-4 mb-1"
-            >
-              <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-300">
-                {filter.label}
-              </Text>
-              <View className="w-[170px] h-[40px] bg-gray-800 border-[0.5px] border-white rounded-[10px] justify-center px-2 overflow-hidden">
-                <Picker
-                  selectedValue={selectedFilters[filter.key].value}
-                  onValueChange={(itemValue) => {
-                    const selectedOption = filter.options.find(
-                      (option) => option.value === itemValue
-                    );
-                    if (selectedOption) {
-                      setSelectedFilters((prev) => ({
-                        ...prev,
-                        [filter.key]: selectedOption,
-                      }));
-                    }
-                  }}
-                  mode="dropdown"
-                  dropdownIconColor="white"
-                  style={{
-                    color: "white",
-                    fontSize: 15,
-                    fontWeight: "500",
-                    width: "100%",
-                  }}
-                >
-                  {filter.options.map((option) => (
-                    <Picker.Item
-                      key={option.value}
-                      label={option.label}
-                      value={option.value}
-                      style={{
-                        backgroundColor: "#1f2937",
-                        color: "white",
-                      }}
-                    />
-                  ))}
-                </Picker>
+        <View className={`${filterVisible ? "" : "hidden"}`}>
+          {/* Filter Selection Section - Label on left, Select on right */}
+          <View className="px-0 my-4">
+            {filters.map((filter) => (
+              <View
+                key={filter.key}
+                className="flex flex-row items-center justify-between bg-gray-950 rounded-[15px] p-4 mb-1"
+              >
+                <Text className="text-[17px] font-medium leading-[22px] tracking-[-0.34px] text-gray-300">
+                  {filter.label}
+                </Text>
+                <View className="w-[170px] h-[40px] bg-gray-800 border-[0.5px] border-white rounded-[10px] justify-center px-2 overflow-hidden">
+                  <Picker
+                    selectedValue={selectedFilters[filter.key].value}
+                    onValueChange={(itemValue) => {
+                      const selectedOption = filter.options.find(
+                        (option) => option.value === itemValue
+                      );
+                      if (selectedOption) {
+                        setSelectedFilters((prev) => ({
+                          ...prev,
+                          [filter.key]: selectedOption,
+                        }));
+                      }
+                    }}
+                    mode="dropdown"
+                    dropdownIconColor="white"
+                    style={{
+                      color: "white",
+                      fontSize: 15,
+                      fontWeight: "500",
+                      width: "100%",
+                    }}
+                  >
+                    {filter.options.map((option) => (
+                      <Picker.Item
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        style={{
+                          backgroundColor: "#1f2937",
+                          color: "white",
+                        }}
+                      />
+                    ))}
+                  </Picker>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
 
         <FlatList

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232410884303",
+    "project_id": "mea-wallet",
+    "storage_bucket": "mea-wallet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232410884303:android:9b2b7e1735b550bc642fba",
+        "android_client_info": {
+          "package_name": "com.meccain.wallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYLjj92XWDWRs2u0pFfDKHM7JtHkvUtaA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

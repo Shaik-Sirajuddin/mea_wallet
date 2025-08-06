@@ -13,12 +13,14 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.meccain.wallet"
+      "bundleIdentifier": "com.meccain.wallet",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.meccain.wallet",
-      "permissions": ["android.permission.CAMERA"]
+      "permissions": ["android.permission.CAMERA"],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -26,17 +28,19 @@
       "favicon": "./assets/images/logo.png"
     },
     "splash": {
-      "backgroundColor": "#F2C7F8",
+      "backgroundColor": "#870be1",
       "image": "./assets/images/app_icon.png"
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/crashlytics",
+      "@react-native-firebase/app",
       [
         "expo-splash-screen",
         {
           "image": "./assets/images/app_icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#F2C7F8"
+          "backgroundColor": "#870be1"
         }
       ],
       [
@@ -57,6 +61,14 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to allow you to change profile picture"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ],
       "expo-localization",
