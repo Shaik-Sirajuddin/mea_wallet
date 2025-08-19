@@ -168,7 +168,7 @@ export default function HomeScreen() {
               </View> */}
             </View>
 
-            <View className="flex-row max-w-[280px] mx-auto gap-[7px]">
+            <View className="flex-row max-w-[210px] mx-auto gap-[7px]">
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
                 <Link href="/receive-items">
                   <View className="w-full items-center p-[18px] py-[17px]">
@@ -189,7 +189,7 @@ export default function HomeScreen() {
                   </View>
                 </Link>
               </View>
-              <View className="bg-black-1300 rounded-2xl items-center  flex-1">
+              {/* <View className="bg-black-1300 rounded-2xl items-center  flex-1">
                 <Pressable
                   onPress={() => {
                     //@ts-expect-error this
@@ -203,7 +203,7 @@ export default function HomeScreen() {
                     </Text>
                   </View>
                 </Pressable>
-              </View>
+              </View> */}
             </View>
 
             <View className="flex-row items-center gap-[17px] my-4">

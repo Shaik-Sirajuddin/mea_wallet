@@ -239,7 +239,12 @@ const Deposit2 = () => {
         setVisible={setInfoAlertVisible}
         onDismiss={() => {
           if (depoistSubmitted) {
-            router.push("/(Views)/asset-history");
+            router.push({
+              pathname: "/(Views)/asset-history",
+              params: {
+                symbol: symbol,
+              },
+            });
           }
         }}
       />

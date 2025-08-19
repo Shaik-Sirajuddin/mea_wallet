@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:232410884303:android:9b2b7e1735b550bc642fba",
+        "mobilesdk_app_id": "1:232410884303:android:f488be803f320725642fba",
         "android_client_info": {
-          "package_name": "com.meccain.wallet"
+          "package_name": "com.meccain.ping"
         }
       },
       "oauth_client": [],

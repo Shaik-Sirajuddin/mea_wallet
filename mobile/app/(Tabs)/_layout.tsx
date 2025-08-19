@@ -98,7 +98,7 @@ export default function TabLayout() {
           }}
         />
 
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="swap-tokens"
           options={{
             tabBarIcon: ({ focused }) => (
@@ -110,7 +110,7 @@ export default function TabLayout() {
             ),
             tabBarLabel: () => null,
           }}
-        />
+        /> */}
 
         <Tabs.Screen
           name="settings"

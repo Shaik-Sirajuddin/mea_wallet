@@ -186,13 +186,13 @@ const ChartView = () => {
                     icon="sendIcon"
                     label={t("token_overview.send")}
                   />
-                  <ActionButton
+                  {/* <ActionButton
                     onPress={() =>
                       router.push({ pathname: "/(Tabs)/swap-tokens" })
                     }
                     icon="swapIcon"
                     label={t("token_overview.swap")}
-                  />
+                  /> */}
                 </View>
               </View>
 

@@ -33,10 +33,10 @@ import {
 import { setFreeBalances } from "@/src/features/balance/balanceSlice";
 import useUser from "@/hooks/useUser";
 import useAsset from "@/hooks/useAsset";
-import PrimaryButton from "../components/PrimaryButton";
-import SvgIcon from "../components/SvgIcon";
-import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
-import OtpModal from "../components/OTPModal";
+import PrimaryButton from "./PrimaryButton";
+import SvgIcon from "./SvgIcon";
+import InfoAlert, { InfoAlertProps } from "./InfoAlert";
+import OtpModal from "./OTPModal";
 import Decimal from "decimal.js";
 import {
   parseNumberForView,

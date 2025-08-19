@@ -227,7 +227,12 @@ const ConfirmWithdraw = () => {
                 if (router.canDismiss()) {
                   router.dismissAll();
                 }
-                router.replace("/(Views)/asset-history");
+                router.replace({
+                  pathname: "/(Views)/asset-history",
+                  params: {
+                    symbol: symbol,
+                  },
+                });
               }
             }}
           />
