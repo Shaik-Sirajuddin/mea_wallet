@@ -80,7 +80,7 @@ const ConfirmWithdraw = () => {
       amount,
       otp_code: otp,
       min_withdraw_coin: minWithdrawl,
-      symbol,
+      symbol : symbol.toUpperCase(),
       WithdrawFee: withdrawFees,
     });
 
