@@ -1,6 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useRef } from "react";
 import { Image, Share, Text, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import SvgIcon from "../components/SvgIcon";
@@ -9,12 +9,13 @@ import { truncateAddress } from "@/utils/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
+import QRCode from "react-native-qrcode-svg";
 
 const MeaAddress = () => {
   const { symbol } = useLocalSearchParams<{
     symbol: keyof TokenBalances;
   }>();
-
+  const qrRef = useRef<QRCode>(null);
   const displaySymbol = symbol.toUpperCase();
   const depositAddress = useSelector(
     (state: RootState) => state.deposit.depositAddresses[0]
@@ -35,11 +36,16 @@ const MeaAddress = () => {
         </View>
         <View className="relative mt-10">
           <View className="items-center">
-            <Image
-              source={require("../../assets/images/qr-code2.png")}
-              className="mb-14"
-              style={{ width: 200, height: 200 }}
-            />
+            <View className="bg-white p-4 border rounded-2xl mb-14">
+              <QRCode
+                value={depositAddress}
+                size={200}
+                backgroundColor="white"
+                color="black"
+                getRef={(c: any) => (qrRef.current = c as any)}
+              />
+            </View>
+
             <View className="px-20">
               <Text className="text-[21px] text-center leading-2.5 font-semibold text-white mb-2">
                 Your {displaySymbol} Address

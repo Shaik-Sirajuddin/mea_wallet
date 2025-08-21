@@ -8,7 +8,7 @@ import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
 import { truncateAddress } from "@/utils/ui";
 import * as Clipboard from "expo-clipboard";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -20,6 +20,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import QRCode from "react-native-qrcode-svg";
 import { useSelector } from "react-redux";
 
 const WalletAddress = () => {
@@ -30,6 +31,7 @@ const WalletAddress = () => {
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
     text: "",
   });
+  const qrRef = useRef<QRCode>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [newAddress, setNewAddress] = useState("");
   const dispatch = useAppDispatch();
@@ -114,11 +116,15 @@ const WalletAddress = () => {
           <View className="mt-10 mb-2">
             <View className="w-full">
               {/* QR Code */}
-              <View className="items-center">
-                <Image
-                  source={require("@/assets/images/qr-code2.png")}
-                  className="max-w-[390px]"
-                  resizeMode="contain"
+              <View className="bg-white p-4 border rounded-2xl mb-14">
+                <QRCode
+                  value={
+                    registeredAddresses.length > 0 ? registeredAddresses[0] : ""
+                  }
+                  size={200}
+                  backgroundColor="white"
+                  color="black"
+                  getRef={(c: any) => (qrRef.current = c as any)}
                 />
               </View>
 

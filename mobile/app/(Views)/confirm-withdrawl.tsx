@@ -4,11 +4,9 @@ import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
@@ -80,7 +78,7 @@ const ConfirmWithdraw = () => {
       amount,
       otp_code: otp,
       min_withdraw_coin: minWithdrawl,
-      symbol : symbol.toUpperCase(),
+      symbol: symbol.toUpperCase(),
       WithdrawFee: withdrawFees,
     });
 

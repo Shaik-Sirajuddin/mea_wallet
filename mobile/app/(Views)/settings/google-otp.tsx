@@ -105,7 +105,7 @@ const GoogleOTP = () => {
   const handleCopy = async () => {
     if (!twoFAData) return;
     await Clipboard.setStringAsync(twoFAData.secretCode);
-    Alert.alert(t("common.copied"));
+    Alert.alert(t("components.copied_to_clipboard"));
   };
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const GoogleOTP = () => {
                     ? {
                         uri: twoFAData.qrUrl,
                       }
-                    : require("@/assets/images/qr-code2.png")
+                    : require("@/assets/images/scanner.png")
                 }
                 className="max-w-[390px] w-[200px] h-[200px]"
                 resizeMode="contain"

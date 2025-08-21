@@ -24,4 +24,5 @@ export interface LogoutResponse {
 
 export interface ForgetPasswordResponse {
   status: "Temporary password" | string;
+  TemporaryPassword: string;
 }

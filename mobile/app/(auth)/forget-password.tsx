@@ -1,28 +1,70 @@
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+} from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import utils from "@/utils/index";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert from "../components/InfoAlert";
 import { useTranslation } from "react-i18next";
+import useAuth from "@/hooks/useAuth";
+import * as Clipboard from "expo-clipboard";
 
 const ForgetPassword: React.FC = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [popupVisible, setPopUpVisible] = useState(false);
+  const [popupText, setPopupText] = useState("");
+  // New state to hold the temporary password
+  const [temporaryPassword, setTemporaryPassword] = useState("");
 
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [otpError, setOtpError] = useState<string | null>(null);
 
-  const handleForgotPassword = () => {
+  const handleForgotPassword = async () => {
+    // validate email
     if (!email) {
       setEmailError(t("auth.forgot_password.email_required"));
       return;
-    } else if (!utils.validateEmail(email)) {
-      setEmailError(t("auth.forgot_password.invalid_email"));
+    }
+
+    // validate otp
+    if (!otp) {
+      setOtpError(t("auth.forgot_password.otp_required"));
       return;
     }
+
+    const result = await useAuth.forgetPassword(email, otp);
+
+    if (typeof result === "string") {
+      setPopupText(result);
+      setPopUpVisible(true);
+      return;
+    }
+
+    // success: show temp password
+    // Store the temporary password in state
+    setTemporaryPassword(result.TemporaryPassword);
+    setPopupText(
+      `${t("auth.forgot_password.temp_password")}: ${result.TemporaryPassword}`
+    );
     setPopUpVisible(true);
+  };
+
+  // Function to handle copying the password
+  const handleCopyPassword = async () => {
+    if (temporaryPassword) {
+      await Clipboard.setStringAsync(temporaryPassword);
+      setPopUpVisible(false); // Optionally close the popup after copying
+    }
+    router.replace("/(auth)/signin");
   };
 
   return (
@@ -30,6 +72,7 @@ const ForgetPassword: React.FC = () => {
       <View className="flex-1 bg-black-1000 items-center justify-center">
         <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10 justify-between">
           <View>
+            {/* Logo */}
             <View className="items-center">
               <View
                 style={{
@@ -81,6 +124,35 @@ const ForgetPassword: React.FC = () => {
               ) : null}
             </View>
 
+            {/* OTP Field */}
+            <View className="mt-3 mb-2">
+              <View className="flex-row items-center gap-2 mb-3">
+                <View className="w-6 h-6 rounded-full bg-black-1200 border-[5px] border-gray-1100" />
+                <Text className="text-base font-medium text-white">
+                  {t("auth.forgot_password.google_otp_code")}{" "}
+                  <Text className="text-pink-1200">*</Text>
+                </Text>
+              </View>
+              <TextInput
+                value={otp}
+                onChangeText={(text) => {
+                  setOtp(text);
+                  if (otpError) setOtpError(null);
+                }}
+                placeholder={t("auth.forgot_password.placeholder_otp")}
+                placeholderTextColor="#6b7280"
+                className="text-[17px] placeholder:text-gray-500 text-white font-medium px-8 bg-black-1200 w-full h-[71px] rounded-[15px]"
+                keyboardType="numeric"
+                autoCapitalize="none"
+              />
+              {otpError ? (
+                <Text className="text-red-500 text-xs mt-1 ml-2">
+                  {otpError}
+                </Text>
+              ) : null}
+            </View>
+
+            {/* Notice */}
             <View className="w-full">
               <View className="flex flex-row items-center gap-2 mb-3">
                 <SvgIcon name="infoIcon" />
@@ -97,12 +169,13 @@ const ForgetPassword: React.FC = () => {
             </View>
           </View>
 
+          {/* Submit + Links */}
           <View className="items-center mt-6">
             <PrimaryButton
               onPress={handleForgotPassword}
               className="mb-[9px] w-full h-[45px] group bg-pink-1100 border border-pink-1100 active:text-pink-1100 active:bg-transparent hover:text-pink-1100 hover:bg-transparent rounded-[15px] flex items-center justify-center"
               text={t("auth.forgot_password.confirm")}
-              disabled={emailError !== null}
+              disabled={emailError !== null || otpError !== null}
             />
             <View className="mt-4 mb-4">
               <TouchableOpacity onPress={() => router.replace("/signin")}>
@@ -121,10 +194,15 @@ const ForgetPassword: React.FC = () => {
           </View>
         </View>
       </View>
+
+      {/* Popup */}
       <InfoAlert
         visible={popupVisible}
         setVisible={setPopUpVisible}
-        text={t("auth.forgot_password.reset_link_sent")}
+        text={popupText}
+        // Conditionally show the "Copy" button
+        onDismiss={temporaryPassword ? handleCopyPassword : undefined}
+        primaryButtonText={temporaryPassword ? t("common.copy") : undefined}
       />
     </>
   );

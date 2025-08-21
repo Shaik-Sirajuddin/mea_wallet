@@ -65,7 +65,11 @@
       "confirm": "Confirm",
       "signin": "Sign In",
       "signup": "Sign Up",
-      "reset_link_sent": "A password reset link has been sent to email"
+      "google_otp_code": "Google OTP Code",
+      "placeholder_otp": "Enter Google OTP Code",
+      "reset_link_sent": "A password reset link has been sent to email",
+      "otp_required": "OTP code is required",
+      "temp_password": "Your temporary password is"
     }
   },
   "home": {
@@ -317,7 +321,7 @@
     "state": "State",
     "memo": "Memo",
     "notice": "Staking Notice",
-    "early_penalty_notice" : "Please note that an early unstaking of your staked assets may result in a loss of principal.",
+    "early_penalty_notice": "Please note that an early unstaking of your staked assets may result in a loss of principal.",
     "expected_payout": "Expected Payout",
     "product_details": "Here are the staking product details",
     "staking_history_info": "We will inform you of the transaction details for staking."

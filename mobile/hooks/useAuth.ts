@@ -40,13 +40,14 @@ export default {
     });
   },
 
-  forgetPassword: async (email: string) => {
+  forgetPassword: async (email: string, otp: string) => {
     return await networkRequest<ForgetPasswordResponse>(
-      `${apiBaseUrl}/api/forget-password`,
+      `${apiBaseUrl}/api/find-password`,
       {
         method: "POST",
         body: new URLSearchParams({
           UserEmail: email,
+          otp_code: otp,
         }).toString(),
       }
     );

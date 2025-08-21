@@ -11,6 +11,7 @@ export interface InfoAlertProps {
   showAnimation?: boolean;
   text?: string;
   type?: "success" | "error" | "info";
+  primaryButtonText?: string;
 }
 
 const InfoAlert = ({
@@ -20,6 +21,7 @@ const InfoAlert = ({
   onDismiss,
   showAnimation = true,
   type = "success",
+  primaryButtonText,
 }: InfoAlertProps) => {
   const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -50,6 +52,8 @@ const InfoAlert = ({
 
   if (!visible) return null;
 
+  const buttonText = primaryButtonText ? primaryButtonText : t("common.ok");
+
   return (
     <Portal>
       <View className="flex-1 items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full z-50">
@@ -63,7 +67,7 @@ const InfoAlert = ({
           <View className="flex gap-4">
             <Text className="text-white text-center text-lg">{text}</Text>
             <PrimaryButton
-              text={t("common.ok")}
+              text={buttonText}
               onPress={() => {
                 setVisible(false);
                 if (onDismiss) onDismiss();
