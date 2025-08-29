@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import DialogAlert from "../components/DialogAlert";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 

@@ -18,7 +18,7 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { TokenBalances } from "@/src/types/balance";
 import PrimaryButton from "../components/PrimaryButton";
 import { truncateAddress } from "@/utils/ui";
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import { BackButton } from "../components/BackButton";
 
 const Deposit2 = () => {

@@ -1,6 +1,6 @@
 // src/store/stakingSlice.ts
 
-import { StakingPlan } from "@/hooks/useStaking";
+import { StakingPlan } from "@/hooks/api/useStaking";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface StakingState {

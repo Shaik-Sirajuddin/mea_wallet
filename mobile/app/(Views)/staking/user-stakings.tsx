@@ -1,6 +1,6 @@
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
-import useStaking from "@/hooks/useStaking";
+import useStaking from "@/hooks/api/useStaking";
 import { UserStaking } from "@/src/api/types/staking";
 import { tokenImageMap } from "@/utils/ui";
 import { router } from "expo-router";

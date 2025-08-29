@@ -31,8 +31,8 @@ import {
   setSwapFee,
 } from "@/src/features/token/tokenSlice";
 import { setFreeBalances } from "@/src/features/balance/balanceSlice";
-import useUser from "@/hooks/useUser";
-import useAsset from "@/hooks/useAsset";
+import useUser from "@/hooks/api/useUser";
+import useAsset from "@/hooks/api/useAsset";
 import PrimaryButton from "./PrimaryButton";
 import SvgIcon from "./SvgIcon";
 import InfoAlert, { InfoAlertProps } from "./InfoAlert";
@@ -45,7 +45,7 @@ import {
   updateIfValid,
 } from "@/utils/ui";
 import { TokenBalances, TokenQuotes } from "@/src/types/balance";
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import {
   setDepositAddresses,
   setRegisteredAddresses,

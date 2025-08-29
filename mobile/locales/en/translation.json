@@ -499,5 +499,11 @@
     "from_address": "From Address",
     "to_address": "To Address",
     "txid": "Transaction ID"
+  },
+  "update": {
+    "title": "A New Version is Available",
+    "subtitle": "Please update your app to access the latest features and improvements.",
+    "downloading": "Downloading update...",
+    "button": "Update App"
   }
 }

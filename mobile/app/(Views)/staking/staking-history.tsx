@@ -14,7 +14,7 @@ import { router } from "expo-router";
 import dayjs from "dayjs";
 import { Picker } from "@react-native-picker/picker"; // Import Picker
 
-import useStaking from "@/hooks/useStaking";
+import useStaking from "@/hooks/api/useStaking";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
 import FilterIcon from "@/assets/images/double-arrow.svg"; // This icon will likely be removed or repurposed

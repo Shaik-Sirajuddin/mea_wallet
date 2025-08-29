@@ -2,6 +2,12 @@ export interface TokenBalances {
   mea: string;
   sol: string;
   fox9: string;
+  usdt: string
+}
+
+export interface LockUpBalances {
+  mea: string;
+  fox9: string;
 }
 
 export interface TokenQuotes {
@@ -9,11 +15,12 @@ export interface TokenQuotes {
   sol: string;
   fox9: string;
   usd: string;
+  usdt: string
 }
 
 export interface ParsedBalance {
   balances: TokenBalances;
-  lockups: Omit<TokenBalances, "sol">;
+  lockups: LockUpBalances;
   quotes: TokenQuotes;
   minDeposit: TokenBalances;
   minWithdraw: TokenBalances;

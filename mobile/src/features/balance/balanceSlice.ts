@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { TokenBalances } from "@/src/types/balance";
+import type { LockUpBalances, TokenBalances } from "@/src/types/balance";
+
 
 interface BalanceState {
   free: TokenBalances;
-  lockup: Omit<TokenBalances, "sol">; // `sol` has no lockup
+  lockup: LockUpBalances; // `sol` has no lockup
 }
 
 const initialState: BalanceState = {
-  free: { sol: "0", mea: "0", fox9: "0" },
+  free: { sol: "0", mea: "0", fox9: "0", usdt: '0' },
   lockup: { mea: "0", fox9: "0" },
 };
 
@@ -20,7 +21,7 @@ const balanceSlice = createSlice({
     },
     setLockupBalances(
       state,
-      action: PayloadAction<Omit<TokenBalances, "sol">>
+      action: PayloadAction<LockUpBalances>
     ) {
       state.lockup = action.payload;
     },

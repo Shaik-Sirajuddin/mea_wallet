@@ -20,8 +20,8 @@ import { isValidPublicKey } from "@/utils/web3";
 import { useAppDispatch } from "@/src/store/hooks";
 import { RootState } from "@/src/store";
 import { useSelector } from "react-redux";
-import useAsset from "@/hooks/useAsset";
-import useUser from "@/hooks/useUser";
+import useAsset from "@/hooks/api/useAsset";
+import useUser from "@/hooks/api/useUser";
 import {
   setMinWithdraw,
   setWithdrawFees,

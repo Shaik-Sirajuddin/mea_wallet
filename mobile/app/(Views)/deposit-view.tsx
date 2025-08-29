@@ -16,7 +16,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setMinDeposit } from "@/src/features/token/tokenSlice"; // adjust slice import
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import { TokenBalances } from "@/src/types/balance";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";

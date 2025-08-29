@@ -10,11 +10,11 @@ import {
 } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import { LockupHistoryItem } from "@/src/api/types/lockup";
-import useAsset from "@/hooks/useAsset";
+import useAsset from "@/hooks/api/useAsset";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
-import { TokenBalances } from "@/src/types/balance";
+import { LockUpBalances, TokenBalances } from "@/src/types/balance";
 import { BackButton } from "../components/BackButton";
 
 const LockUpHistory = () => {
@@ -22,7 +22,7 @@ const LockUpHistory = () => {
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
   const lockedBalance = useSelector(
     (state: RootState) =>
-      state.balance.lockup[symbol as keyof Omit<TokenBalances, "sol">]
+      state.balance.lockup[symbol as keyof LockUpBalances]
   );
   const displaySymbol = useMemo(() => {
     return symbol.toUpperCase();

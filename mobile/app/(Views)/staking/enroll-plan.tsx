@@ -16,7 +16,7 @@ import {
 import SvgIcon from "@/app/components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import OtpModal from "@/app/components/OTPModal";
-import useStaking, { StakingPlan } from "@/hooks/useStaking";
+import useStaking, { StakingPlan } from "@/hooks/api/useStaking";
 import { tokenImageMap } from "@/utils/ui";
 import Decimal from "decimal.js";
 import { RootState } from "@/src/store";

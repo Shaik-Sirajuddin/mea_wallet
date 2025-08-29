@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import OtpModal from "@/app/components/OTPModal";
 import { BackButton } from "@/app/components/BackButton";
 
@@ -178,8 +178,8 @@ const ChangePassword: React.FC = () => {
                   required
                   isSecure
                   value={confirmPassword}
-                    onChangeText={(text) => {
-                      setConfirmPassword(text);
+                  onChangeText={(text) => {
+                    setConfirmPassword(text);
                     if (
                       inputError &&
                       errorType === ErrorType.CONFIRM_PASSWORD

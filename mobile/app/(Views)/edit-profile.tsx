@@ -7,7 +7,7 @@ import { RootState } from "@/src/store";
 import SvgIcon from "../components/SvgIcon";
 import * as ImagePicker from "expo-image-picker";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import useUser from "@/hooks/useUser";
+import useUser from "@/hooks/api/useUser";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "@/src/features/user/userSlice";
 import { BackButton } from "../components/BackButton";

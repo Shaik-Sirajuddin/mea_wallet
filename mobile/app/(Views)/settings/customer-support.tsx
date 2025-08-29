@@ -10,7 +10,7 @@ import {
 import { router } from "expo-router";
 import SvgIcon from "@/app/components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import useSetting from "@/hooks/useSetting";
+import useSetting from "@/hooks/api/useSetting";
 import { useTranslation } from "react-i18next";
 import LabeledInput from "@/app/components/LabeledInput";
 import { BackButton } from "@/app/components/BackButton";

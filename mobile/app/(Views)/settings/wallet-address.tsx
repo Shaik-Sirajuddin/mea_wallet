@@ -2,7 +2,7 @@ import { BackButton } from "@/app/components/BackButton";
 import DepositAddressList from "@/app/components/DepositAddressList";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import { setDepositAddresses } from "@/src/features/asset/depositSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";

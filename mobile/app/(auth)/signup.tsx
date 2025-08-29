@@ -19,12 +19,12 @@ import {
   View,
 } from "react-native";
 import { isValidPublicKey } from "@/utils/web3";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { STORAGE_KEYS } from "@/storage/keys";
 import storage from "@/storage";
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import SvgIcon from "../components/SvgIcon";
 import { useTranslation } from "react-i18next";
 import { validatePasswordWithReason } from "@/utils/ui";

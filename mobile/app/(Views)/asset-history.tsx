@@ -12,7 +12,7 @@ import {
 import * as Clipboard from "expo-clipboard";
 import SvgIcon from "../components/SvgIcon";
 import { AssetHistoryItem } from "@/src/api/types/asset";
-import useAsset from "@/hooks/useAsset";
+import useAsset from "@/hooks/api/useAsset";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
@@ -130,121 +130,6 @@ const AssetHistory = () => {
 
               {/* History List */}
               <View>
-                {/* {!loading &&
-                  history.map((item, index) => (
-                    <View key={index} className="mb-4">
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-base font-medium text-gray-1200">
-                          {t("asset_history.total_date")}
-                        </Text>
-                        <Text className="text-base font-medium text-white">
-                          {new Date(item.registeredAt).toLocaleString()}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.division")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {item.type}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.amount")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {parseNumberForView(item.amount)} {displaySymbol}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.fee")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {parseNumberForView(item.withdrawFee)} {displaySymbol}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.previous_amount")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {parseNumberForView(item.previousBalance)}{" "}
-                          {displaySymbol}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.amount_after")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {parseNumberForView(item.nextBalance)} {displaySymbol}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.state")}
-                        </Text>
-                        <Text className="text-[17px] font-medium text-white">
-                          {item.status}
-                        </Text>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.from_address")}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => {
-                            performCopy(item.fromAddress);
-                          }}
-                        >
-                          <Text className="text-[17px] font-medium text-white">
-                            {truncateAddress(item.fromAddress) || "--"}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.to_address")}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => {
-                            performCopy(item.toAddress);
-                          }}
-                        >
-                          <Text className="text-[17px] font-medium text-white">
-                            {truncateAddress(item.toAddress) || "--"}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <View className="flex flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-                        <Text className="text-[17px] font-medium text-gray-1200">
-                          {t("asset_history.txid")}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => {
-                            performCopy(item.txHash);
-                          }}
-                        >
-                          <Text className="text-[17px] font-medium text-white">
-                            {truncateAddress(item.txHash) || "--"}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <View className="w-full h-[1px] bg-white mt-2"></View>
-                    </View>
-                  ))} */}
                 {!loading && (
                   <AssetHistoryList
                     history={history}

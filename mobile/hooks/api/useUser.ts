@@ -1,6 +1,6 @@
 import { apiBaseUrl, imageBucket } from "@/lib/constants";
 import { networkRequest } from ".";
-import { TokenBalances, TokenQuotes } from "@/src/types/balance";
+import { LockUpBalances, TokenBalances, TokenQuotes } from "@/src/types/balance";
 import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
 import { TwoFADetails, UserDetails } from "@/src/api/types/user";
@@ -20,11 +20,12 @@ export interface WithdrawSettings {
 
 export interface BalanceResult {
   free: TokenBalances;
-  lockup: Omit<TokenBalances, "sol">;
+  lockup: LockUpBalances;
 }
 
 interface UserInfoResponseRaw {
   Thumbnail: string;
+  qr_reg: string;
 }
 
 export default {
@@ -35,12 +36,12 @@ export default {
     );
 
     if (typeof raw === "string") return raw;
-
     return {
       free: {
         mea: trimTrailingZeros(raw.mea_balance),
         sol: trimTrailingZeros(raw.sol_balance),
         fox9: trimTrailingZeros(raw.fox9_balance),
+        usdt: trimTrailingZeros(raw.usdt_balance)
       },
       lockup: {
         mea: trimTrailingZeros(raw.mea_lockup),
@@ -61,6 +62,7 @@ export default {
       sol: trimTrailingZeros(raw.sol_quote.toString()),
       fox9: trimTrailingZeros(raw.fox9_quote.toString()),
       usd: trimTrailingZeros(raw.usd_quote.toString()),
+      usdt: trimTrailingZeros(raw.usdt_quote.toString()),
     };
   },
   getWithdrawSettings: async (): Promise<WithdrawSettings | string> => {
@@ -76,11 +78,13 @@ export default {
         mea: trimTrailingZeros(raw.mea_min_withdraw_coin),
         fox9: trimTrailingZeros(raw.fox9_min_withdraw_coin),
         sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
+        usdt: trimTrailingZeros(raw.usdt_min_withdraw_coin),
       },
       withdrawFees: {
         mea: trimTrailingZeros(raw.mea_WithdrawFee),
         fox9: trimTrailingZeros(raw.fox9_WithdrawFee),
         sol: trimTrailingZeros(raw.sol_WithdrawFee),
+        usdt: trimTrailingZeros(raw.usdt_WithdrawFee),
       },
     };
   },
@@ -125,6 +129,7 @@ export default {
     if (typeof raw === "string") return raw;
     let data = {
       image: raw.Thumbnail,
+      twoFACompleted: raw.qr_reg === "Y",
     };
     return data;
   },

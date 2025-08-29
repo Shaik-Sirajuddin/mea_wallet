@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import PrimaryButton from "../components/PrimaryButton";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import utils from "@/utils";
 import InfoAlert from "../components/InfoAlert";
 import storage from "@/storage";

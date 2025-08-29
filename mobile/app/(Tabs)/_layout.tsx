@@ -1,18 +1,31 @@
-import { Tabs } from "expo-router";
+import { Tabs, useFocusEffect } from "expo-router";
 import { View, Image } from "react-native";
 import SvgIcon from "../components/SvgIcon";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import InfoAlert from "../components/InfoAlert";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import { useDispatch } from "react-redux";
 import { setUserEmail } from "@/src/features/user/userSlice";
 import { router } from "expo-router";
+import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
+import React from "react";
 
 export default function TabLayout() {
   const { t } = useTranslation();
   const [popUpVisible, setPopUpVisible] = useState(false);
   const dispatch = useDispatch();
+  const { isUpdateRequired, isLoading } = useCheckForUpdates();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isLoading) return;
+      if (isUpdateRequired) {
+        router.dismissTo("/app-update");
+      }
+      return;
+    }, [isLoading, isUpdateRequired])
+  );
 
   const checkAuthenticated = async () => {
     const result = await useAuth.loginStatus();

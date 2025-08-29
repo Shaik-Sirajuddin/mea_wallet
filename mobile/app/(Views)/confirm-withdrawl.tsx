@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { truncateAddress } from "@/utils/ui";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
-import useWithdrawl from "@/hooks/useWithdrawl";
+import useWithdrawl from "@/hooks/api/useWithdrawl";
 import { BackButton } from "../components/BackButton";
 
 export type ConfirmWithdrawParams = {

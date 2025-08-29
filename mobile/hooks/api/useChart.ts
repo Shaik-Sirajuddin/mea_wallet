@@ -36,6 +36,8 @@ const mapToApiSymbol = (symbol: SupportedSymbol): string => {
       return "SOL";
     case "recon":
       return "RECON";
+    case "usdt":
+      return "USDT";
     case "fox9":
       return "FOX9";
     default:
@@ -134,6 +136,26 @@ async function getChartData(
       }));
     }
 
+    if (apiSymbol === "USDT") {
+      const params = new URLSearchParams();
+      params.append("gubn", apiPeriod);
+
+      const raw = await networkRequest<any>(
+        `${apiBaseUrl}/api/usdt/chart?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (typeof raw === "string") return raw;
+      if (!raw.data) return [];
+
+      return raw.data.map((item: any) => ({
+        date: new Date(item.time * 1000), // converting epoch seconds to JS Date
+        value: parseFloat(item.price),
+      }));
+    }
+
     throw new Error(`Unsupported symbol: ${symbol}`);
   } catch (error) {
     console.error("getChartData error:", error);
@@ -192,6 +214,23 @@ async function getTokenOverview(
         symbol: "SOL",
         price: parseFloat(raw.lastPrice),
         volume: parseFloat(raw.volume),
+      };
+    }
+
+    if (apiSymbol === "USDT") {
+      const raw = await networkRequest<any>(
+        `${apiBaseUrl}/api/usdt/quote-data`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (typeof raw === "string") return raw;
+
+      return {
+        symbol: "USDT",
+        price: parseFloat(raw.usdPrice),
+        volume: 0,
       };
     }
 

@@ -1,4 +1,4 @@
-import { networkRequest } from "@/hooks";
+import { networkRequest } from "@/hooks/api";
 import { ChartDataResponse, ChartProvider, Price } from ".";
 
 class BirdEyeProvider implements ChartProvider {

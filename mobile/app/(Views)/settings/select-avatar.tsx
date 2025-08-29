@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import SvgIcon from "../../components/SvgIcon";
 import { avatarEmojis } from "@/lib/constants";
-import useUser from "@/hooks/useUser";
+import useUser from "@/hooks/api/useUser";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";

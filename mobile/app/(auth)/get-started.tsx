@@ -1,10 +1,23 @@
-import { Link, router } from "expo-router";
+import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
+import { Link, router, useFocusEffect } from "expo-router";
+import React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const GetStarted = () => {
   const { t } = useTranslation();
+  const { isUpdateRequired, isLoading } = useCheckForUpdates();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isLoading) return;
+      if (isUpdateRequired) {
+        router.dismissTo("/app-update");
+      }
+      return;
+    }, [isLoading, isUpdateRequired])
+  );
   return (
     <View className="w-full h-full max-w-5xl mx-auto items-center justify-center bg-pink-1000">
       <View className="bg-black-1000 rounded-[15px] min-h-[451px] max-w-[392px] w-11/12 flex-col items-center justify-end p-5 gap-[88px]">

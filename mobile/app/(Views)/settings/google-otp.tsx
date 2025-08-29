@@ -1,6 +1,6 @@
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
-import useUser from "@/hooks/useUser";
+import useUser from "@/hooks/api/useUser";
 import { setTwoFAData } from "@/src/features/user/userSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
@@ -125,17 +125,18 @@ const GoogleOTP = () => {
           <View className="w-full">
             {/* QR Code */}
             <View className="items-center">
-              <Image
-                source={
-                  twoFAData
-                    ? {
-                        uri: twoFAData.qrUrl,
-                      }
-                    : require("@/assets/images/scanner.png")
-                }
-                className="max-w-[390px] w-[200px] h-[200px]"
-                resizeMode="contain"
-              />
+              {twoFAData ? (
+                <Image
+                  source={{ uri: twoFAData.qrUrl }}
+                  className="max-w-[390px] w-[200px] h-[200px]"
+                  resizeMode="contain"
+                />
+              ) : (
+                <View className="w-[200px] h-[200px] border-2 border-gray-400 rounded-md justify-center items-center">
+                  {/* Optional placeholder text or icon */}
+                  <Text className="text-gray-400">QR Code</Text>
+                </View>
+              )}
             </View>
 
             {/* Input with Copy Button */}

@@ -15,3 +15,5 @@ export const BackButton = () => {
     </Pressable>
   );
 };
+
+export default BackButton;

@@ -2,7 +2,7 @@
 
 import { BackButton } from "@/app/components/BackButton";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import useStaking, { StakingPlan } from "@/hooks/useStaking";
+import useStaking, { StakingPlan } from "@/hooks/api/useStaking";
 import { tokenImageMap } from "@/utils/ui";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";

@@ -3,8 +3,9 @@ import "@/i18n/index";
 import { useRoute } from "@react-navigation/native";
 import { router, useFocusEffect } from "expo-router";
 import { configureReanimatedLogger } from "react-native-reanimated";
-import React from "react";
+import React, { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 
 configureReanimatedLogger({ strict: false });
 
@@ -12,7 +13,7 @@ export default function HomeScreen() {
   const route = useRoute();
   //@ts-expect-error this
   const { sessionTokenExists } = route.params ?? {};
-
+  // Use the custom hook to check for updates
   useFocusEffect(
     React.useCallback(() => {
       if (sessionTokenExists) {
@@ -20,6 +21,7 @@ export default function HomeScreen() {
       } else {
         router.replace("/get-started");
       }
+
       // Do something when the screen is focused
       return () => {
         setTimeout(() => {
@@ -30,6 +32,7 @@ export default function HomeScreen() {
       };
     }, [])
   );
+
   return (
     <View className="flex-1 h-full font-pretendard w-full bg-pink-1000"></View>
   );

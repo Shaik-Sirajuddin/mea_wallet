@@ -13,7 +13,7 @@ import utils from "@/utils/index";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert from "../components/InfoAlert";
 import { useTranslation } from "react-i18next";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/api/useAuth";
 import * as Clipboard from "expo-clipboard";
 
 const ForgetPassword: React.FC = () => {

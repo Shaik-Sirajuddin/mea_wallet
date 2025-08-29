@@ -8,7 +8,7 @@ import {
 } from "react-native-gesture-handler";
 import { router, useLocalSearchParams } from "expo-router";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import useChart from "@/hooks/useChart";
+import useChart from "@/hooks/api/useChart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenQuotes } from "@/src/types/balance";

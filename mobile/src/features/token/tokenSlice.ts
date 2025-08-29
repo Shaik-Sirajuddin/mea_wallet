@@ -19,10 +19,11 @@ const initialState: TokenState = {
     fox9: "0",
     recon: "0",
     usd: "0",
+    usdt: "0",
   },
-  minDeposit: { mea: "0", sol: "0", fox9: "0", recon: "0" },
-  withdrawFees: { mea: "0", sol: "0", fox9: "0", recon: "0" },
-  minWithdraw: { mea: "0", sol: "0", fox9: "0", recon: "0" },
+  minDeposit: { mea: "0", sol: "0", fox9: "0", recon: "0", usdt: "0" },
+  withdrawFees: { mea: "0", sol: "0", fox9: "0", recon: "0", usdt: "0" },
+  minWithdraw: { mea: "0", sol: "0", fox9: "0", recon: "0", usdt: "0" },
   swapFee: "0",
 };
 

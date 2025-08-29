@@ -22,7 +22,7 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppDispatch } from "@/src/store/hooks";
-import useDeposit from "@/hooks/useDeposit";
+import useDeposit from "@/hooks/api/useDeposit";
 import {
   setDepositAddresses,
   setRegisteredAddresses,

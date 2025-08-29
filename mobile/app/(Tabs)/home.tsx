@@ -13,7 +13,7 @@ import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { AppDispatch, RootState } from "@/src/store";
-import useUser from "@/hooks/useUser";
+import useUser from "@/hooks/api/useUser";
 import SvgIcon from "../components/SvgIcon";
 import PopupModal from "../components/Model";
 import PrimaryButton from "../components/PrimaryButton";
@@ -30,6 +30,7 @@ import { setQuotes } from "@/src/features/token/tokenSlice";
 import Decimal from "decimal.js";
 import { useNavigation } from "@react-navigation/native";
 import { setUserDetails } from "@/src/features/user/userSlice";
+import InfoAlert from "../components/InfoAlert";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -48,6 +49,7 @@ export default function HomeScreen() {
   );
   const email = useSelector((state: RootState) => state.user.email);
   const details = useSelector((state: RootState) => state.user.details);
+  const [showAlert, setShowAlert] = useState(false);
 
   const syncData = async () => {
     setRefreshing(true);
@@ -90,14 +92,11 @@ export default function HomeScreen() {
     syncData();
   }, []);
 
-  // useEffect(() => {
-  //   router.navigate({
-  //     pathname: "/(Tabs)/staking",
-  //     params: {
-  //       symbol: "mea",
-  //     },
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (details && !details.twoFACompleted) {
+      setShowAlert(true); // show the alert
+    }
+  }, [details]);
 
   const totalAssetValue = useMemo(() => {
     let totalValue = new Decimal(0);
@@ -336,6 +335,16 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       </View>
+      <InfoAlert
+        visible={showAlert}
+        setVisible={setShowAlert}
+        text="You need to complete 2FA setup before continuing."
+        type="info"
+        primaryButtonText="OK"
+        onDismiss={() => {
+          router.push("/settings/google-otp"); // navigate after OK
+        }}
+      />
       <PopupModal visible={showEditProfile} setVisible={setShowEditProfile}>
         <View className="w-full px-4 flex-col items-center justify-center text-center">
           <View className="w-16 h-16 bg-pink-1100 rounded-full items-center justify-center">
