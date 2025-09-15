@@ -3,9 +3,8 @@ import "@/i18n/index";
 import { useRoute } from "@react-navigation/native";
 import { router, useFocusEffect } from "expo-router";
 import { configureReanimatedLogger } from "react-native-reanimated";
-import React, { useEffect } from "react";
+import React from "react";
 import * as SplashScreen from "expo-splash-screen";
-import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 
 configureReanimatedLogger({ strict: false });
 

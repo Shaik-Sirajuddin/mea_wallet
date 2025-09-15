@@ -13,7 +13,6 @@ import { store } from "@/src/store";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { Provider as PaperProvider } from "react-native-paper";
-import { View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({

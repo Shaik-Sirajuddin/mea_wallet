@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ping Wallet",
     "slug": "mecca",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/app_icon.png",
     "scheme": "mecca",
@@ -13,7 +13,7 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.meccain.pingapp",
+      "bundleIdentifier": "com.pinggo.wallet",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["itms-apps"]
