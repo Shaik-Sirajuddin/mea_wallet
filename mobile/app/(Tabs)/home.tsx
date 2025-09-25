@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
-
+import messaging from "@react-native-firebase/messaging";
 import { AppDispatch, RootState } from "@/src/store";
 import useUser from "@/hooks/api/useUser";
 import SvgIcon from "../components/SvgIcon";
@@ -32,6 +32,7 @@ import { useNavigation } from "@react-navigation/native";
 import { setUserDetails } from "@/src/features/user/userSlice";
 import InfoAlert from "../components/InfoAlert";
 import { showLoading } from "@/src/features/loadingSlice";
+import { requestNotificationPermission } from "@/lib/notifications/requestPermissions";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -129,6 +130,18 @@ export default function HomeScreen() {
     return tokenImageMap[key] || require("@/assets/images/coin-img.png");
   };
 
+  const setUpNotifications = async () => {
+    let permissionsGranted = await requestNotificationPermission();
+    if (permissionsGranted) {
+      const token = await messaging().getToken();
+      console.log("FCM Token : ", token);
+    }
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      setUpNotifications();
+    }, 600);
+  }, []);
   return (
     <View className="bg-black-1000">
       <View className="gap-10 min-h-screen max-w-5xl w-full mx-auto">
