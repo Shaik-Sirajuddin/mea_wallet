@@ -18,6 +18,8 @@ import { truncateAddress } from "@/utils/ui";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import useWithdrawl from "@/hooks/api/useWithdrawl";
 import { BackButton } from "../components/BackButton";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 export type ConfirmWithdrawParams = {
   symbol: keyof TokenBalances;
@@ -27,7 +29,6 @@ export type ConfirmWithdrawParams = {
 
 const ConfirmWithdraw = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const [otp, setOtp] = useState("");
   const { symbol, amount, address } =
     useLocalSearchParams<ConfirmWithdrawParams>();
@@ -47,6 +48,7 @@ const ConfirmWithdraw = () => {
     {}
   );
   const [withdrawlSuccess, setWithdrawlSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   const processWithdraw = async () => {
     if (!otp || otp.length < 6) {
@@ -72,7 +74,7 @@ const ConfirmWithdraw = () => {
     // Example error handling:
     // setInfoAlertState({ type: "error", text: "Withdrawal failed. Try again." });
     // setInfoAlertVisible(true);
-
+    dispatch(showLoading())
     let result = await useWithdrawl.initiate({
       address,
       amount,
@@ -81,6 +83,7 @@ const ConfirmWithdraw = () => {
       symbol: symbol.toUpperCase(),
       WithdrawFee: withdrawFees,
     });
+    dispatch(hideLoading())
 
     if (typeof result === "string") {
       setInfoAlertState({

@@ -20,6 +20,7 @@ import * as Clipboard from "expo-clipboard";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useTranslation } from "react-i18next";
 import { BackButton } from "@/app/components/BackButton";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 const GoogleOTP = () => {
   const { t } = useTranslation();
@@ -43,8 +44,9 @@ const GoogleOTP = () => {
       setModalVisible(true);
       return;
     }
-
+    dispatch(showLoading());
     let result = await useUser.validate2FABackup(otp);
+    dispatch(hideLoading());
     if (typeof result === "string") {
       //show error
       setModalState({

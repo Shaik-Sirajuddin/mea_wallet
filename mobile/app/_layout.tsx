@@ -13,6 +13,7 @@ import { store } from "@/src/store";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { Provider as PaperProvider } from "react-native-paper";
+import LoadingOverlay from "./components/LoadingOverlay";
 
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
@@ -82,6 +83,7 @@ export default function RootLayout() {
                   }}
                 />
               </Stack>
+              <LoadingOverlay />
               <Toast />
             </SafeAreaView>
           </SafeAreaProvider>

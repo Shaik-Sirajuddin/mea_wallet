@@ -23,6 +23,8 @@ import { RootState } from "@/src/store";
 import { useSelector } from "react-redux";
 import { TokenBalances } from "@/src/types/balance";
 import { BackButton } from "@/app/components/BackButton";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 const EnrollPlan = () => {
   const { t } = useTranslation();
@@ -42,6 +44,7 @@ const EnrollPlan = () => {
     unstakingFee: "0",
   });
 
+  const dispatch = useDispatch();
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState<
     keyof TokenBalances | null
@@ -137,6 +140,7 @@ const EnrollPlan = () => {
       setPopupVisible(true);
       return;
     }
+    dispatch(showLoading());
 
     let result = await useStaking.applyStaking({
       asset: selectedToken!.toUpperCase(),
@@ -146,6 +150,7 @@ const EnrollPlan = () => {
       otp_code: otp!,
       seqno: parsedPlan.id.toString(),
     });
+    dispatch(hideLoading());
 
     if (typeof result === "string") {
       setModalState({

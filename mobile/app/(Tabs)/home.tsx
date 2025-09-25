@@ -31,6 +31,7 @@ import Decimal from "decimal.js";
 import { useNavigation } from "@react-navigation/native";
 import { setUserDetails } from "@/src/features/user/userSlice";
 import InfoAlert from "../components/InfoAlert";
+import { showLoading } from "@/src/features/loadingSlice";
 
 export default function HomeScreen() {
   const { t } = useTranslation();

@@ -28,6 +28,8 @@ import useDeposit from "@/hooks/api/useDeposit";
 import SvgIcon from "../components/SvgIcon";
 import { useTranslation } from "react-i18next";
 import { validatePasswordWithReason } from "@/utils/ui";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -68,6 +70,7 @@ const Signup: React.FC = () => {
   const [uniqueAddressValidated, setUniqueAddressValidated] = useState(false);
 
   const [registrationSucess, setRegistrationSuccess] = useState(false);
+  const dispatch = useDispatch();
   const performEmailValidation = async () => {
     let result = await useAuth.isEmailAvailable(email);
     if (typeof result === "string") {
@@ -176,7 +179,9 @@ const Signup: React.FC = () => {
       return;
     }
     console.log("sign up called");
+    dispatch(showLoading());
     let result = await useAuth.signUp(email, password, wallet);
+    dispatch(hideLoading());
     //sign up failed
     console.log("sign up response", result);
     if (typeof result === "string") {

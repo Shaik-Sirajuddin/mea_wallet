@@ -17,6 +17,8 @@ import {
 import useAuth from "@/hooks/api/useAuth";
 import OtpModal from "@/app/components/OTPModal";
 import { BackButton } from "@/app/components/BackButton";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 enum ErrorType {
   CURRENT_PASSWORD,
@@ -40,6 +42,7 @@ const ChangePassword: React.FC = () => {
   //otp modal
   const [otpModalVisible, setOTPModalVisible] = useState(false);
   const [passwordUpdated, setPasswordUpdated] = useState(false);
+  const dispatch = useDispatch();
   const validateForm = () => {
     if (!currentPassword) {
       setInputError(t("settings.current_password_required"));
@@ -80,11 +83,13 @@ const ChangePassword: React.FC = () => {
       setPopUpVisible(true);
       return;
     }
+    dispatch(showLoading());
     let result = await useAuth.changePassword(
       currentPassword,
       newPassword,
       otp
     );
+    dispatch(hideLoading());
     console.log("result here", result);
     if (typeof result === "string") {
       setModalState({

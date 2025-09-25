@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 export interface InfoAlertProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  cancellable?: boolean;
   onDismiss?: () => void;
   showAnimation?: boolean;
   text?: string;
@@ -20,6 +21,7 @@ const InfoAlert = ({
   text = "no text passed",
   onDismiss,
   showAnimation = true,
+  cancellable = true,
   type = "success",
   primaryButtonText,
 }: InfoAlertProps) => {
@@ -66,13 +68,15 @@ const InfoAlert = ({
         >
           <View className="flex gap-4">
             <Text className="text-white text-center text-lg">{text}</Text>
-            <PrimaryButton
-              text={buttonText}
-              onPress={() => {
-                setVisible(false);
-                if (onDismiss) onDismiss();
-              }}
-            />
+            {cancellable && (
+              <PrimaryButton
+                text={buttonText}
+                onPress={() => {
+                  setVisible(false);
+                  if (onDismiss) onDismiss();
+                }}
+              />
+            )}
           </View>
         </Animated.View>
       </View>

@@ -23,6 +23,8 @@ import StakingItem from "@/app/components/StakingItem";
 import WithdrawalModal from "@/app/components/WithdrawModel";
 import FilterIcon from "@/assets/images/double-arrow.svg";
 import { BackButton } from "@/app/components/BackButton";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 interface IFilterState {
   [key: string]: { label: string; value: string };
@@ -35,6 +37,7 @@ const UserStakings = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({});
 
   const [selectedStaking, setSelectedStaking] = useState<UserStaking | null>(
@@ -140,9 +143,9 @@ const UserStakings = () => {
       return;
     }
     const { staking, isEarly } = selectedStakingInfo;
-
+    dispatch(showLoading());
     let result = await useStaking.closeStaking(staking.id);
-
+    dispatch(hideLoading());
     if (typeof result === "string") {
       setModalState({
         text: result,

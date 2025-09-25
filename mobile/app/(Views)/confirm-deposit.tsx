@@ -20,15 +20,17 @@ import PrimaryButton from "../components/PrimaryButton";
 import { truncateAddress } from "@/utils/ui";
 import useDeposit from "@/hooks/api/useDeposit";
 import { BackButton } from "../components/BackButton";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 const Deposit2 = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const { symbol, amount } = useLocalSearchParams<{
     symbol: keyof TokenBalances;
     amount: string;
   }>();
 
+  const dispath = useDispatch();
   const displaySymbol = useMemo(() => symbol?.toUpperCase() || "", [symbol]);
 
   const registeredAddresses = useSelector(
@@ -69,7 +71,7 @@ const Deposit2 = () => {
       setInfoAlertVisible(true);
       return;
     }
-
+    dispath(showLoading());
     let result = await useDeposit.applyDeposit({
       amount,
       min_deposit_coin: minDeposit,
@@ -78,7 +80,7 @@ const Deposit2 = () => {
       symbol,
       txid,
     });
-
+    dispath(hideLoading());
     if (typeof result === "string") {
       setInfoAlertState({
         type: "error",

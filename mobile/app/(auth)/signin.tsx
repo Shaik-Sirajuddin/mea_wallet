@@ -19,6 +19,8 @@ import utils from "@/utils";
 import InfoAlert from "../components/InfoAlert";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 enum ErrorType {
   INVALID_EMAIL,
@@ -35,6 +37,7 @@ const Signin: React.FC = () => {
   const [errorType, setErrorType] = useState<ErrorType | null>(null);
   const [popUpVisible, setPopUpVisible] = useState(false);
 
+  const dispatch = useDispatch();
   const validateForm = () => {
     // Email validation
     if (!email) {
@@ -65,7 +68,9 @@ const Signin: React.FC = () => {
     if (!validateForm()) {
       return;
     }
+    dispatch(showLoading());
     let result = await useAuth.login(email, password);
+    dispatch(hideLoading());
     //sign up failed
     if (typeof result === "string") {
       Alert.alert(t("auth.signin.login_error"), result);
