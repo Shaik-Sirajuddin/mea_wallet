@@ -13,7 +13,8 @@ const TokenActions = () => {
 
   const buttons = useMemo(() => {
     if (symbol === "usdt_savings") {
-      return [{ label: t("token_actions.transfer"), url: "/deposit-view" }];
+      return []
+      // return [{ label: t("token_actions.transfer"), url: "/deposit-view" }];
     } else {
       return [
         { label: t("token_actions.deposit"), url: "/deposit-view" },

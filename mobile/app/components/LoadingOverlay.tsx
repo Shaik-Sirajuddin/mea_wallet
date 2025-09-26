@@ -2,7 +2,13 @@
 import { RootState } from "@/src/store";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { View, Text, Animated, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Animated,
+  ActivityIndicator,
+  Keyboard,
+} from "react-native";
 import { Portal } from "react-native-paper";
 import { useSelector } from "react-redux";
 
@@ -16,6 +22,12 @@ const LoadingOverlay = () => {
     if (text) return text;
     return t("common.loading");
   }, [text]);
+
+  useEffect(() => {
+    if (visible) {
+      Keyboard.dismiss();
+    }
+  }, [visible]);
 
   useEffect(() => {
     if (visible) {

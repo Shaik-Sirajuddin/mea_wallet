@@ -388,7 +388,8 @@
     "session_expired": "Session Expired",
     "load_more": "Load More",
     "invalid_otp": "Invalid OTP",
-    "days": "days"
+    "days": "days",
+    "n/a": "해당 없음"
   },
   "components": {
     "camera_permission_required": "We need your permission to show the camera",
@@ -473,8 +474,9 @@
     "symbol": "Symbol",
     "network": "Network",
     "price": "Price",
-    "performance_24h": "24h performance",
-    "volume": "Volume"
+    "performance_24h": "24h Performance",
+    "volume": "Volume",
+    "accrued_interest": "Accrued Interest"
   },
   "filter_page": {
     "title": "Filter",
@@ -508,11 +510,25 @@
     "button": "Update App"
   },
   "token_metrics": {
-    "title": "Token Metrics",
-    "current_balance": "Current Balance",
-    "yesterday_close": "Yesterday Close",
     "deposits": "Deposits",
     "withdrawals": "Withdrawals",
-    "change_pct": "Change (%)"
+    "change_pct": "Change (%)",
+    "title": "Stats",
+    "current_balance": "Current Balance",
+    "yesterday_close": "Yesterday's Close",
+    "deposits_today": "Deposits (Today)",
+    "withdrawals_today": "Withdrawals (Today)",
+    "yesterday_deposits": "Deposits (Yesterday)",
+    "yesterday_withdrawals": "Withdrawals (Yesterday)",
+    "total_deposits": "Total Deposits",
+    "total_withdrawals": "Total Withdrawals",
+    "change_pct_raw": "Change % (Raw)",
+    "change_pct_flow_adj": "Change % (Flow Adj)",
+    "status": "Status",
+    "yesterday_close_utc": "Y-Close Time (UTC)",
+    "yesterday_close_kst": "Y-Close Time (KST)",
+    "now_calc_utc": "Calc Time (UTC)",
+    "now_calc_kst": "Calc Time (KST)",
+    "calc_at_utc": "Calculated At"
   }
 }

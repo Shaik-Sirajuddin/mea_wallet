@@ -36,6 +36,9 @@ const ChartView = () => {
   const [tokenMetrics, setTokenMetrics] = useState<TokenMetricsResponse | null>(
     null
   );
+  const freeBalance = useSelector(
+    (state: RootState) => state.balance.free || {}
+  );
 
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
     text: "",
@@ -211,18 +214,23 @@ const ChartView = () => {
                       icon="sendIcon"
                       label={t("token_overview.send")}
                     />
-                    <ActionButton
+                    {/* <ActionButton
                       onPress={() =>
                         router.push({ pathname: "/components/swap-tokens" })
                       }
                       icon="swapIcon"
                       label={t("token_overview.swap")}
-                    />
+                    /> */}
                   </View>
                 )}
               </View>
 
-              <TokenInfoSection tokenOverview={tokenOverview} />
+              <TokenInfoSection
+                tokenOverview={tokenOverview}
+                balance={
+                  symbol === "usdt_savings" ? freeBalance[symbol] : undefined
+                }
+              />
               {symbol !== "fox9" && (
                 <PerformanceSection tokenOverview={tokenOverview} />
               )}
@@ -265,8 +273,10 @@ const ActionButton = ({
 
 const TokenInfoSection = ({
   tokenOverview,
+  balance,
 }: {
   tokenOverview: TokenOverview;
+  balance?: string;
 }) => (
   <View>
     <Text className="text-[19px] font-semibold leading-[22px] text-white mb-3">
@@ -284,6 +294,15 @@ const TokenInfoSection = ({
           title: t("token_overview.price"),
           value: `$${parseNumberForView(tokenOverview.price.toFixed(5))}`,
         },
+        // Conditionally include the balance item using a short-circuit operator
+        ...(balance
+          ? [
+              {
+                title: t("token_overview.accrued_interest"),
+                value: balance,
+              },
+            ]
+          : []),
       ]}
     />
   </View>
@@ -331,17 +350,44 @@ const MetricsSection = ({
             title: t("token_metrics.yesterday_close"),
             value: `$${token_metrics.yesterdayClose.toLocaleString()}`,
           },
+          // --- Deposit/Withdrawal Sums ---
           {
-            title: t("token_metrics.deposits"),
+            title: t("token_metrics.deposits_today"), // Assuming depositSum is 'today'
             value: `$${token_metrics.depositSum.toLocaleString()}`,
           },
           {
-            title: t("token_metrics.withdrawals"),
+            title: t("token_metrics.withdrawals_today"), // Assuming withdrawSum is 'today'
             value: `$${token_metrics.withdrawSum.toLocaleString()}`,
           },
           {
-            title: t("token_metrics.change_pct"),
+            title: t("token_metrics.yesterday_deposits"),
+            value: `$${token_metrics.yDepositSum.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.yesterday_withdrawals"),
+            value: `$${token_metrics.yWithdrawSum.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.total_deposits"),
+            value: `$${token_metrics.tDepositSum.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.total_withdrawals"),
+            value: `$${token_metrics.tWithdrawSum.toLocaleString()}`,
+          },
+          // --- Percentage Changes ---
+          {
+            title: t("token_metrics.change_pct_raw"),
             value: `${token_metrics.rawChangePct.toFixed(2)}%`,
+          },
+          {
+            title: t("token_metrics.change_pct_flow_adj"),
+            value: `${token_metrics.flowAdjChangePct.toFixed(2)}%`,
+          },
+          // --- Timestamps ---
+          {
+            title: t("token_metrics.calc_at_utc"),
+            value: new Date(token_metrics.calcAt).toLocaleString(),
           },
         ]}
       />
