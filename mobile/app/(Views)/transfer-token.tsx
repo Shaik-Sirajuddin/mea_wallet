@@ -60,6 +60,7 @@ const SelectToken = () => {
               </View> */}
 
               {Object.entries(balances).map(([tokenSymbol, balance]) => {
+                if (tokenSymbol === "usdt_savings") return null;
                 return (
                   <Pressable
                     key={tokenSymbol}

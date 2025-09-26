@@ -6,7 +6,7 @@ import FeatureComingSoon from "../components/FeatureComingSoon";
 
 export default function Staking() {
   const { t } = useTranslation();
-  const featuresEnabled = false;
+  const featuresEnabled = true;
   return (
     <View className="bg-black-1000">
       {featuresEnabled && (

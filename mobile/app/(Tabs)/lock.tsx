@@ -27,7 +27,7 @@ const LockUpScreen = () => {
   );
   const quotes = useSelector((state: RootState) => state.token.quotes || {});
 
-  const featuresEnabled = false;
+  const featuresEnabled = true;
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

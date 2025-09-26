@@ -116,57 +116,61 @@ const ReceiveItems = () => {
             </View>
 
             <View className="relative mt-10">
-              {Object.entries(balances).map(([tokenSymbol, amount]) => (
-                <Pressable
-                  key={tokenSymbol}
-                  onPress={() => {
-                    console.log("navigate called");
-                    router.push({
-                      pathname: "/deposit-view",
-                      params: {
-                        symbol: tokenSymbol,
-                      },
-                    });
-                  }}
-                  className="mb-2"
-                >
-                  <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
-                    <View className="flex-row items-center gap-[11px]">
-                      <Image
-                        source={getTokenImage(tokenSymbol)}
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <View>
-                        <Text className="text-[17px] font-medium leading-5 text-white">
-                          {tokenSymbol.toUpperCase()}
-                        </Text>
-                        <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {parseNumberForView(amount)}{" "}
-                          {tokenSymbol.toUpperCase()}
-                        </Text>
-                      </View>
-                    </View>
-                    <View className="flex-1 flex items-end">
-                      <TouchableOpacity
-                        className="px-4 py-3"
-                        onPress={() => {
-                          router.push({
-                            pathname: "/(Views)/mea-address",
-                            params: {
-                              symbol: tokenSymbol,
-                            },
-                          });
-                        }}
-                      >
-                        <SvgIcon
-                          name="QRIcon"
-                          width="26"
-                          height="26"
-                          color="pink"
+              {Object.entries(balances).map(([tokenSymbol, amount]) => {
+                if (tokenSymbol === "usdt_savings") {
+                  return null;
+                }
+                return (
+                  <Pressable
+                    key={tokenSymbol}
+                    onPress={() => {
+                      console.log("navigate called");
+                      router.push({
+                        pathname: "/deposit-view",
+                        params: {
+                          symbol: tokenSymbol,
+                        },
+                      });
+                    }}
+                    className="mb-2"
+                  >
+                    <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
+                      <View className="flex-row items-center gap-[11px]">
+                        <Image
+                          source={getTokenImage(tokenSymbol)}
+                          className="w-12 h-12 rounded-full"
                         />
-                      </TouchableOpacity>
-                    </View>
-                    {/* <View>
+                        <View>
+                          <Text className="text-[17px] font-medium leading-5 text-white">
+                            {tokenSymbol.toUpperCase()}
+                          </Text>
+                          <Text className="text-[15px] font-normal leading-5 text-gray-1200">
+                            {parseNumberForView(amount)}{" "}
+                            {tokenSymbol.toUpperCase()}
+                          </Text>
+                        </View>
+                      </View>
+                      <View className="flex-1 flex items-end">
+                        <TouchableOpacity
+                          className="px-4 py-3"
+                          onPress={() => {
+                            router.push({
+                              pathname: "/(Views)/mea-address",
+                              params: {
+                                symbol: tokenSymbol,
+                              },
+                            });
+                          }}
+                        >
+                          <SvgIcon
+                            name="QRIcon"
+                            width="26"
+                            height="26"
+                            color="pink"
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      {/* <View>
                       <Text className="text-[17px] font-medium leading-5 text-white text-right">
                         ${getTokensValue(tokenSymbol, amount)}
                       </Text>
@@ -174,10 +178,11 @@ const ReceiveItems = () => {
                         ${getPrice(tokenSymbol)}
                       </Text>
                     </View> */}
-                  </View>
-                  {/* <TokenPreview token={tokenSymbol as keyof TokenQuotes}/> */}
-                </Pressable>
-              ))}
+                    </View>
+                    {/* <TokenPreview token={tokenSymbol as keyof TokenQuotes}/> */}
+                  </Pressable>
+                );
+              })}
             </View>
           </View>
         </ScrollView>
