@@ -2,7 +2,8 @@ export interface TokenBalances {
   mea: string;
   sol: string;
   fox9: string;
-  usdt: string
+  usdt: string;
+  usdt_savings: string;
 }
 
 export interface LockUpBalances {
@@ -15,7 +16,8 @@ export interface TokenQuotes {
   sol: string;
   fox9: string;
   usd: string;
-  usdt: string
+  usdt: string;
+  usdt_savings: string;
 }
 
 export interface ParsedBalance {

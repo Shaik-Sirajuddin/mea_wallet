@@ -5,6 +5,7 @@ export interface BalanceResponseRaw {
   recon_balance: string;
   fox9_balance: string;
   usdt_balance: string;
+  usdt_temp_balance : string;
 
   mea_lockup: string;
   recon_lockup: string;
@@ -28,6 +29,7 @@ export interface BalanceResponseRaw {
   fox9_min_withdraw_coin: string;
   sol_min_withdraw_coin: string;
   usdt_min_withdraw_coin: string;
+  usdt_temp_min_withdraw_coin : string;
 
   mea_WithdrawFee: string;
   recon_WithdrawFee: string;

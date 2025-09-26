@@ -1,10 +1,10 @@
 import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
 import { GraphPoint } from "react-native-graph";
-import { TokenOverview } from "@/src/api/types/chart";
+import { TokenMetricsResponse, TokenOverview } from "@/src/api/types/chart";
 import { TokenQuotes } from "@/src/types/balance";
 
-export type SupportedSymbol = keyof TokenQuotes | "fox9"; // added fox9
+export type SupportedSymbol = keyof TokenQuotes; // added fox9
 export type SupportedPeriod =
   | "1day"
   | "1hour"
@@ -34,12 +34,12 @@ const mapToApiSymbol = (symbol: SupportedSymbol): string => {
       return "MEA";
     case "sol":
       return "SOL";
-    case "recon":
-      return "RECON";
     case "usdt":
       return "USDT";
     case "fox9":
       return "FOX9";
+    case "usdt_savings":
+      return "USDT Savings";
     default:
       throw new Error(`Unsupported symbol: ${symbol}`);
   }
@@ -136,7 +136,7 @@ async function getChartData(
       }));
     }
 
-    if (apiSymbol === "USDT") {
+    if (apiSymbol === "USDT" || apiSymbol === "USDT Savings") {
       const params = new URLSearchParams();
       params.append("gubn", apiPeriod);
 
@@ -160,6 +160,28 @@ async function getChartData(
   } catch (error) {
     console.error("getChartData error:", error);
     return "Failed to load chart data.";
+  }
+}
+async function getTokenMetrics(
+  symbol: SupportedSymbol
+): Promise<TokenMetricsResponse | string> {
+  try {
+    const apiSymbol = mapToApiSymbol(symbol);
+
+    const raw = await networkRequest<TokenMetricsResponse>(
+      `${apiBaseUrl}/api/balance-rate-of-change`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          asset: apiSymbol,
+        }).toString(),
+      }
+    );
+
+    return raw;
+  } catch (error) {
+    console.error("getTokenOverview error:", error);
+    return "Failed to load token overview.";
   }
 }
 
@@ -217,7 +239,7 @@ async function getTokenOverview(
       };
     }
 
-    if (apiSymbol === "USDT") {
+    if (apiSymbol === "USDT" || apiSymbol === "USDT Savings") {
       const raw = await networkRequest<any>(
         `${apiBaseUrl}/api/usdt/quote-data`,
         {
@@ -253,4 +275,5 @@ async function getTokenOverview(
 export default {
   getChartData,
   getTokenOverview,
+  getTokenMetrics,
 };

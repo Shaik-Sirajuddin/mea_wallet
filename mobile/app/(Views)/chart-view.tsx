@@ -12,11 +12,12 @@ import useChart from "@/hooks/api/useChart";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenQuotes } from "@/src/types/balance";
-import { TokenOverview } from "@/src/api/types/chart";
+import { TokenMetricsResponse, TokenOverview } from "@/src/api/types/chart";
 import { parseNumberForView } from "@/utils/ui";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import TokenActions from "../components/TokenActions";
+import InfoList from "../components/common/info_list";
 
 type SupportedPeriod = "1hour" | "1day" | "1week" | "1month" | "ytd" | "all";
 
@@ -32,6 +33,9 @@ const ChartView = () => {
     symbol: symbol ?? "sol",
     volume: 10,
   });
+  const [tokenMetrics, setTokenMetrics] = useState<TokenMetricsResponse | null>(
+    null
+  );
 
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
     text: "",
@@ -42,6 +46,10 @@ const ChartView = () => {
   const displaySymbol = useMemo(() => {
     return tokenOverview.symbol.toUpperCase();
   }, [tokenOverview]);
+
+  const isUsdtSavings = useMemo(() => {
+    return symbol === "usdt_savings";
+  }, [symbol]);
 
   const fetchChartData = async (period: SupportedPeriod) => {
     if (!symbol) return;
@@ -83,12 +91,28 @@ const ChartView = () => {
     }
   };
 
+  const fetchMetrics = async () => {
+    if (!symbol) return;
+    const result = await useChart.getTokenMetrics(symbol);
+    if (typeof result === "string") {
+      setModalState({
+        ...modalState,
+        type: "error",
+        text: result,
+      });
+      setModalVisible(true);
+      return;
+    }
+    setTokenMetrics(result);
+  };
+
   useEffect(() => {
     fetchChartData(selectedPeriod);
   }, [symbol, selectedPeriod]);
 
   useEffect(() => {
     fetchOverView();
+    fetchMetrics();
   }, [symbol]);
 
   const handlePeriodChange = (period: SupportedPeriod) => {
@@ -165,42 +189,45 @@ const ChartView = () => {
                   )}
                 </View>
 
-                <View className="flex-row w-full justify-center mx-auto gap-[7px]">
-                  <ActionButton
-                    onPress={() =>
-                      router.push({
-                        pathname: "/(Views)/deposit-view",
-                        params: { symbol },
-                      })
-                    }
-                    icon="receiceIcon"
-                    label={t("token_overview.receive")}
-                  />
-                  <ActionButton
-                    onPress={() =>
-                      router.push({
-                        pathname: "/(Views)/withdrawal-view",
-                        params: { symbol },
-                      })
-                    }
-                    icon="sendIcon"
-                    label={t("token_overview.send")}
-                  />
-                  {/* <ActionButton
-                    onPress={() =>
-                      router.push({ pathname: "/(Tabs)/swap-tokens" })
-                    }
-                    icon="swapIcon"
-                    label={t("token_overview.swap")}
-                  /> */}
-                </View>
+                {!isUsdtSavings && (
+                  <View className="flex-row w-full justify-center mx-auto gap-[7px]">
+                    <ActionButton
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(Views)/deposit-view",
+                          params: { symbol },
+                        })
+                      }
+                      icon="receiceIcon"
+                      label={t("token_overview.receive")}
+                    />
+                    <ActionButton
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(Views)/withdrawal-view",
+                          params: { symbol },
+                        })
+                      }
+                      icon="sendIcon"
+                      label={t("token_overview.send")}
+                    />
+                    <ActionButton
+                      onPress={() =>
+                        router.push({ pathname: "/components/swap-tokens" })
+                      }
+                      icon="swapIcon"
+                      label={t("token_overview.swap")}
+                    />
+                  </View>
+                )}
               </View>
 
               <TokenInfoSection tokenOverview={tokenOverview} />
               {symbol !== "fox9" && (
                 <PerformanceSection tokenOverview={tokenOverview} />
               )}
-              <TokenActions />
+              {tokenMetrics && <MetricsSection token_metrics={tokenMetrics} />}
+              {<TokenActions />}
             </View>
           </ScrollView>
         </View>
@@ -245,26 +272,20 @@ const TokenInfoSection = ({
     <Text className="text-[19px] font-semibold leading-[22px] text-white mb-3">
       {t("token_overview.information")}
     </Text>
-    {[
-      [t("token_overview.symbol"), tokenOverview.symbol.toUpperCase()],
-      [t("token_overview.network"), "Solana"],
-      [
-        t("token_overview.price"),
-        `$${parseNumberForView(tokenOverview.price.toFixed(5))}`,
-      ],
-    ].map(([title, value], index, arr) => (
-      <View
-        key={title}
-        className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
-          index === 0 ? "rounded-t-2xl" : ""
-        } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
-      >
-        <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-          {title}
-        </Text>
-        <Text className="text-white flex items-center gap-3">{value}</Text>
-      </View>
-    ))}
+
+    <InfoList
+      items={[
+        {
+          title: t("token_overview.symbol"),
+          value: tokenOverview.symbol.toUpperCase(),
+        },
+        { title: t("token_overview.network"), value: "Solana" },
+        {
+          title: t("token_overview.price"),
+          value: `$${parseNumberForView(tokenOverview.price.toFixed(5))}`,
+        },
+      ]}
+    />
   </View>
 );
 
@@ -277,31 +298,55 @@ const PerformanceSection = ({
     <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
       {t("token_overview.performance_24h")}
     </Text>
-    <View className="mb-[18px]">
-      {[
-        [
-          t("token_overview.volume"),
-          `$${tokenOverview.volume.toLocaleString()}`,
-          "+0.00%",
-        ],
-      ].map(([title, value, change], index, arr) => (
-        <View
-          key={title}
-          className={`flex-row justify-between items-center p-[15px] bg-black-1200 ${
-            index === 0 ? "rounded-t-2xl" : ""
-          } ${index === arr.length - 1 ? "rounded-b-2xl" : ""} mb-[1px]`}
-        >
-          <Text className="text-[17px] font-medium leading-[22px] text-gray-1200">
-            {title}
-          </Text>
-          <View className="flex flex-row items-center gap-3">
-            <Text className="text-white font-medium">{value}</Text>
-            {/* <Text className="font-medium text-green-1000">{change}</Text> */}
-          </View>
-        </View>
-      ))}
-    </View>
+    <InfoList
+      items={[
+        {
+          title: t("token_overview.volume"),
+          value: `$${tokenOverview.volume.toLocaleString()}`,
+        },
+      ]}
+    />
   </View>
 );
+
+const MetricsSection = ({
+  token_metrics,
+}: {
+  token_metrics: TokenMetricsResponse;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <View>
+      <Text className="text-[19px] font-semibold leading-[22px] text-gray-1200 mb-3">
+        {t("token_metrics.title")}
+      </Text>
+      <InfoList
+        items={[
+          {
+            title: t("token_metrics.current_balance"),
+            value: `$${token_metrics.nowBalance.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.yesterday_close"),
+            value: `$${token_metrics.yesterdayClose.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.deposits"),
+            value: `$${token_metrics.depositSum.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.withdrawals"),
+            value: `$${token_metrics.withdrawSum.toLocaleString()}`,
+          },
+          {
+            title: t("token_metrics.change_pct"),
+            value: `${token_metrics.rawChangePct.toFixed(2)}%`,
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
 export default ChartView;

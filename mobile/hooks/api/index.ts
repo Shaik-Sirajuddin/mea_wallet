@@ -35,6 +35,8 @@ export const networkRequestWithParser = async <T>(
       headers: headers,
       // credentials: "same-origin",
     });
+    console.log(input, init);
+
     let res = await response.json();
     if (!response.ok) {
       console.log(res.status);

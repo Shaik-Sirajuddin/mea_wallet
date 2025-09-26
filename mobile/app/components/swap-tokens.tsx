@@ -50,6 +50,7 @@ import {
   setDepositAddresses,
   setRegisteredAddresses,
 } from "@/src/features/asset/depositSlice";
+import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 type TokenType = keyof TokenBalances;
 
@@ -59,6 +60,8 @@ const getFontSize = (text: string) => {
   if (text.length <= 14) return 24;
   return 20;
 };
+
+type ToToken = Exclude<TokenType, "usdt_savings">;
 
 const SwapTokens = () => {
   const { t } = useTranslation();
@@ -70,8 +73,8 @@ const SwapTokens = () => {
   const swapFee = useSelector((state: RootState) => state.token.swapFee);
 
   // Local state
-  const [fromToken, setFromToken] = useState<TokenType>("mea");
-  const [toToken, setToToken] = useState<TokenType>("fox9");
+  const [fromToken, setFromToken] = useState<ToToken>("usdt");
+  const [toToken, setToToken] = useState<ToToken>("fox9");
   const [payAmount, setPayAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
   const [isCalculatingReceive, setIsCalculatingReceive] = useState(false);
@@ -298,8 +301,10 @@ const SwapTokens = () => {
         otpCode: otp,
       };
 
+      Keyboard.dismiss();
+      dispatch(showLoading("Processing"));
       const result = await useAsset.swapTokens(swapPayload);
-
+      dispatch(hideLoading());
       if (typeof result === "string") {
         setInfoAlertState({
           text: result,
@@ -363,10 +368,7 @@ const SwapTokens = () => {
     } ${token.toUpperCase()}`;
   };
 
-  // Get token price display
-  const getTokenPrice = (token: TokenType) => {
-    return `$${quotes[token] || "0"}`;
-  };
+ 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -415,18 +417,18 @@ const SwapTokens = () => {
                       <Select
                         className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200"
                         selectedValue={fromToken.toUpperCase()}
-                        onValueChange={(value) =>
-                          setFromToken(value.toLowerCase() as TokenType)
-                        }
+                        // onValueChange={(value) =>
+                        //   setFromToken(value.toLowerCase() as TokenType)
+                        // }
                       >
                         <SelectTrigger className="!border-transparent w-[90px] text-center !gap-0  leading-none !p-0">
                           <SelectInput
                             className="ml-0 !text-base leading-none text-center !font-medium !p-0 placeholder:!text-gray-1500 !text-gray-1200"
                             placeholder="SOL"
                           />
-                          <SelectIcon className="mr-0" as={ChevronDownIcon} />
+                          {/* <SelectIcon className="mr-0" as={ChevronDownIcon} /> */}
                         </SelectTrigger>
-                        <SelectPortal>
+                        {/* <SelectPortal>
                           <SelectBackdrop />
                           <SelectContent>
                             <SelectDragIndicatorWrapper>
@@ -440,7 +442,7 @@ const SwapTokens = () => {
                               />
                             ))}
                           </SelectContent>
-                        </SelectPortal>
+                        </SelectPortal> */}
                       </Select>
                     </View>
                   </View>
@@ -456,7 +458,7 @@ const SwapTokens = () => {
                   </View>
                 </View>
 
-                <Pressable
+                {/* <Pressable
                   className="bg-pink-1100 w-8 h-8 mx-auto z-50 active:opacity-50 -my-2.5 relative rounded-full items-center justify-center"
                   onPress={() => {
                     const temp = fromToken;
@@ -467,9 +469,9 @@ const SwapTokens = () => {
                   }}
                 >
                   <SvgIcon name="qlementineIcon" width="20" height="20" />
-                </Pressable>
+                </Pressable> */}
 
-                <View className="bg-black-1200 p-[18px] rounded-[15px]">
+                <View className="bg-black-1200 p-[18px] rounded-[15px] mt-4">
                   {/* Row 1: You Receive */}
                   <Text className="text-[15px] font-medium leading-[22px] text-gray-1200 mb-2">
                     {t("swap.you_receive")}
@@ -497,7 +499,7 @@ const SwapTokens = () => {
                         className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200"
                         selectedValue={toToken.toUpperCase()}
                         onValueChange={(value) =>
-                          setToToken(value.toLowerCase() as TokenType)
+                          setToToken(value.toLowerCase() as ToToken)
                         }
                       >
                         <SelectTrigger className="!border-transparent w-[90px] text-center !gap-0 leading-none !p-0">

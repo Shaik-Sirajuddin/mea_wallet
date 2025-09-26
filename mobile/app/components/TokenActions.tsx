@@ -1,10 +1,8 @@
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
-import SvgIcon from "./SvgIcon";
 import { TokenQuotes } from "@/src/types/balance";
-import { BackButton } from "./BackButton";
 
 const TokenActions = () => {
   const { t } = useTranslation();
@@ -13,12 +11,17 @@ const TokenActions = () => {
   const [pressedIndex, setPressedIndex] = useState<number | null>(null);
   const { symbol } = useLocalSearchParams<{ symbol: keyof TokenQuotes }>();
 
-  const buttons = [
-    { label: t("token_actions.deposit"), url: "/deposit-view" },
-    { label: t("token_actions.withdrawal"), url: "/withdrawal-view" },
-    { label: t("token_actions.history"), url: "/asset-history" },
-  ];
-
+  const buttons = useMemo(() => {
+    if (symbol === "usdt_savings") {
+      return [{ label: t("token_actions.transfer"), url: "/deposit-view" }];
+    } else {
+      return [
+        { label: t("token_actions.deposit"), url: "/deposit-view" },
+        { label: t("token_actions.withdrawal"), url: "/withdrawal-view" },
+        { label: t("token_actions.history"), url: "/asset-history" },
+      ];
+    }
+  }, [symbol]);
   const normalizePath = (path: string) => path.replace(/\/$/, "");
 
   // useEffect(() => {

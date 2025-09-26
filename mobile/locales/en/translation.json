@@ -264,7 +264,8 @@
     "deposit": "Deposit",
     "withdrawal": "Withdrawal",
     "history": "History",
-    "chart": "Chart"
+    "chart": "Chart",
+    "transfer": "Transfer"
   },
   "staking": {
     "title": "Staking",
@@ -505,5 +506,13 @@
     "subtitle": "Please update your app to access the latest features and improvements.",
     "downloading": "Downloading update...",
     "button": "Update App"
+  },
+  "token_metrics": {
+    "title": "Token Metrics",
+    "current_balance": "Current Balance",
+    "yesterday_close": "Yesterday Close",
+    "deposits": "Deposits",
+    "withdrawals": "Withdrawals",
+    "change_pct": "Change (%)"
   }
 }

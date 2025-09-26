@@ -238,7 +238,7 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   key={token}
                   onPress={() => {
-                    if (showLokcupBalance) {
+                    if (showLokcupBalance && token !== "usdt_savings") {
                       router.push({
                         pathname: "/(Views)/lock-up-history",
                         params: {
@@ -259,24 +259,37 @@ export default function HomeScreen() {
                   <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
                     <View className="flex-row items-center gap-[11px]">
                       <Image
-                        source={getTokenImage(token)}
+                        source={getTokenImage(
+                          token === "usdt_savings" ? "usdt" : token
+                        )}
                         className="w-12 h-12 rounded-full"
                       />
                       <View>
                         <Text className="text-[17px] font-medium leading-5 text-white">
-                          {token.toUpperCase()}
+                          {(token === "usdt_savings"
+                            ? "usdt savings"
+                            : token
+                          ).toUpperCase()}
                         </Text>
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {parseNumberForView(amount)} {token.toUpperCase()}
+                          {parseNumberForView(amount)}{" "}
+                          {(token === "usdt_savings"
+                            ? "usdt savings"
+                            : token
+                          ).toUpperCase()}
                         </Text>
                       </View>
                     </View>
                     <View>
                       <Text className="text-[17px] font-medium leading-5 text-white text-right">
-                        ${getTokensValue(token, amount)}
+                        $
+                        {getTokensValue(
+                          token === "usdt_savings" ? "usdt" : token,
+                          amount
+                        )}
                       </Text>
                       <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
-                        ${getPrice(token)}
+                        ${getPrice(token === "usdt_savings" ? "usdt" : token)}
                       </Text>
                     </View>
                   </View>

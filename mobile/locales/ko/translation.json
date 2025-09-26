@@ -481,5 +481,13 @@
     "from_address": "보내는 주소",
     "to_address": "받는 주소",
     "txid": "거래 ID"
+  },
+  "token_metrics": {
+    "title": "토큰 지표",
+    "current_balance": "현재 잔액",
+    "yesterday_close": "어제 종가",
+    "deposits": "입금",
+    "withdrawals": "출금",
+    "change_pct": "변동률 (%)"
   }
 }

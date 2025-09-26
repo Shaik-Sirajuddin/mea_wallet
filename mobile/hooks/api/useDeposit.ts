@@ -142,6 +142,7 @@ export default {
         recon: trimTrailingZeros(raw.recon_min_deposit_coin),
         fox9: trimTrailingZeros(raw.fox9_min_deposit_coin),
         sol: trimTrailingZeros(raw.sol_min_deposit_coin),
+        usdt: trimTrailingZeros(raw.usdt_min_deposit_coin),
       },
       managerDepositAddresses: [
         raw.manager_deposit_address,
