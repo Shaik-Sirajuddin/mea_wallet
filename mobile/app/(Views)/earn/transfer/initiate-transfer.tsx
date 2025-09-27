@@ -21,7 +21,11 @@ import {
 import { TokenBalances } from "@/src/types/balance";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
-import { parseNumberForView, updateIfValid } from "@/utils/ui";
+import {
+  getDisplaySymbol,
+  parseNumberForView,
+  updateIfValid,
+} from "@/utils/ui";
 import { BackButton } from "../../../components/BackButton";
 import useUser from "@/hooks/api/useUser";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
@@ -44,10 +48,7 @@ const InitiateTransfer = () => {
   );
 
   const displaySymbol = useMemo(() => {
-    if (symbol === "usdt_savings") {
-      return "USDT Savings";
-    }
-    return symbol?.toUpperCase() || "";
+    return getDisplaySymbol(symbol);
   }, [symbol]);
 
   const dispatch = useAppDispatch();

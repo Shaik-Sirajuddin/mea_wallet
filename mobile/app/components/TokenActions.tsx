@@ -18,6 +18,10 @@ const TokenActions = () => {
           label: t("token_actions.transfer"),
           url: "/earn/transfer/initiate-transfer",
         },
+         {
+          label: t("token_actions.history"),
+          url: "/earn/transfer/history",
+        },
       ];
     } else {
       return [

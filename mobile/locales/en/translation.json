@@ -394,7 +394,8 @@
       "google_otp_code": "Google OTP Code"
     },
     "info": {
-      "otp_required": "Please enter a valid 6-digit Google OTP code."
+      "otp_required": "Please enter a valid 6-digit Google OTP code.",
+      "activity_details": "The activity details are as follows"
     }
   },
   "components": {
@@ -547,6 +548,10 @@
       "info": {
         "notice_title": "Notice",
         "funds_auto_credit": "Once the transfer is complete, your funds will be credited to your withdrawable assets."
+      },
+      "history": {
+        "title": "Transfer History",
+        "no_history": "No transfer history found."
       }
     }
   }
