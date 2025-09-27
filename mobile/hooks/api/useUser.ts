@@ -12,7 +12,7 @@ import { StatusResponse } from "@/src/api/types/auth";
 import Decimal from "decimal.js";
 
 export interface DepositSettings {
-  minDeposit: TokenBalances;
+  minDeposit: Omit<TokenBalances, "usdt_savings">;
   managerDepositAddresses: string[];
   userDepositAddresses: string[];
 }

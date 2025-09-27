@@ -13,8 +13,12 @@ const TokenActions = () => {
 
   const buttons = useMemo(() => {
     if (symbol === "usdt_savings") {
-      return []
-      // return [{ label: t("token_actions.transfer"), url: "/deposit-view" }];
+      return [
+        {
+          label: t("token_actions.transfer"),
+          url: "/earn/transfer/initiate-transfer",
+        },
+      ];
     } else {
       return [
         { label: t("token_actions.deposit"), url: "/deposit-view" },
@@ -27,7 +31,7 @@ const TokenActions = () => {
 
   // useEffect(() => {
   //   router.push({
-  //     pathname: "/withdrawal-view",
+  //     pathname: "/earn/transfer/initiate-transfer",
   //     params: {
   //       symbol,
   //     },

@@ -23,7 +23,6 @@ import { BackButton } from "../components/BackButton";
 
 const AssetHistory = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
 
   const freeBalance = useSelector(

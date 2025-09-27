@@ -1,13 +1,39 @@
 import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 import { Link, router, useFocusEffect } from "expo-router";
 import React from "react";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from "@react-native-google-signin/google-signin";
 const GetStarted = () => {
   const { t } = useTranslation();
   const { isUpdateRequired, isLoading } = useCheckForUpdates();
+
+  const GoogleLogin = async () => {
+    // check if users' device has google play services
+    await GoogleSignin.hasPlayServices();
+
+    // initiates signIn process
+    const userInfo = await GoogleSignin.signIn();
+    return userInfo;
+  };
+
+  const googleSignIn = async () => {
+    try {
+      const response = await GoogleLogin();
+
+      // retrieve user data
+      const { idToken, user } = response.data ?? {};
+      if (idToken) {
+        console.log("Received data from user ", idToken, user);
+        // await processUserData(idToken, user); // Server call to validate the token & process the user data for signing In
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -35,6 +61,7 @@ const GetStarted = () => {
           </Text>
         </View>
         <View className="w-full">
+          <GoogleSigninButton onPress={googleSignIn} />
           <Link
             href="/signin"
             className="mb-[9px] text-center w-full text-white py-2.5 bg-pink-1100 border border-pink-1100 rounded-[15px] flex items-center justify-center active:bg-transparent active:text-pink-1100 hover:text-pink-1100 hover:bg-transparent"
