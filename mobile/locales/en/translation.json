@@ -1,9 +1,12 @@
 {
   "auth": {
+    "info": {
+      "other_ways_to_sign_in": "Other Ways to Sign In"
+    },
     "get_started": {
       "title": "To get started, create a new wallet or import an existing one.",
       "create_wallet": "Join The Membership",
-      "existing_wallet": "Log In"
+      "existing_wallet": "Login in with email"
     },
     "signin": {
       "title": "Sign In",

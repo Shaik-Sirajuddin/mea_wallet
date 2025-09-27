@@ -223,20 +223,27 @@ const Signin: React.FC = () => {
               text={t("auth.signin.sign_in")}
               disabled={inputError !== null}
             />
-            <View className="mt-5 mb-4">
+            <View className="my-2">
               <Link href="/forget-password">
                 <Text className="text-[15px] text-gray-400">
                   {t("auth.signin.forgot_password")}
                 </Text>
               </Link>
             </View>
-            <View>
+            <View className="my-2">
+              <Link href="/get-started">
+                <Text className="text-[15px] text-gray-400">
+                  {t("auth.info.other_ways_to_sign_in")}
+                </Text>
+              </Link>
+            </View>
+            {/* <View>
               <TouchableOpacity onPress={() => router.replace("/signup")}>
                 <Text className="text-[15px] text-pink-1100">
                   {t("auth.signin.sign_up")}
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </View>
         <InfoAlert
