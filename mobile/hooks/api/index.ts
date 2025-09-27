@@ -1,4 +1,4 @@
-import { apiBaseUrl, apiKey } from "@/lib/constants";
+import { apiKey } from "@/lib/constants";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 /**
@@ -35,7 +35,6 @@ export const networkRequestWithParser = async <T>(
       headers: headers,
       // credentials: "same-origin",
     });
-    console.log(input, init);
 
     let res = await response.json();
     if (!response.ok) {
