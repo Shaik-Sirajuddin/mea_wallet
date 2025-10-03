@@ -1,12 +1,10 @@
 import { apiBaseUrl } from "@/lib/constants";
 import { mapToApiSymbol, networkRequest } from ".";
 import { StatusResponse } from "@/src/api/types/auth";
-import { TokenQuotes } from "@/src/types/balance";
 import {
   TransferHistoryResponse,
   TransferHistoryResponseRaw,
 } from "@/src/api/types/earn/transfer";
-import { AssetHistoryResponse } from "@/src/api/types/asset";
 export interface TokenQuotes {
   mea: string;
   sol: string;
@@ -37,6 +35,18 @@ export default {
       }
     );
   },
+  claim: async (data: { amount: string; symbol: keyof TokenQuotes }) => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/balance-yield/receive`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          amount: data.amount,
+          symbol: mapToApiSymbol(data.symbol),
+        }).toString(),
+      }
+    );
+  },
   getTransferHistory: async (symbol: keyof EarnAssets, page: number) => {
     const params = new URLSearchParams();
     params.append("symbol", mapToApiSymbol(symbol));
@@ -53,7 +63,6 @@ export default {
     if (typeof raw === "string") {
       return raw;
     }
-
     const parsed: TransferHistoryResponse = {
       status: raw.status,
       blockStart: raw.block_start,
@@ -70,7 +79,6 @@ export default {
         status: item.state,
       })),
     };
-
     return parsed;
   },
 };

@@ -30,6 +30,8 @@ export interface BalanceResult {
 interface UserInfoResponseRaw {
   Thumbnail: string;
   qr_reg: string;
+  stakingView: string;
+  swapView: string;
 }
 
 export default {
@@ -138,6 +140,8 @@ export default {
     let data = {
       image: raw.Thumbnail,
       twoFACompleted: raw.qr_reg === "Y",
+      swapFeatureEnabled: raw.swapView === "Y",
+      stakingFeatureEnabled: raw.swapView === "Y",
     };
     return data;
   },

@@ -26,9 +26,9 @@ const LockUpScreen = () => {
     (state: RootState) => state.balance.lockup || {}
   );
   const quotes = useSelector((state: RootState) => state.token.quotes || {});
-
-  const featuresEnabled = true;
-
+  const featuresEnabled = useSelector(
+    (state: RootState) => state.user.details?.swapFeatureEnabled
+  );
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {

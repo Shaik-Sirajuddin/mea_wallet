@@ -1,6 +1,6 @@
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import SvgIcon from "@/app/components/SvgIcon";
 import useUser from "@/hooks/api/useUser";
+import QRCodeStyled from "react-native-qrcode-styled";
 import { setTwoFAData } from "@/src/features/user/userSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
@@ -24,7 +24,6 @@ import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 const GoogleOTP = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const twoFAData = useSelector((state: RootState) => state.user.twoFA);
   const [otp, setOtp] = useState("");
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
@@ -128,11 +127,19 @@ const GoogleOTP = () => {
             {/* QR Code */}
             <View className="items-center">
               {twoFAData ? (
-                <Image
-                  source={{ uri: twoFAData.qrUrl }}
-                  className="max-w-[390px] w-[200px] h-[200px]"
-                  resizeMode="contain"
-                />
+                twoFAData.qrUrl.startsWith("http") ? (
+                  <Image
+                    source={{ uri: twoFAData.qrUrl }}
+                    className="max-w-[390px] w-[200px] h-[200px]"
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <QRCodeStyled
+                    data={twoFAData.qrUrl}
+                    style={{ backgroundColor: "white" }}
+                    padding={20}
+                  />
+                )
               ) : (
                 <View className="w-[200px] h-[200px] border-2 border-gray-400 rounded-md justify-center items-center">
                   {/* Optional placeholder text or icon */}

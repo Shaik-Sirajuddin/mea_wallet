@@ -25,8 +25,6 @@ const periodMap: Record<SupportedPeriod, string> = {
   all: "All",
 };
 
-
-
 async function getChartData(
   symbol: SupportedSymbol,
   period: SupportedPeriod
@@ -232,7 +230,7 @@ async function getTokenOverview(
       if (typeof raw === "string") return raw;
 
       return {
-        symbol: "USDT",
+        symbol: apiSymbol === "USDT" ? "USDT" : "usdt_savings",
         price: parseFloat(raw.usdPrice),
         volume: 0,
       };

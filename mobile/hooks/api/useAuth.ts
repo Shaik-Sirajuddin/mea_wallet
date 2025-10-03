@@ -7,6 +7,8 @@ import {
   LogoutResponse,
   ForgetPasswordResponse,
   AuthResponse,
+  GoogleSignUpResponse,
+  GoogleLogInResponse,
 } from "@/src/api/types/auth";
 
 export default {
@@ -29,6 +31,31 @@ export default {
         deposit_address: depositAddress,
       }).toString(),
     });
+  },
+
+  signUpWithGoogle: async (token: string, deposit_address: string) => {
+    return await networkRequest<GoogleSignUpResponse>(
+      `${apiBaseUrl}/api/join-save-google`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          id_token: token,
+          deposit_address: deposit_address,
+        }).toString(),
+      }
+    );
+  },
+
+  signInWithGoogle: async (token: string) => {
+    return await networkRequest<GoogleLogInResponse>(
+      `${apiBaseUrl}/api/login-google`,
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          id_token: token,
+        }).toString(),
+      }
+    );
   },
 
   isEmailAvailable: async (email: string) => {

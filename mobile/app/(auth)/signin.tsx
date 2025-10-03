@@ -1,4 +1,3 @@
-import EyeIcon from "@/assets/images/eye-icon.svg";
 import { Link, router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,7 +14,6 @@ import {
 import { useTranslation } from "react-i18next";
 import PrimaryButton from "../components/PrimaryButton";
 import useAuth from "@/hooks/api/useAuth";
-import utils from "@/utils";
 import InfoAlert from "../components/InfoAlert";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";

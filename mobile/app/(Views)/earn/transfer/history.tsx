@@ -8,17 +8,12 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import * as Clipboard from "expo-clipboard";
 import SvgIcon from "../../../components/SvgIcon";
 import InfoAlert, { InfoAlertProps } from "../../../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
-import {
-  getDisplaySymbol,
-  parseNumberForView,
-  truncateAddress,
-} from "@/utils/ui";
+import { getDisplaySymbol, parseNumberForView } from "@/utils/ui";
 import { BackButton } from "../../../components/BackButton";
 import { TransferHistoryItem } from "@/src/api/types/earn/transfer";
 import useEarn from "@/hooks/api/useEarn";

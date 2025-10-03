@@ -9,6 +9,16 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface GoogleSignUpResponse extends AuthResponse {
+  status: "succ" | "need_link" | "already_signup" | "need_deposit_address";
+  token: string;
+}
+
+export interface GoogleLogInResponse extends AuthResponse {
+  status: "succ" | "need_signup" | "need_link";
+  token: string;
+}
+
 export interface CsrfTokenResponse {
   csrfToken: string;
 }

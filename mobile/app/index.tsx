@@ -10,7 +10,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 configureReanimatedLogger({ strict: false });
 
 GoogleSignin.configure({
-  scopes: ["email"], // what API you want to access on behalf of the user, default is email and profile
+  scopes: ["email"], // what pAPI you want to access on behalf of the user, default is email and profile
   offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
   forceCodeForRefreshToken: false,
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,

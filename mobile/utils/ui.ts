@@ -162,7 +162,7 @@ export const updateIfValid = (
 
 export const getDisplaySymbol = (symbol: string) => {
   if (symbol === "usdt_savings") {
-    return "USDT Savings";
+    return "USDT (Y)";
   }
   return symbol?.toUpperCase() || "";
 };

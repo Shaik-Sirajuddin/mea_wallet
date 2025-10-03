@@ -1,6 +1,12 @@
 // components/BalanceYieldGuide.tsx
 import React, { useEffect, useRef } from "react";
-import { View, Text, ScrollView, Animated } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import { Portal } from "react-native-paper";
 
 interface BalanceYieldGuideProps {
@@ -55,25 +61,34 @@ const BalanceYieldGuide: React.FC<BalanceYieldGuideProps> = ({
             </Text>
 
             <Text className="text-gray-300 text-base leading-6 mb-3">
-              After receiving, your Balance Yield will display as{" "}
+              • After receiving, your Balance Yield will display as{" "}
               <Text className="font-semibold text-white">0</Text>.
             </Text>
 
             <Text className="text-gray-300 text-base leading-6 mb-3">
-              Deposit details can be found in the transaction history, and the
+              • Deposit details can be found in the transaction history, and the
               amount is added to your{" "}
               <Text className="font-semibold text-white">USDT balance</Text>.
             </Text>
 
             <Text className="text-gray-300 text-base leading-6 mb-3">
-              If the deposit is not visible, it may be under maintenance or
+              • If the deposit is not visible, it may be under maintenance or
               being processed sequentially. Please check again later.
             </Text>
 
             <Text className="text-gray-300 text-base leading-6">
-              Balance Yield is paid{" "}
+              • Balance Yield is paid{" "}
               <Text className="font-semibold text-white">net of taxes</Text>.
             </Text>
+
+            <View className="mt-6 ml-auto">
+              <TouchableOpacity
+                onPress={onDismiss}
+                className="bg-black-1200 px-4 py-2 rounded-xl"
+              >
+                <Text className="text-white font-medium">OK</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         </Animated.View>
       </View>

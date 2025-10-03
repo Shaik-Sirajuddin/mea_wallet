@@ -14,10 +14,10 @@ const TokenActions = () => {
   const buttons = useMemo(() => {
     if (symbol === "usdt_savings") {
       return [
-        {
-          label: t("token_actions.transfer"),
-          url: "/earn/transfer/initiate-transfer",
-        },
+        // {
+        //   label: t("token_actions.transfer"),
+        //   url: "/earn/transfer/initiate-transfer",
+        // },
          {
           label: t("token_actions.history"),
           url: "/earn/transfer/history",
