@@ -33,7 +33,11 @@ export default {
     });
   },
 
-  signUpWithGoogle: async (token: string, deposit_address: string) => {
+  signUpWithGoogle: async (
+    token: string,
+    deposit_address: string,
+    device: "ios" | "android"
+  ) => {
     return await networkRequest<GoogleSignUpResponse>(
       `${apiBaseUrl}/api/join-save-google`,
       {
@@ -41,18 +45,20 @@ export default {
         body: new URLSearchParams({
           id_token: token,
           deposit_address: deposit_address,
+          device: '',
         }).toString(),
       }
     );
   },
 
-  signInWithGoogle: async (token: string) => {
+  signInWithGoogle: async (token: string, device: "ios" | "android") => {
     return await networkRequest<GoogleLogInResponse>(
       `${apiBaseUrl}/api/login-google`,
       {
         method: "POST",
         body: new URLSearchParams({
           id_token: token,
+          device: '',
         }).toString(),
       }
     );

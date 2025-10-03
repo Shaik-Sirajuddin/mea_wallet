@@ -5,13 +5,18 @@ import { router } from "expo-router";
 import FeatureComingSoon from "../components/FeatureComingSoon";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
+import { Platform } from "react-native";
 
 export default function Staking() {
   const { t } = useTranslation();
 
-  const featuresEnabled = useSelector(
-    (state: RootState) => state.user.details?.stakingFeatureEnabled
-  );
+  const featuresEnabled = useSelector((state: RootState) => {
+    if (Platform.OS === "ios") {
+      return state.user.details?.stakingFeatureEnabled;
+    }
+    return true;
+  });
+
   return (
     <View className="bg-black-1000">
       {featuresEnabled && (

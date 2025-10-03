@@ -1,9 +1,10 @@
 import { router, useNavigation } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
+  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -20,15 +21,17 @@ import FeatureComingSoon from "../components/FeatureComingSoon";
 
 const LockUpScreen = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const [refreshing, setRefreshing] = React.useState(false);
   const lockedBalance = useSelector(
     (state: RootState) => state.balance.lockup || {}
   );
   const quotes = useSelector((state: RootState) => state.token.quotes || {});
-  const featuresEnabled = useSelector(
-    (state: RootState) => state.user.details?.swapFeatureEnabled
-  );
+  const featuresEnabled = useSelector((state: RootState) => {
+    if (Platform.OS === "ios") {
+      return state.user.details?.swapFeatureEnabled;
+    }
+    return true;
+  });
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {

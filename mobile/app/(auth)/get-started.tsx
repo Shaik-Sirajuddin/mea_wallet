@@ -1,11 +1,9 @@
 import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 import { Link, router, useFocusEffect } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import GoogleSSOButton from "../components/auth/google-sso";
-import InfoAlert from "../components/InfoAlert";
 const GetStarted = () => {
   const { t } = useTranslation();
   const { isUpdateRequired, isLoading } = useCheckForUpdates();

@@ -1,6 +1,6 @@
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useState } from "react";
-import { Pressable, Text, Image, View } from "react-native";
+import { Pressable, Text, Image, View, Platform } from "react-native";
 import InfoAlert from "../InfoAlert";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
@@ -27,17 +27,17 @@ const GoogleSSOButton = () => {
   const handleOAuthToken = async (token: string) => {
     try {
       //try login
-      console.log("token here" , token)
-      let loginInResult = await useAuth.signInWithGoogle(token);
-      console.log("error here" , loginInResult)
-      if (typeof loginInResult === "string") {
-        //login in failed
-        setPopupText(t("auth.signin.login_error"));
-        setPopUpVisible(true);
-        return;
-      }
+      let loginInResult = await useAuth.signInWithGoogle(
+        token,
+        Platform.OS === "android" ? "android" : "ios"
+      );
+      console.log("error here", loginInResult);
+      let response =
+        typeof loginInResult === "string"
+          ? loginInResult
+          : loginInResult.status;
 
-      if (loginInResult.status === "succ") {
+      if (response === "succ" && typeof loginInResult !== "string") {
         await storage.save(STORAGE_KEYS.AUTH.TOKEN, loginInResult.token);
         if (router.canDismiss()) {
           router.dismissAll();
@@ -46,7 +46,7 @@ const GoogleSSOButton = () => {
         return;
       }
 
-      if (loginInResult.status === "need_link") {
+      if (response === "need_link") {
         setPopUpVisible(true);
         setPopupText(
           "Account uses email login , please continue with email login"
@@ -54,15 +54,20 @@ const GoogleSSOButton = () => {
         return;
       }
 
-      if (loginInResult.status === "need_signup") {
+      if (response === "need_signup") {
         //todo : collect deposit address and proceed sign up
         router.navigate({
           pathname: "/(auth)/sign-up-google",
           params: {
-            token: loginInResult.token,
+            token: token,
           },
         });
+        return;
       }
+
+      setPopupText(t("auth.signin.login_error"));
+      setPopUpVisible(true);
+      return;
     } catch (error) {
       console.log(error);
     }
@@ -70,8 +75,8 @@ const GoogleSSOButton = () => {
 
   const handleSignInClick = async () => {
     try {
-      //   await GoogleSignin.signOut();
       dispatch(showLoading());
+      await GoogleSignin.signOut();
       const response = await GoogleLogin();
       dispatch(hideLoading());
       // retrieve user data
