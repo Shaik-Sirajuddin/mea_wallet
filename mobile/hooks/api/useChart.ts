@@ -1,5 +1,5 @@
 import { apiBaseUrl } from "@/lib/constants";
-import { networkRequest } from ".";
+import { mapToApiSymbol, networkRequest } from ".";
 import { GraphPoint } from "react-native-graph";
 import { TokenMetricsResponse, TokenOverview } from "@/src/api/types/chart";
 import { TokenQuotes } from "@/src/types/balance";
@@ -23,26 +23,6 @@ const periodMap: Record<SupportedPeriod, string> = {
   "1month": "1Month",
   ytd: "YTD",
   all: "All",
-};
-
-/**
- * Converts lowercase token symbol to uppercase for API endpoints if needed.
- */
-const mapToApiSymbol = (symbol: SupportedSymbol): string => {
-  switch (symbol) {
-    case "mea":
-      return "MEA";
-    case "sol":
-      return "SOL";
-    case "usdt":
-      return "USDT";
-    case "fox9":
-      return "FOX9";
-    case "usdt_savings":
-      return "USDT Savings";
-    default:
-      throw new Error(`Unsupported symbol: ${symbol}`);
-  }
 };
 
 async function getChartData(
@@ -250,7 +230,7 @@ async function getTokenOverview(
       if (typeof raw === "string") return raw;
 
       return {
-        symbol: "USDT",
+        symbol: apiSymbol === "USDT" ? "USDT" : "usdt_savings",
         price: parseFloat(raw.usdPrice),
         volume: 0,
       };

@@ -1,6 +1,7 @@
 import { apiKey } from "@/lib/constants";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
+import { SupportedSymbol } from "./useChart";
 /**
  * Wrapper around fetch
  * Performs fetch request and returns parsed response
@@ -74,4 +75,24 @@ export const networkRequest = async <T>(
     }
   }
   return await networkRequestWithParser<T>(input, init);
+};
+
+/**
+ * Converts lowercase token symbol to uppercase for API endpoints if needed.
+ */
+export const mapToApiSymbol = (symbol: SupportedSymbol): string => {
+  switch (symbol) {
+    case "mea":
+      return "MEA";
+    case "sol":
+      return "SOL";
+    case "usdt":
+      return "USDT";
+    case "fox9":
+      return "FOX9";
+    case "usdt_savings":
+      return "USDT Savings";
+    default:
+      throw new Error(`Unsupported symbol: ${symbol}`);
+  }
 };

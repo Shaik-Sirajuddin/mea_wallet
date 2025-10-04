@@ -7,6 +7,8 @@ export interface TwoFADetails {
 export interface UserDetails {
   image: string;
   twoFACompleted: boolean;
+  swapFeatureEnabled: boolean;
+  stakingFeatureEnabled: boolean;
 }
 export interface RegistrationResponse {
   status: string;

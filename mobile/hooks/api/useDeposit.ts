@@ -139,7 +139,6 @@ export default {
     return {
       minDeposit: {
         mea: trimTrailingZeros(raw.mea_min_deposit_coin),
-        recon: trimTrailingZeros(raw.recon_min_deposit_coin),
         fox9: trimTrailingZeros(raw.fox9_min_deposit_coin),
         sol: trimTrailingZeros(raw.sol_min_deposit_coin),
         usdt: trimTrailingZeros(raw.usdt_min_deposit_coin),
@@ -152,10 +151,10 @@ export default {
       ].filter((address) => address),
       userDepositAddresses: [
         raw.deposit_address,
-        raw.deposit_address_2,
-        raw.deposit_address_3,
-        raw.deposit_address_4,
-        raw.deposit_address_5,
+        raw.deposit_address_2!,
+        raw.deposit_address_3!,
+        raw.deposit_address_4!,
+        raw.deposit_address_5!,
       ].filter((address) => address),
     };
   },

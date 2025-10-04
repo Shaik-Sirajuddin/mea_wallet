@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,7 @@ import {
   setLockupBalances,
 } from "@/src/features/balance/balanceSlice";
 import {
+  getDisplaySymbol,
   parseNumberForView,
   tokenImageMap,
   trimTrailingZeros,
@@ -33,6 +35,7 @@ import { setUserDetails } from "@/src/features/user/userSlice";
 import InfoAlert from "../components/InfoAlert";
 import { showLoading } from "@/src/features/loadingSlice";
 import { requestNotificationPermission } from "@/lib/notifications/requestPermissions";
+import ReceiveInstant from "../components/earn/ReceiveInstant";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -52,6 +55,12 @@ export default function HomeScreen() {
   const email = useSelector((state: RootState) => state.user.email);
   const details = useSelector((state: RootState) => state.user.details);
   const [showAlert, setShowAlert] = useState(false);
+  const featuresEnabled = useSelector((state: RootState) => {
+    if (Platform.OS === "ios") {
+      return state.user.details?.swapFeatureEnabled;
+    }
+    return true;
+  });
 
   const syncData = async () => {
     setRefreshing(true);
@@ -181,7 +190,9 @@ export default function HomeScreen() {
               </View> */}
             </View>
 
-            <View className="flex-row max-w-[210px] mx-auto gap-[7px]">
+            <View
+              className={`flex-row ${featuresEnabled ? 'max-w-[280px]' : 'max-w-[220px]'} mx-auto gap-[7px]`}
+            >
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
                 <Link href="/receive-items">
                   <View className="w-full items-center p-[18px] py-[17px]">
@@ -202,21 +213,22 @@ export default function HomeScreen() {
                   </View>
                 </Link>
               </View>
-              {/* <View className="bg-black-1300 rounded-2xl items-center  flex-1">
-                <Pressable
-                  onPress={() => {
-                    //@ts-expect-error this
-                    navigation.navigate("swap-tokens");
-                  }}
-                >
-                  <View className="w-full items-center p-[18px] py-[17px]">
-                    <SvgIcon name="swapIcon" width="24" height="24" />
-                    <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      {t("home.swap")}
-                    </Text>
-                  </View>
-                </Pressable>
-              </View> */}
+              {featuresEnabled && (
+                <View className="bg-black-1300 rounded-2xl items-center  flex-1">
+                  <Pressable
+                    onPress={() => {
+                      router.navigate("/(Views)/swap-tokens");
+                    }}
+                  >
+                    <View className="w-full items-center p-[18px] py-[17px]">
+                      <SvgIcon name="swapIcon" width="24" height="24" />
+                      <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
+                        {t("home.swap")}
+                      </Text>
+                    </View>
+                  </Pressable>
+                </View>
+              )}
             </View>
 
             <View className="flex-row items-center gap-[17px] my-4">
@@ -237,6 +249,7 @@ export default function HomeScreen() {
               {Object.entries(freeBalance).map(([token, amount]) => (
                 <TouchableOpacity
                   key={token}
+                  className="flex flex-col border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl"
                   onPress={() => {
                     if (showLokcupBalance && token !== "usdt_savings") {
                       router.push({
@@ -256,7 +269,7 @@ export default function HomeScreen() {
                     }
                   }}
                 >
-                  <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
+                  <View className="flex-row items-center justify-between py-[13px] px-3">
                     <View className="flex-row items-center gap-[11px]">
                       <Image
                         source={getTokenImage(
@@ -266,17 +279,10 @@ export default function HomeScreen() {
                       />
                       <View>
                         <Text className="text-[17px] font-medium leading-5 text-white">
-                          {(token === "usdt_savings"
-                            ? "usdt savings"
-                            : token
-                          ).toUpperCase()}
+                          {getDisplaySymbol(token)}
                         </Text>
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {parseNumberForView(amount)}{" "}
-                          {(token === "usdt_savings"
-                            ? "usdt savings"
-                            : token
-                          ).toUpperCase()}
+                          {parseNumberForView(amount)} {getDisplaySymbol(token)}
                         </Text>
                       </View>
                     </View>
@@ -293,6 +299,26 @@ export default function HomeScreen() {
                       </Text>
                     </View>
                   </View>
+                  {token === "usdt_savings" && (
+                    // <View className="bg-transparent flex justify-center mb-2">
+                    //   <View className="flex flex-row justify-center gap-2">
+                    //     <TouchableOpacity
+                    //       className="rounded-xl self-center bg-black-1100 px-4 py-2"
+                    //       onPress={() => {
+
+                    //       }}
+                    //     >
+                    //       <Text className="text-white text-center">
+                    //         Receive
+                    //       </Text>
+                    //     </TouchableOpacity>
+                    //     <TouchableOpacity className="rounded-3xl self-center bg-black-1100 px-4 py-2">
+                    //       <Text className="text-white text-center">?</Text>
+                    //     </TouchableOpacity>
+                    //   </View>
+                    // </View>
+                    <ReceiveInstant symbol={token} amount={amount} />
+                  )}
                 </TouchableOpacity>
               ))}
             </View>

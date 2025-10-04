@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TokenState {
   quotes: TokenQuotes;
-  minDeposit: TokenThresholds;
+  minDeposit: Omit<TokenThresholds, "usdt_savings">;
   withdrawFees: TokenThresholds;
   minWithdraw: TokenThresholds;
   swapFee: string;
@@ -26,7 +26,6 @@ const initialState: TokenState = {
     sol: "0",
     fox9: "0",
     usdt: "0",
-    usdt_savings: "0",
   },
   withdrawFees: {
     mea: "0",
@@ -52,7 +51,10 @@ const tokenSlice = createSlice({
     setQuotes(state, action: PayloadAction<TokenQuotes>) {
       state.quotes = action.payload;
     },
-    setMinDeposit(state, action: PayloadAction<TokenThresholds>) {
+    setMinDeposit(
+      state,
+      action: PayloadAction<Omit<TokenThresholds, "usdt_savings">>
+    ) {
       state.minDeposit = action.payload;
     },
     setWithdrawFees(state, action: PayloadAction<TokenThresholds>) {

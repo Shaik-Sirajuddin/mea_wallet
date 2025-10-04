@@ -159,3 +159,10 @@ export const updateIfValid = (
     console.log("notvalid", value);
   }
 };
+
+export const getDisplaySymbol = (symbol: string) => {
+  if (symbol === "usdt_savings") {
+    return "USDT (Y)";
+  }
+  return symbol?.toUpperCase() || "";
+};

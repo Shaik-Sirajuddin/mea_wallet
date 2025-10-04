@@ -1,6 +1,6 @@
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
-import SvgIcon from "@/app/components/SvgIcon";
 import useUser from "@/hooks/api/useUser";
+import QRCodeStyled from "react-native-qrcode-styled";
 import { setTwoFAData } from "@/src/features/user/userSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
@@ -10,6 +10,7 @@ import {
   Alert,
   Image,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -24,7 +25,6 @@ import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 
 const GoogleOTP = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const twoFAData = useSelector((state: RootState) => state.user.twoFA);
   const [otp, setOtp] = useState("");
   const [modalState, setModalState] = useState<Partial<InfoAlertProps>>({
@@ -115,116 +115,126 @@ const GoogleOTP = () => {
   }, []);
   return (
     <View className="flex-1 bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto justify-center">
-        <View className="items-center">
-          <BackButton />
-          <Text className="text-lg font-semibold text-white">
-            {t("settings.google_otp")}
-          </Text>
-        </View>
+      <ScrollView className="flex-1">
+        <View className="w-full h-full max-w-5xl mx-auto justify-center">
+          <View className="items-center">
+            <BackButton />
+            <Text className="text-lg font-semibold text-white">
+              {t("settings.google_otp")}
+            </Text>
+          </View>
 
-        <View className="my-auto">
-          <View className="w-full">
-            {/* QR Code */}
-            <View className="items-center">
-              {twoFAData ? (
-                <Image
-                  source={{ uri: twoFAData.qrUrl }}
-                  className="max-w-[390px] w-[200px] h-[200px]"
-                  resizeMode="contain"
-                />
-              ) : (
-                <View className="w-[200px] h-[200px] border-2 border-gray-400 rounded-md justify-center items-center">
-                  {/* Optional placeholder text or icon */}
-                  <Text className="text-gray-400">QR Code</Text>
-                </View>
-              )}
-            </View>
-
-            {/* Input with Copy Button */}
-            <View className="relative my-8">
-              <View className="bg-black-1200 mb-8 flex-row rounded-md py-4 px-3 mt-2 items-center">
-                <Text className="text-base font-semibold text-white">
-                  {t("settings.secret_key")}
-                </Text>
-                <Text className="text-[15px] text-gray-1000 inline-block ml-2 flex-1">
-                  {twoFAData ? twoFAData.secretCode : "---"}
-                </Text>
-
-                <TouchableOpacity
-                  onPress={handleCopy}
-                  className="right-3 bg-pink-1100 py-[4px] px-[8px] rounded-2xl "
-                >
-                  <Text className="text-white text-[14px] font-medium leading-[22px]">
-                    {t("common.copy")}
-                  </Text>
-                </TouchableOpacity>
+          <View className="my-auto">
+            <View className="w-full">
+              {/* QR Code */}
+              <View className="items-center">
+                {twoFAData ? (
+                  twoFAData.qrUrl.startsWith("http") ? (
+                    <Image
+                      source={{ uri: twoFAData.qrUrl }}
+                      className="max-w-[390px] w-[200px] h-[200px]"
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <QRCodeStyled
+                      data={twoFAData.qrUrl}
+                      style={{ backgroundColor: "white" }}
+                      padding={20}
+                    />
+                  )
+                ) : (
+                  <View className="w-[200px] h-[200px] border-2 border-gray-400 rounded-md justify-center items-center">
+                    {/* Optional placeholder text or icon */}
+                    <Text className="text-gray-400">QR Code</Text>
+                  </View>
+                )}
               </View>
-              {/* Instruction List */}
-              <View className="pl-6 pr-10">
-                <View className="flex-row items-center mb-1 gap-2.5">
-                  <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
-                    <Text className="text-white flex text-xs">1</Text>
-                  </View>
-                  <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    {t("settings.otp_instruction_1")}
+
+              {/* Input with Copy Button */}
+              <View className="relative my-8">
+                <View className="bg-black-1200 mb-8 flex-row rounded-md py-4 px-3 mt-2 items-center">
+                  <Text className="text-base font-semibold text-white">
+                    {t("settings.secret_key")}
                   </Text>
-                </View>
-                <View className="flex-row items-center mb-1 gap-2.5">
-                  <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
-                    <Text className="text-white flex text-xs">2</Text>
-                  </View>
-                  <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    {t("settings.otp_instruction_2")}
+                  <Text className="text-[15px] text-gray-1000 inline-block ml-2 flex-1">
+                    {twoFAData ? twoFAData.secretCode : "---"}
                   </Text>
+
+                  <TouchableOpacity
+                    onPress={handleCopy}
+                    className="right-3 bg-pink-1100 py-[4px] px-[8px] rounded-2xl "
+                  >
+                    <Text className="text-white text-[14px] font-medium leading-[22px]">
+                      {t("common.copy")}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-                <View className="flex-row items-center mb-1 gap-2.5">
-                  <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
-                    <Text className="text-white flex text-xs">3</Text>
+                {/* Instruction List */}
+                <View className="pl-6 pr-10">
+                  <View className="flex-row items-center mb-1 gap-2.5">
+                    <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
+                      <Text className="text-white flex text-xs">1</Text>
+                    </View>
+                    <Text className="text-[15px] font-normal leading-5 text-gray-1000">
+                      {t("settings.otp_instruction_1")}
+                    </Text>
                   </View>
-                  <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    {t("settings.otp_instruction_3")}
-                  </Text>
-                </View>
-                <View className="flex-row items-center mb-1 gap-2.5">
-                  <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
-                    <Text className="text-white flex text-xs">4</Text>
+                  <View className="flex-row items-center mb-1 gap-2.5">
+                    <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
+                      <Text className="text-white flex text-xs">2</Text>
+                    </View>
+                    <Text className="text-[15px] font-normal leading-5 text-gray-1000">
+                      {t("settings.otp_instruction_2")}
+                    </Text>
                   </View>
-                  <Text className="text-[15px] font-normal leading-5 text-gray-1000">
-                    {t("settings.otp_instruction_4")}
-                  </Text>
+                  <View className="flex-row items-center mb-1 gap-2.5">
+                    <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
+                      <Text className="text-white flex text-xs">3</Text>
+                    </View>
+                    <Text className="text-[15px] font-normal leading-5 text-gray-1000">
+                      {t("settings.otp_instruction_3")}
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center mb-1 gap-2.5">
+                    <View className="w-5 h-5 border border-white !rounded-full items-center justify-center">
+                      <Text className="text-white flex text-xs">4</Text>
+                    </View>
+                    <Text className="text-[15px] font-normal leading-5 text-gray-1000">
+                      {t("settings.otp_instruction_4")}
+                    </Text>
+                  </View>
                 </View>
+                {twoFAData && twoFAData.isRegistered === false && (
+                  <View>
+                    <TextInput
+                      placeholder={t("components.enter_otp")}
+                      placeholderTextColor="#6b7280"
+                      className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
+                      value={otp}
+                      onChangeText={setOtp}
+                    />
+                    <PrimaryButton
+                      text={t("settings.verify")}
+                      onPress={validateTwoFABackup}
+                      className="mt-6"
+                    />
+                  </View>
+                )}
               </View>
-              {twoFAData && twoFAData.isRegistered === false && (
-                <View>
-                  <TextInput
-                    placeholder={t("components.enter_otp")}
-                    placeholderTextColor="#6b7280"
-                    className="mt-5 text-base text-white font-semibold px-3 border border-gray-1000 w-full h-[53px] rounded-[6px]"
-                    value={otp}
-                    onChangeText={setOtp}
-                  />
-                  <PrimaryButton
-                    text={t("settings.verify")}
-                    onPress={validateTwoFABackup}
-                    className="mt-6"
-                  />
-                </View>
-              )}
             </View>
           </View>
         </View>
-      </View>
-      <InfoAlert
-        {...modalState}
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        onDismiss={() => {
-          if (setUpCompleted) {
-            router.back();
-          }
-        }}
-      />
+        <InfoAlert
+          {...modalState}
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          onDismiss={() => {
+            if (setUpCompleted) {
+              router.back();
+            }
+          }}
+        />
+      </ScrollView>
     </View>
   );
 };

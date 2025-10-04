@@ -5,6 +5,7 @@ export interface TokenBalances {
   usdt: string;
   usdt_savings: string;
 }
+export type HoldableTokenBalances = Omit<TokenBalances, "usdt_savings">;
 
 export interface LockUpBalances {
   mea: string;

@@ -17,7 +17,7 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setMinDeposit } from "@/src/features/token/tokenSlice"; // adjust slice import
 import useDeposit from "@/hooks/api/useDeposit";
-import { TokenBalances } from "@/src/types/balance";
+import { HoldableTokenBalances, TokenBalances } from "@/src/types/balance";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import {
@@ -30,7 +30,9 @@ import { BackButton } from "../components/BackButton";
 const Deposit = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const { symbol } = useLocalSearchParams<{ symbol: keyof TokenBalances }>();
+  const { symbol } = useLocalSearchParams<{
+    symbol: keyof HoldableTokenBalances;
+  }>();
   const [depositAmount, setDepositAmount] = useState("");
   const minDeposit = useSelector(
     (state: RootState) => state.token.minDeposit[symbol]

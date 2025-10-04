@@ -42,7 +42,7 @@ const WithDrawal = () => {
     (state: RootState) => state.token.minWithdraw[symbol]
   );
 
-  const disptach = useDispatch();
+  const dispatch = useDispatch();
 
   const displaySymbol = useMemo(() => {
     return symbol.toUpperCase();
@@ -88,8 +88,8 @@ const WithDrawal = () => {
       setInfoAlertVisible(true);
       return;
     }
-    disptach(setMinWithdraw(result.minWithdraw));
-    disptach(setWithdrawFees(result.withdrawFees));
+    dispatch(setMinWithdraw(result.minWithdraw));
+    dispatch(setWithdrawFees(result.withdrawFees));
   };
 
   const handleQuickAmountSelect = (percent: number) => {

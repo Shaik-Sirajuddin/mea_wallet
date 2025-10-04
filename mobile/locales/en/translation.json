@@ -1,9 +1,12 @@
 {
   "auth": {
+    "info": {
+      "other_ways_to_sign_in": "Other Ways to Sign In"
+    },
     "get_started": {
       "title": "To get started, create a new wallet or import an existing one.",
       "create_wallet": "Join The Membership",
-      "existing_wallet": "Log In"
+      "existing_wallet": "Login in with email"
     },
     "signin": {
       "title": "Sign In",
@@ -389,7 +392,14 @@
     "load_more": "Load More",
     "invalid_otp": "Invalid OTP",
     "days": "days",
-    "n/a": "해당 없음"
+    "n/a": "해당 없음",
+    "title": {
+      "google_otp_code": "Google OTP Code"
+    },
+    "info": {
+      "otp_required": "Please enter a valid 6-digit Google OTP code.",
+      "activity_details": "The activity details are as follows"
+    }
   },
   "components": {
     "camera_permission_required": "We need your permission to show the camera",
@@ -530,5 +540,22 @@
     "now_calc_utc": "Calc Time (UTC)",
     "now_calc_kst": "Calc Time (KST)",
     "calc_at_utc": "Calculated At"
+  },
+  "earn": {
+    "transfer": {
+      "title": "Asset Transfer",
+      "transfer_amount": "Transfer Quantity",
+      "min_transfer_error": "Minimum deposit is {{amount}} {{symbol}}.",
+      "transfer": "Transfer",
+      "transfer_successful": "Transfer Successful",
+      "info": {
+        "notice_title": "Notice",
+        "funds_auto_credit": "Once the transfer is complete, your funds will be credited to your withdrawable assets."
+      },
+      "history": {
+        "title": "Transfer History",
+        "no_history": "No transfer history found."
+      }
+    }
   }
 }

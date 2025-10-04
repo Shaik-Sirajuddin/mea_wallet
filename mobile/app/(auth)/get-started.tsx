@@ -1,10 +1,9 @@
 import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 import { Link, router, useFocusEffect } from "expo-router";
 import React from "react";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-
+import GoogleSSOButton from "../components/auth/google-sso";
 const GetStarted = () => {
   const { t } = useTranslation();
   const { isUpdateRequired, isLoading } = useCheckForUpdates();
@@ -34,15 +33,27 @@ const GetStarted = () => {
             {t("auth.get_started.title")}
           </Text>
         </View>
-        <View className="w-full">
+        <View className="w-full gap-2">
+          <View className="w-full">
+            <GoogleSSOButton />
+          </View>
           <Link
             href="/signin"
-            className="mb-[9px] text-center w-full text-white py-2.5 bg-pink-1100 border border-pink-1100 rounded-[15px] flex items-center justify-center active:bg-transparent active:text-pink-1100 hover:text-pink-1100 hover:bg-transparent"
+            className="text-center w-full text-white py-2.5 bg-white border  rounded-full flex items-center justify-center active:bg-transparent  "
           >
-            <Text className="text-base font-semibold leading-[22px]">
-              {t("auth.get_started.existing_wallet")}
-            </Text>
+            <View className="h-6 w-full flex flex-row items-center justify-center gap-2">
+              <Image
+                width={50}
+                height={20}
+                source={require("../../assets/images/email_icon.png")}
+                className="w-6 h-5 "
+              />
+              <Text className="text-base font-semibold leading-[22px]">
+                {t("auth.get_started.existing_wallet")}
+              </Text>
+            </View>
           </Link>
+          <Text className="text-white text-center font-bold my-2">Or</Text>
           <TouchableOpacity
             onPress={() => router.push("/signup")}
             className="w-full h-[45px] bg-black-1100 rounded-[15px] flex items-center justify-center"

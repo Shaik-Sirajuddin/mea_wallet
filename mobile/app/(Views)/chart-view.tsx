@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenQuotes } from "@/src/types/balance";
 import { TokenMetricsResponse, TokenOverview } from "@/src/api/types/chart";
-import { parseNumberForView } from "@/utils/ui";
+import { getDisplaySymbol, parseNumberForView } from "@/utils/ui";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import TokenActions from "../components/TokenActions";
@@ -47,7 +47,7 @@ const ChartView = () => {
   const quote = useSelector((state: RootState) => state.token.quotes[symbol]);
 
   const displaySymbol = useMemo(() => {
-    return tokenOverview.symbol.toUpperCase();
+    return getDisplaySymbol(symbol);
   }, [tokenOverview]);
 
   const isUsdtSavings = useMemo(() => {
@@ -287,7 +287,7 @@ const TokenInfoSection = ({
       items={[
         {
           title: t("token_overview.symbol"),
-          value: tokenOverview.symbol.toUpperCase(),
+          value: getDisplaySymbol(tokenOverview.symbol),
         },
         { title: t("token_overview.network"), value: "Solana" },
         {

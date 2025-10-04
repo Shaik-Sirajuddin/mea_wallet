@@ -1,8 +1,7 @@
-import { useNavigation, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Pressable,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -17,13 +16,12 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
-import { parseNumberForView, truncateAddress } from "@/utils/ui";
+import { getDisplaySymbol, parseNumberForView, truncateAddress } from "@/utils/ui";
 import AssetHistoryList from "../components/AssetHistoryList";
 import { BackButton } from "../components/BackButton";
 
 const AssetHistory = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
 
   const freeBalance = useSelector(
@@ -32,7 +30,7 @@ const AssetHistory = () => {
   );
 
   const displaySymbol = useMemo(() => {
-    return symbol.toUpperCase();
+    return getDisplaySymbol(symbol);
   }, [symbol]);
 
   const [history, setHistory] = useState<AssetHistoryItem[]>([]);
