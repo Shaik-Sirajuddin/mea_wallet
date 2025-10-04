@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -54,6 +55,12 @@ export default function HomeScreen() {
   const email = useSelector((state: RootState) => state.user.email);
   const details = useSelector((state: RootState) => state.user.details);
   const [showAlert, setShowAlert] = useState(false);
+  const featuresEnabled = useSelector((state: RootState) => {
+    if (Platform.OS === "ios") {
+      return state.user.details?.swapFeatureEnabled;
+    }
+    return true;
+  });
 
   const syncData = async () => {
     setRefreshing(true);
@@ -183,7 +190,9 @@ export default function HomeScreen() {
               </View> */}
             </View>
 
-            <View className="flex-row max-w-[210px] mx-auto gap-[7px]">
+            <View
+              className={`flex-row ${featuresEnabled ? 'max-w-[280px]' : 'max-w-[220px]'} mx-auto gap-[7px]`}
+            >
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
                 <Link href="/receive-items">
                   <View className="w-full items-center p-[18px] py-[17px]">
@@ -204,21 +213,22 @@ export default function HomeScreen() {
                   </View>
                 </Link>
               </View>
-              {/* <View className="bg-black-1300 rounded-2xl items-center  flex-1">
-                <Pressable
-                  onPress={() => {
-                    //@ts-expect-error this
-                    navigation.navigate("swap-tokens");
-                  }}
-                >
-                  <View className="w-full items-center p-[18px] py-[17px]">
-                    <SvgIcon name="swapIcon" width="24" height="24" />
-                    <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
-                      {t("home.swap")}
-                    </Text>
-                  </View>
-                </Pressable>
-              </View> */}
+              {featuresEnabled && (
+                <View className="bg-black-1300 rounded-2xl items-center  flex-1">
+                  <Pressable
+                    onPress={() => {
+                      router.navigate("/(Views)/swap-tokens");
+                    }}
+                  >
+                    <View className="w-full items-center p-[18px] py-[17px]">
+                      <SvgIcon name="swapIcon" width="24" height="24" />
+                      <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
+                        {t("home.swap")}
+                      </Text>
+                    </View>
+                  </Pressable>
+                </View>
+              )}
             </View>
 
             <View className="flex-row items-center gap-[17px] my-4">
