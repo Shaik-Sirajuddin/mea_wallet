@@ -22,7 +22,7 @@ server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   await makeConnection();
   await defineAssoiciations();
-  await redisConnect()
+  await redisConnect();
   setUpCronJobs();
   test();
 });

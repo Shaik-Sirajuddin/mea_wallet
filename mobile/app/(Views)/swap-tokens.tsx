@@ -494,7 +494,7 @@ const SwapTokens = () => {
                         className="w-7 h-7 rounded-full bg-black"
                       />
                       <Select
-                        className="!border-transparent py-0 text-xs -mt-0.5 !gap-0 !text-gray-1200"
+                        className="!border-transparent py-0 text-xs !gap-0 !text-gray-1200"
                         selectedValue={toToken.toUpperCase()}
                         onValueChange={(value) =>
                           setToToken(value.toLowerCase() as ToToken)
@@ -507,7 +507,7 @@ const SwapTokens = () => {
                           />
                           <SelectIcon className="mr-0" as={ChevronDownIcon} />
                         </SelectTrigger>
-                        <SelectPortal>
+                        <SelectPortal className="pb-10">
                           <SelectBackdrop />
                           <SelectContent>
                             <SelectDragIndicatorWrapper>

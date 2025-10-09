@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ping Wallet",
     "slug": "mecca",
-    "version": "1.0.9",
+    "version": "1.0.12",
     "orientation": "portrait",
     "icon": "./assets/images/app_icon.png",
     "scheme": "mecca",
@@ -16,17 +16,13 @@
       "bundleIdentifier": "com.pinggo.wallet",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "itms-apps"
-        ]
+        "LSApplicationQueriesSchemes": ["itms-apps"]
       }
     },
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.meccain.ping",
-      "permissions": [
-        "android.permission.CAMERA"
-      ],
+      "permissions": ["android.permission.CAMERA"],
       "googleServicesFile": "./google-services.json"
     },
     "web": {
@@ -81,10 +77,10 @@
           }
         }
       ],
-       [
+      [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+          "iosUrlScheme": "com.googleusercontent.apps.201500927042-tl3vqqhqemnsncqhr7f9j6nff3vr3t1v"
         }
       ],
       "expo-localization",
