@@ -36,6 +36,7 @@ import InfoAlert from "../components/InfoAlert";
 import { showLoading } from "@/src/features/loadingSlice";
 import { requestNotificationPermission } from "@/lib/notifications/requestPermissions";
 import ReceiveInstant from "../components/earn/ReceiveInstant";
+import BalanceYieldGuide from "../components/BalanceYieldGuide";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -43,6 +44,8 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const [showLokcupBalance, setShowLockUpBalance] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const quotes = useSelector((state: RootState) => state.token.quotes || {});
@@ -191,7 +194,9 @@ export default function HomeScreen() {
             </View>
 
             <View
-              className={`flex-row ${featuresEnabled ? 'max-w-[280px]' : 'max-w-[220px]'} mx-auto gap-[7px]`}
+              className={`flex-row ${
+                featuresEnabled ? "max-w-[280px]" : "max-w-[220px]"
+              } mx-auto gap-[7px]`}
             >
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
                 <Link href="/receive-items">
@@ -278,9 +283,22 @@ export default function HomeScreen() {
                         className="w-12 h-12 rounded-full"
                       />
                       <View>
-                        <Text className="text-[17px] font-medium leading-5 text-white">
-                          {getDisplaySymbol(token)}
-                        </Text>
+                        <View className="flex flex-row items-center gap-2">
+                          <Text className="text-[17px] font-medium leading-5 text-white">
+                            {getDisplaySymbol(token)}
+                          </Text>
+                          {token === "usdt_savings" && (
+                            <TouchableOpacity
+                              className="rounded-3xl self-center bg-black-1100 px-2 py-1"
+                              onPress={() => {
+                                setShowGuide(true);
+                              }}
+                            >
+                              <Text className="text-white text-center">?</Text>
+                            </TouchableOpacity>
+                          )}
+                        </View>
+
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
                           {parseNumberForView(amount)} {getDisplaySymbol(token)}
                         </Text>
@@ -396,6 +414,12 @@ export default function HomeScreen() {
         primaryButtonText="OK"
         onDismiss={() => {
           router.push("/settings/google-otp"); // navigate after OK
+        }}
+      />
+      <BalanceYieldGuide
+        visible={showGuide}
+        onDismiss={() => {
+          setShowGuide(false);
         }}
       />
       <PopupModal visible={showEditProfile} setVisible={setShowEditProfile}>

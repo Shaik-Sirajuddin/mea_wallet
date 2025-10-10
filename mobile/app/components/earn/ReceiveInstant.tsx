@@ -21,7 +21,6 @@ const ReceiveInstant = ({ symbol, amount }: ConfirmTransferParams) => {
     {}
   );
   const [transferSuccess, setTransferSuccess] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
 
   const dispatch = useDispatch();
   const processClaim = async () => {
@@ -70,15 +69,6 @@ const ReceiveInstant = ({ symbol, amount }: ConfirmTransferParams) => {
               Receive
             </Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            className="rounded-3xl self-center bg-black-1100 px-4 py-2"
-            onPress={() => {
-              setShowGuide(true);
-            }}
-          >
-            <Text className="text-white text-center">?</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -86,13 +76,6 @@ const ReceiveInstant = ({ symbol, amount }: ConfirmTransferParams) => {
         {...infoAlertState}
         visible={infoAlertVisible}
         setVisible={setInfoAlertVisible}
-      />
-
-      <BalanceYieldGuide
-        visible={showGuide}
-        onDismiss={() => {
-          setShowGuide(false);
-        }}
       />
     </View>
   );

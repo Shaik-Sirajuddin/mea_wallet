@@ -36,6 +36,7 @@ export default {
     );
   },
   claim: async (data: { amount: string; symbol: keyof TokenQuotes }) => {
+    console.log(data);
     return await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/balance-yield/receive`,
       {
