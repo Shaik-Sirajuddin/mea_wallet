@@ -2,7 +2,7 @@ import { useCheckForUpdates } from "@/hooks/app/useCheckForUpdate";
 import { Link, router, useFocusEffect } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, Text, TouchableOpacity, View } from "react-native";
 import GoogleSSOButton from "../components/auth/google-sso";
 const GetStarted = () => {
   const { t } = useTranslation();
@@ -34,9 +34,11 @@ const GetStarted = () => {
           </Text>
         </View>
         <View className="w-full gap-2">
-          {/* <View className="w-full">
-            <GoogleSSOButton />
-          </View> */}
+          {Platform.OS !== "ios" && (
+            <View className="w-full">
+              <GoogleSSOButton />
+            </View>
+          )}
           <Link
             href="/signin"
             className="text-center w-full text-white py-2.5 bg-pink-1100 border  rounded-full flex items-center justify-center active:bg-transparent  "

@@ -4,7 +4,8 @@ export const FeatureComingSoon = () => {
   return (
     <View className="w-full h-full">
       <Text className="font-bold text-xl text-center text-white my-auto">
-        Wallet features coming soon
+        You are on waitlist <br />
+        This Features are not available for your platform yet
       </Text>
     </View>
   );
