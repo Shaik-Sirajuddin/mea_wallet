@@ -6,7 +6,7 @@
     "get_started": {
       "title": "To get started, create a new wallet or import an existing one.",
       "create_wallet": "Join The Membership",
-      "existing_wallet": "Login in with email"
+      "existing_wallet": "Login"
     },
     "signin": {
       "title": "Sign In",

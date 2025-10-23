@@ -179,7 +179,7 @@ export default function HomeScreen() {
             </Pressable>
 
             <View className="items-center mt-[46px] mb-10">
-              <SvgIcon name="spaceman" width="74" height="74" />
+              {/* <SvgIcon name="spaceman" width="74" height="74" /> */}
               <Text className="text-white text-[37px] mt-2 font-semibold">
                 ${parseNumberForView(totalAssetValue)}
               </Text>
@@ -288,14 +288,18 @@ export default function HomeScreen() {
                             {getDisplaySymbol(token)}
                           </Text>
                           {token === "usdt_savings" && (
-                            <TouchableOpacity
-                              className="rounded-3xl self-center bg-black-1100 px-2 py-1"
-                              onPress={() => {
-                                setShowGuide(true);
-                              }}
-                            >
-                              <Text className="text-white text-center">?</Text>
-                            </TouchableOpacity>
+                            <View className="flex-row gap-2">
+                              <TouchableOpacity
+                                className="rounded-3xl self-center bg-black-1100 px-3 py-1"
+                                onPress={() => {
+                                  setShowGuide(true);
+                                }}
+                              >
+                                <Text className="text-white text-center">
+                                  ?
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
                           )}
                         </View>
 
@@ -304,39 +308,33 @@ export default function HomeScreen() {
                         </Text>
                       </View>
                     </View>
-                    <View>
-                      <Text className="text-[17px] font-medium leading-5 text-white text-right">
-                        $
-                        {getTokensValue(
-                          token === "usdt_savings" ? "usdt" : token,
-                          amount
-                        )}
-                      </Text>
-                      <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
-                        ${getPrice(token === "usdt_savings" ? "usdt" : token)}
-                      </Text>
-                    </View>
+                    {token !== "usdt_savings" && (
+                      <View>
+                        <Text className="text-[17px] font-medium leading-5 text-white text-right">
+                          $
+                          {getTokensValue(
+                            token === "usdt_savings" ? "usdt" : token,
+                            amount
+                          )}
+                        </Text>
+                        <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
+                          ${getPrice(token === "usdt_savings" ? "usdt" : token)}
+                        </Text>
+                      </View>
+                    )}
+                    {token === "usdt_savings" && (
+                      <View className="flex-row gap-2">
+                        <View className="relative">
+                          <ReceiveInstant symbol={token} amount={amount} />
+                        </View>
+                      </View>
+                    )}
                   </View>
-                  {token === "usdt_savings" && (
-                    // <View className="bg-transparent flex justify-center mb-2">
-                    //   <View className="flex flex-row justify-center gap-2">
-                    //     <TouchableOpacity
-                    //       className="rounded-xl self-center bg-black-1100 px-4 py-2"
-                    //       onPress={() => {
-
-                    //       }}
-                    //     >
-                    //       <Text className="text-white text-center">
-                    //         Receive
-                    //       </Text>
-                    //     </TouchableOpacity>
-                    //     <TouchableOpacity className="rounded-3xl self-center bg-black-1100 px-4 py-2">
-                    //       <Text className="text-white text-center">?</Text>
-                    //     </TouchableOpacity>
-                    //   </View>
-                    // </View>
-                    <ReceiveInstant symbol={token} amount={amount} />
-                  )}
+                  {/* {token === "usdt_savings" && (
+                    <View className="relative">
+                      <ReceiveInstant symbol={token} amount={amount} />
+                    </View>
+                  )} */}
                 </TouchableOpacity>
               ))}
             </View>

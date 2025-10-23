@@ -1,0 +1,4 @@
+review ->
+Login Servies : offering email with password ( explain only colelction of email )
+Support url : 
+ direct to a website with information users can use to ask questions and request support.
