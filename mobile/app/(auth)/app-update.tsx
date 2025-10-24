@@ -20,7 +20,10 @@ const UpdateAppPage = () => {
     try {
       // Handle Android in-app updates
       if (Platform.OS === "android") {
-        setDownloading(true);
+        Linking.openURL(
+          `https://play.google.com/store/apps/details?id=com.meccain.ping`
+        );
+        // setDownloading(true);
         const inAppUpdates = new InAppUpdates(false); // set to false in production
         const updateOptions = {
           updateType: IAUUpdateKind.IMMEDIATE,
@@ -65,7 +68,6 @@ const UpdateAppPage = () => {
   };
 
   useEffect(() => {
-    handleUpdate();
   }, []);
 
   return (

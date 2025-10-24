@@ -20,7 +20,7 @@ export default function TabLayout() {
   useFocusEffect(
     React.useCallback(() => {
       if (isLoading) return;
-      if (isUpdateRequired) {
+      if (isUpdateRequired && !__DEV__) {
         router.dismissTo("/app-update");
       }
       return;
