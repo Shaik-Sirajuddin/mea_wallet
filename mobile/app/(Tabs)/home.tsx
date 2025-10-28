@@ -255,6 +255,7 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   key={token}
                   className="flex flex-col border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl"
+                  disabled={token === "usdt_savings"}
                   onPress={() => {
                     if (showLokcupBalance && token !== "usdt_savings") {
                       router.push({
@@ -285,7 +286,9 @@ export default function HomeScreen() {
                       <View>
                         <View className="flex flex-row items-center gap-2">
                           <Text className="text-[17px] font-medium leading-5 text-white">
-                            {getDisplaySymbol(token)}
+                            {token === "usdt_savings"
+                              ? "Balance Yield"
+                              : getDisplaySymbol(token)}
                           </Text>
                           {token === "usdt_savings" && (
                             <View className="flex-row gap-2">

@@ -52,8 +52,8 @@ const ReceiveInstant = ({ symbol, amount }: ConfirmTransferParams) => {
         <View className="flex flex-row justify-center gap-2">
           <TouchableOpacity
             disabled={amount === "0" || amount === ""}
-            className={`rounded self-center px-4 py-2  ${
-              amount === "0" || amount === "" ? "bg-gray-500" : "bg-black-1100"
+            className={`rounded-xl self-center px-4 py-2 border-gray-600 border ${
+              amount === "0" || amount === "" ? "bg-[#2A2A2A]" : "bg-[#1E1E1E]"
             }`}
             onPress={() => {
               if (amount !== "0" && amount !== "") {
