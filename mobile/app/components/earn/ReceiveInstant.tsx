@@ -8,6 +8,11 @@ import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 import useEarn from "@/hooks/api/useEarn";
 import InfoAlert, { InfoAlertProps } from "../InfoAlert";
 import BalanceYieldGuide from "../BalanceYieldGuide";
+import useUser from "@/hooks/api/useUser";
+import {
+  setFreeBalances,
+  setLockupBalances,
+} from "@/src/features/balance/balanceSlice";
 
 export type ConfirmTransferParams = {
   symbol: keyof TokenBalances;
@@ -24,26 +29,42 @@ const ReceiveInstant = ({ symbol, amount }: ConfirmTransferParams) => {
 
   const dispatch = useDispatch();
   const processClaim = async () => {
-    dispatch(showLoading());
-    let result = await useEarn.claim({
-      amount,
-      symbol,
-    });
-    dispatch(hideLoading());
-    if (typeof result === "string") {
+    try {
+      dispatch(showLoading());
+      let result = await useEarn.claim({
+        amount,
+        symbol,
+      });
+      dispatch(hideLoading());
+      if (typeof result === "string") {
+        setInfoAlertState({
+          type: "error",
+          text: result,
+        });
+        setInfoAlertVisible(true);
+        return;
+      }
       setInfoAlertState({
-        type: "error",
-        text: result,
+        type: "success",
+        text: t("earn.transfer.transfer_successful"),
       });
       setInfoAlertVisible(true);
+      setTransferSuccess(true);
+    } catch (error) {
+      console.log("something wrong", error);
+    } finally {
+      fetchBalance();
+    }
+  };
+
+  const fetchBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
       return;
     }
-    setInfoAlertState({
-      type: "success",
-      text: t("earn.transfer.transfer_successful"),
-    });
-    setInfoAlertVisible(true);
-    setTransferSuccess(true);
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
   };
 
   return (
