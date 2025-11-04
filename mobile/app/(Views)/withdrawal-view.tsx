@@ -31,6 +31,10 @@ import Decimal from "decimal.js";
 import { t } from "i18next";
 import { updateIfValid } from "@/utils/ui";
 import { BackButton } from "../components/BackButton";
+import {
+  setFreeBalances,
+  setLockupBalances,
+} from "@/src/features/balance/balanceSlice";
 
 const WithDrawal = () => {
   const navigation = useNavigation();
@@ -90,6 +94,16 @@ const WithDrawal = () => {
     }
     dispatch(setMinWithdraw(result.minWithdraw));
     dispatch(setWithdrawFees(result.withdrawFees));
+  };
+
+  const syncBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
+      return;
+    }
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
   };
 
   const handleQuickAmountSelect = (percent: number) => {
@@ -155,6 +169,7 @@ const WithDrawal = () => {
 
   useEffect(() => {
     syncData();
+    syncBalance();
   }, []);
 
   return (

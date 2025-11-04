@@ -29,6 +29,10 @@ import {
 import { BackButton } from "../../../components/BackButton";
 import useUser from "@/hooks/api/useUser";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
+import {
+  setFreeBalances,
+  setLockupBalances,
+} from "@/src/features/balance/balanceSlice";
 
 const InitiateTransfer = () => {
   const { t } = useTranslation();
@@ -92,8 +96,19 @@ const InitiateTransfer = () => {
     });
   };
 
+  const syncBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
+      return;
+    }
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
+  };
+
   useEffect(() => {
     fetchTransferSettings();
+    syncBalance();
   }, []);
 
   return (
