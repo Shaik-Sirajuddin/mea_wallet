@@ -42,7 +42,7 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
-  const [showLokcupBalance, setShowLockUpBalance] = useState(false);
+  const [showLokcupBalance, setShowLockUpBalance] = useState(true);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
 
@@ -239,7 +239,7 @@ export default function HomeScreen() {
             <View className="flex-row items-center gap-[17px] my-4">
               <TouchableOpacity
                 onPress={() => {
-                  setShowLockUpBalance(false);
+                  // setShowLockUpBalance(false);
                 }}
               >
                 <Text
@@ -257,22 +257,12 @@ export default function HomeScreen() {
                   className="flex flex-col border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl"
                   disabled={token === "usdt_savings"}
                   onPress={() => {
-                    if (showLokcupBalance && token !== "usdt_savings") {
-                      router.push({
-                        pathname: "/(Views)/lock-up-history",
-                        params: {
-                          symbol: token,
-                        },
-                      });
-                      return;
-                    } else {
-                      router.navigate({
-                        pathname: "/(Views)/chart-view",
-                        params: {
-                          symbol: token,
-                        },
-                      });
-                    }
+                    router.navigate({
+                      pathname: "/(Views)/chart-view",
+                      params: {
+                        symbol: token,
+                      },
+                    });
                   }}
                 >
                   <View className="flex-row items-center justify-between py-[13px] px-3">
@@ -344,7 +334,7 @@ export default function HomeScreen() {
             <View className="flex-row items-center gap-[17px] my-4">
               <TouchableOpacity
                 onPress={() => {
-                  setShowLockUpBalance(true);
+                  // setShowLockUpBalance(true);
                 }}
               >
                 <Text
@@ -359,22 +349,13 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   key={token}
                   onPress={() => {
-                    if (showLokcupBalance) {
-                      router.push({
-                        pathname: "/(Views)/lock-up-history",
-                        params: {
-                          symbol: token,
-                        },
-                      });
-                      return;
-                    } else {
-                      router.navigate({
-                        pathname: "/(Views)/chart-view",
-                        params: {
-                          symbol: token,
-                        },
-                      });
-                    }
+                    router.push({
+                      pathname: "/(Views)/lock-up-history",
+                      params: {
+                        symbol: token,
+                      },
+                    });
+                    return;
                   }}
                 >
                   <View className="border-2 mb-2 border-black-1200 bg-black-1200 rounded-2xl flex-row items-center justify-between py-[13px] px-3">
