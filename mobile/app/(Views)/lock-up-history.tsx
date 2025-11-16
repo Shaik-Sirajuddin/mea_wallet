@@ -16,14 +16,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { LockUpBalances, TokenBalances } from "@/src/types/balance";
 import { BackButton } from "../components/BackButton";
+import {
+  setFreeBalances,
+  setLockupBalances,
+} from "@/src/features/balance/balanceSlice";
+import { useDispatch } from "react-redux";
+import useUser from "@/hooks/api/useUser";
 
 const LockUpHistory = () => {
   const { t } = useTranslation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
   const lockedBalance = useSelector(
-    (state: RootState) =>
-      state.balance.lockup[symbol as keyof LockUpBalances]
+    (state: RootState) => state.balance.lockup[symbol as keyof LockUpBalances]
   );
+  const dispatch = useDispatch();
   const displaySymbol = useMemo(() => {
     return symbol.toUpperCase();
   }, [symbol]);
@@ -42,6 +48,7 @@ const LockUpHistory = () => {
     if (!symbol) return;
 
     setLoading(true);
+    await useAsset.autoCloseLockUp(symbol.toUpperCase());
     const res = await useAsset.getLockupHistory(symbol.toUpperCase(), page);
 
     if (typeof res === "string") {
@@ -57,28 +64,36 @@ const LockUpHistory = () => {
     setLoading(false);
   };
 
+  const syncBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
+      return;
+    }
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
+  };
+
+  useEffect(() => {
+    syncBalance(); // initial call
+
+    const interval = setInterval(() => {
+      syncBalance();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [syncBalance]);
+
   useEffect(() => {
     fetchHistory();
   }, [page, symbol]);
 
   useEffect(() => {
-    let minCloseTime: Date | null = null;
-    for (let lockup of history) {
-      if (minCloseTime === null) {
-        minCloseTime = lockup.endDate;
-      } else {
-        if (minCloseTime.getTime() > lockup.endDate.getTime()) {
-          minCloseTime = lockup.endDate;
-        }
-      }
-    }
-    if (minCloseTime === null) {
-      return;
-    }
-    let intervalId = setInterval(() => {
+    let intervalId = setInterval(async () => {
       console.log("auto close called");
-      useAsset.autoCloseLockUp();
-    }, Date.now() - minCloseTime.getTime());
+      let res = await useAsset.autoCloseLockUp(symbol.toUpperCase());
+      console.log("close response", res);
+    }, 2000);
     return () => clearInterval(intervalId);
   }, [history]);
 

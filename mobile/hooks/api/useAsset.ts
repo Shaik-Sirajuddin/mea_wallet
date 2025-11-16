@@ -194,12 +194,12 @@ export default {
 
     return parsed;
   },
-  autoCloseLockUp: async () => {
+  autoCloseLockUp: async (symbol: string) => {
     return await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/lockup-proc`,
       {
         method: "POST",
-        body: new URLSearchParams({}).toString(),
+        body: new URLSearchParams({ symbol }).toString(),
       }
     );
   },

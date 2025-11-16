@@ -369,7 +369,7 @@ export default function HomeScreen() {
                           {token.toUpperCase()}
                         </Text>
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {parseNumberForView(amount)} {token.toUpperCase()}
+                          {parseNumberForView(amount)}  {token.toUpperCase()}
                         </Text>
                       </View>
                     </View>
@@ -379,6 +379,11 @@ export default function HomeScreen() {
                       </Text>
                       <Text className="text-[15px] font-normal leading-5 text-gray-1200 text-right">
                         ${getPrice(token)}
+                      </Text>
+                    </View>
+                    <View className="absolute flex top-2 h-full w-full items-center justify-start border-white rounded-2xl text-white">
+                      <Text className="ml-8 border border-gray-600 text-gray-200 rounded-full px-3 py-1  leading-none">
+                        Unavailable
                       </Text>
                     </View>
                   </View>
