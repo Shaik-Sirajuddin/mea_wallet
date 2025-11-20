@@ -8,6 +8,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import useAuth from "@/hooks/api/useAuth";
 import { DeleteIcon, UserX } from "lucide-react-native";
+import Constants from "expo-constants";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="bg-black-1000">
-      <View className="w-full h-full max-w-5xl mx-auto px-4 pt-8 pb-10">
+      <View className="w-full h-full max-w-5xl  mx-auto px-4 pt-8 pb-10">
         <View className="items-center">
           <Text className="text-lg font-semibold text-white">
             {t("settings.title")}
@@ -132,6 +133,12 @@ export default function SettingsScreen() {
               {t("settings.logout")}
             </Text>
           </Pressable>
+        </View>
+        {/* App Version */}
+        <View className="items-center  flex-1 justify-end mt-8 opacity-50">
+          <Text className="text-xs text-white">
+            App Version {Constants.expoConfig?.version || "1.0.0"}
+          </Text>
         </View>
       </View>
 
