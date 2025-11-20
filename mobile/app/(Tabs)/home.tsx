@@ -37,6 +37,7 @@ import { showLoading } from "@/src/features/loadingSlice";
 import { requestNotificationPermission } from "@/lib/notifications/requestPermissions";
 import ReceiveInstant from "../components/earn/ReceiveInstant";
 import BalanceYieldGuide from "../components/BalanceYieldGuide";
+import useSetting from "@/hooks/api/useSetting";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -149,6 +150,39 @@ export default function HomeScreen() {
       console.log("FCM Token : ", token);
     }
   };
+
+  const fetchMigration = async () => {
+    try {
+      const response = await useSetting.getMigrationState(); // typed result
+
+      if (!response.ok) {
+        console.warn("Migration API error:", response.error);
+        return;
+      }
+      // 👉 Check if right NOW falls inside migration window
+      const now = new Date();
+
+      const isDuringMigration =
+        response.migration === true &&
+        response.migration_start_at <= now &&
+        response.migration_end_at >= now;
+
+      if (isDuringMigration) {
+        // Reset the navigation stack and go only to migration page
+        router.replace("/(Views)/info/Migration");
+      }
+    } catch (e) {
+      console.error("Migration fetch error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch on load
+  useEffect(() => {
+    fetchMigration();
+  }, []);
+
   useEffect(() => {
     setTimeout(() => {
       setUpNotifications();
@@ -369,7 +403,7 @@ export default function HomeScreen() {
                           {token.toUpperCase()}
                         </Text>
                         <Text className="text-[15px] font-normal leading-5 text-gray-1200">
-                          {parseNumberForView(amount)}  {token.toUpperCase()}
+                          {parseNumberForView(amount)} {token.toUpperCase()}
                         </Text>
                       </View>
                     </View>

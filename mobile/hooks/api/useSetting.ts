@@ -11,6 +11,30 @@ export interface AppUpdateResponse {
   updateConfirm: string | null;
   status: string;
 }
+
+export interface MigrationApiRaw {
+  status: string;
+  migration?: string;
+  migration_start_at?: string | null;
+  migration_end_at?: string | null;
+}
+
+export interface MigrationStateSuccess {
+  ok: true;
+  migration: boolean;
+  migration_start_at: Date;
+  migration_end_at: Date;
+}
+
+export interface MigrationStateError {
+  ok: false;
+  error: string;
+}
+
+export type MigrationStateResponse =
+  | MigrationStateSuccess
+  | MigrationStateError;
+
 export default {
   getSettings: async (): Promise<SettingsResponse | string> => {
     let raw = await networkRequest<SettingsResponse>(
@@ -46,6 +70,34 @@ export default {
 
     return {
       minimumVersion: raw.updateConfirm ?? "3.0.4",
+    };
+  },
+
+  getMigrationState: async () => {
+    // API automatically injects API key inside networkRequest
+    const raw = await networkRequest<MigrationApiRaw>(
+      `${apiBaseUrl}/api/migration`,
+      {
+        method: "POST",
+        body: new URLSearchParams().toString(), // empty POST
+      }
+    );
+
+    // networkRequest might return string on error
+    if (typeof raw === "string") {
+      return { ok: false, error: raw };
+    }
+
+    // backend-level errors
+    if (raw.status !== "succ") {
+      return { ok: false, error: raw.status };
+    }
+
+    return {
+      ok: true,
+      migration: raw.migration === "Y",
+      migration_start_at: new Date(raw.migration_start_at ?? 0),
+      migration_end_at: new Date(raw.migration_end_at ?? 0),
     };
   },
 };
