@@ -81,9 +81,11 @@ const SwapTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [adminCommission, setAdminCommission] = useState("0");
-  const minDeposit = useSelector(
-    (state: RootState) => new Decimal(state.token.minDeposit[fromToken])
+  const rawMin = useSelector(
+    (state: RootState) => state.token.minDeposit[fromToken]
   );
+
+  const minDeposit = useMemo(() => new Decimal(rawMin), [rawMin]);
 
   // Modal states
   const [otpModalVisible, setOtpModalVisible] = useState(false);
@@ -147,10 +149,10 @@ const SwapTokens = () => {
   // Initial data fetch
   useEffect(() => {
     const initialFetch = async () => {
-      await fetchQuotes();
-      await fetchBalance();
-      await fetchSwapFee();
-      await syncDepositSettings();
+      syncDepositSettings();
+      fetchQuotes();
+      fetchBalance();
+      fetchSwapFee();
       setIsInitialLoading(false);
     };
     initialFetch();
@@ -161,7 +163,7 @@ const SwapTokens = () => {
       fetchQuotes();
       fetchBalance();
       fetchSwapFee();
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);

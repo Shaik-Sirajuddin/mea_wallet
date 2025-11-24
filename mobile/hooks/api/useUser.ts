@@ -33,82 +33,148 @@ interface UserInfoResponseRaw {
   stakingView: string;
   swapView: string;
 }
+// ----------------------
+// Local Cache for Balance
+// ----------------------
+let balanceCache: {
+  data: BalanceResponseRaw;
+  timestamp: number;
+} | null = null;
+
+const BALANCE_CACHE_TTL = 1500; // 1.5 seconds
+
+// ----- Binary semaphore lock -----
+let balanceCheckLock: Promise<any> | null = null;
+let releaseLock: ((value?: unknown) => void) | null = null;
+
+const getCachedBalanceResponse = async (): Promise<
+  BalanceResponseRaw | string
+> => {
+  const now = Date.now();
+
+  // Return cached data instantly
+  if (balanceCache && now - balanceCache.timestamp < BALANCE_CACHE_TTL) {
+    return balanceCache.data;
+  }
+
+  // If another request is already running, wait for it
+  if (balanceCheckLock) {
+    await balanceCheckLock;
+    if (balanceCache) return balanceCache.data;
+  }
+
+  // Create binary lock (semaphore)
+  balanceCheckLock = new Promise((resolve) => {
+    releaseLock = resolve;
+  });
+
+  try {
+    const raw = await networkRequest<BalanceResponseRaw>(
+      `${apiBaseUrl}/api/balance-check`,
+      { method: "POST" }
+    );
+
+    if (typeof raw === "string") {
+      return raw;
+    }
+
+    // Cache new data
+    balanceCache = {
+      data: raw,
+      timestamp: Date.now(),
+    };
+
+    return raw;
+  } finally {
+    // Release lock so other waiting calls continue
+    releaseLock?.();
+    balanceCheckLock = null;
+    releaseLock = null;
+  }
+};
+
+// ----------------------
+// Parser
+// ----------------------
+const parseBalanceResponse = (raw: BalanceResponseRaw) => {
+  const balance: BalanceResult = {
+    free: {
+      mea: trimTrailingZeros(raw.mea_balance),
+      sol: trimTrailingZeros(raw.sol_balance),
+      fox9: trimTrailingZeros(raw.fox9_balance),
+      usdt: trimTrailingZeros(raw.usdt_balance),
+      usdt_savings: trimTrailingZeros(raw.usdt_temp_balance),
+    },
+    lockup: {
+      mea: trimTrailingZeros(raw.mea_lockup),
+      fox9: trimTrailingZeros(raw.fox9_lockup),
+    },
+  };
+
+  const quotes: TokenQuotes = {
+    mea: trimTrailingZeros(raw.mea_quote.toString()),
+    sol: trimTrailingZeros(raw.sol_quote.toString()),
+    fox9: trimTrailingZeros(raw.fox9_quote.toString()),
+    usd: trimTrailingZeros(raw.usd_quote.toString()),
+    usdt: trimTrailingZeros(raw.usdt_quote.toString()),
+    usdt_savings: trimTrailingZeros(raw.usdt_quote.toString()),
+  };
+
+  const withdrawSettings: WithdrawSettings = {
+    minWithdraw: {
+      mea: trimTrailingZeros(raw.mea_min_withdraw_coin),
+      fox9: trimTrailingZeros(raw.fox9_min_withdraw_coin),
+      sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
+      usdt: trimTrailingZeros(raw.usdt_min_withdraw_coin),
+      usdt_savings: trimTrailingZeros(raw.usdt_temp_min_withdraw_coin),
+    },
+    withdrawFees: {
+      mea: trimTrailingZeros(raw.mea_WithdrawFee),
+      fox9: trimTrailingZeros(raw.fox9_WithdrawFee),
+      sol: trimTrailingZeros(raw.sol_WithdrawFee),
+      usdt: trimTrailingZeros(raw.usdt_WithdrawFee),
+      usdt_savings: "0",
+    },
+  };
+
+  const swapFee = new Decimal(
+    trimTrailingZeros(new Decimal(raw.swap_fee).toFixed(6))
+  );
+
+  return { balance, quotes, withdrawSettings, swapFee };
+};
 
 export default {
-  getBalance: async (): Promise<BalanceResult | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
-
+  getAllBalanceData: async () => {
+    const raw = await getCachedBalanceResponse();
     if (typeof raw === "string") return raw;
-    return {
-      free: {
-        mea: trimTrailingZeros(raw.mea_balance),
-        sol: trimTrailingZeros(raw.sol_balance),
-        fox9: trimTrailingZeros(raw.fox9_balance),
-        usdt: trimTrailingZeros(raw.usdt_balance),
-        usdt_savings: trimTrailingZeros(raw.usdt_temp_balance),
-      },
-      lockup: {
-        mea: trimTrailingZeros(raw.mea_lockup),
-        fox9: trimTrailingZeros(raw.fox9_lockup),
-      },
-    };
+    return parseBalanceResponse(raw);
   },
-  getQuotes: async (): Promise<TokenQuotes | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
 
+  getBalance: async () => {
+    const raw = await getCachedBalanceResponse();
     if (typeof raw === "string") return raw;
-
-    return {
-      mea: trimTrailingZeros(raw.mea_quote.toString()),
-      sol: trimTrailingZeros(raw.sol_quote.toString()),
-      fox9: trimTrailingZeros(raw.fox9_quote.toString()),
-      usd: trimTrailingZeros(raw.usd_quote.toString()),
-      usdt: trimTrailingZeros(raw.usdt_quote.toString()),
-      usdt_savings: trimTrailingZeros(raw.usdt_quote.toString()),
-    };
+    return parseBalanceResponse(raw).balance;
   },
-  getWithdrawSettings: async (): Promise<WithdrawSettings | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
 
+  getQuotes: async () => {
+    const raw = await getCachedBalanceResponse();
     if (typeof raw === "string") return raw;
-
-    return {
-      minWithdraw: {
-        mea: trimTrailingZeros(raw.mea_min_withdraw_coin),
-        fox9: trimTrailingZeros(raw.fox9_min_withdraw_coin),
-        sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
-        usdt: trimTrailingZeros(raw.usdt_min_withdraw_coin),
-        usdt_savings: trimTrailingZeros(raw.usdt_temp_min_withdraw_coin),
-      },
-      withdrawFees: {
-        mea: trimTrailingZeros(raw.mea_WithdrawFee),
-        fox9: trimTrailingZeros(raw.fox9_WithdrawFee),
-        sol: trimTrailingZeros(raw.sol_WithdrawFee),
-        usdt: trimTrailingZeros(raw.usdt_WithdrawFee),
-        usdt_savings: "0",
-      },
-    };
+    return parseBalanceResponse(raw).quotes;
   },
-  getSwapFee: async (): Promise<string | Decimal> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
 
+  getWithdrawSettings: async () => {
+    const raw = await getCachedBalanceResponse();
     if (typeof raw === "string") return raw;
-
-    let data = trimTrailingZeros(new Decimal(raw.swap_fee).toFixed(6));
-    return new Decimal(data);
+    return parseBalanceResponse(raw).withdrawSettings;
   },
+
+  getSwapFee: async () => {
+    const raw = await getCachedBalanceResponse();
+    if (typeof raw === "string") return raw;
+    return parseBalanceResponse(raw).swapFee;
+  },
+
   getTwoFAData: async (): Promise<TwoFADetails | string> => {
     const res = await networkRequest<any>(`${apiBaseUrl}/api/user-info`, {
       method: "POST",
