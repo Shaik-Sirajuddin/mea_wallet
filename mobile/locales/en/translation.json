@@ -79,6 +79,7 @@
     "receive": "Receive",
     "send": "Send",
     "swap": "Swap",
+    "loan" : "loan",
     "native": "Native",
     "lock_up": "Lock up",
     "edit_profile": "Edit Profile",
@@ -557,5 +558,11 @@
         "no_history": "No transfer history found."
       }
     }
+  },
+  "loan": {
+    "title": "Loan Dashboard",
+    "application": "Loan Application",
+    "overview": "Loan Overview",
+    "transaction_history": "Transaction History"
   }
 }

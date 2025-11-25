@@ -38,6 +38,7 @@ import { requestNotificationPermission } from "@/lib/notifications/requestPermis
 import ReceiveInstant from "../components/earn/ReceiveInstant";
 import BalanceYieldGuide from "../components/BalanceYieldGuide";
 import useSetting from "@/hooks/api/useSetting";
+import LoanIcon from "@/assets/images/hand-dollar.svg";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -229,7 +230,7 @@ export default function HomeScreen() {
 
             <View
               className={`flex-row ${
-                featuresEnabled ? "max-w-[280px]" : "max-w-[220px]"
+                featuresEnabled ? "max-w-[400px]" : "max-w-[220px]"
               } mx-auto gap-[7px]`}
             >
               <View className="bg-black-1300 rounded-2xl items-center  flex-1">
@@ -263,6 +264,28 @@ export default function HomeScreen() {
                       <SvgIcon name="swapIcon" width="24" height="24" />
                       <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
                         {t("home.swap")}
+                      </Text>
+                    </View>
+                  </Pressable>
+                </View>
+              )}
+              {featuresEnabled && (
+                <View className="bg-black-1300 rounded-2xl items-center flex-1">
+                  <Pressable
+                    onPress={() => {
+                      router.navigate("/(Views)/loan");
+                    }}
+                  >
+                    <View className="w-full items-center p-[18px] py-[17px]">
+                      {/* Font Awesome Icon */}
+                      <LoanIcon
+                        width={26}
+                        height={26}
+                        fill="rgb(168, 85, 247)" // Use `fill` instead of `color`
+                      />
+
+                      <Text className="text-[13px] font-semibold mt-1 text-gray-1000">
+                        {t("home.loan")}
                       </Text>
                     </View>
                   </Pressable>
