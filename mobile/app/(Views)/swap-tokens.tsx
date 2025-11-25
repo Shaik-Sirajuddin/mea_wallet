@@ -50,6 +50,7 @@ import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import SvgIcon from "../components/SvgIcon";
+import { router } from "expo-router";
 
 type TokenType = keyof TokenBalances;
 
@@ -93,6 +94,7 @@ const SwapTokens = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
+  const [swapSucess, setSwapSuccess] = useState(false);
 
   const syncDepositSettings = async () => {
     const res = await useDeposit.getDepositSettings();
@@ -318,6 +320,7 @@ const SwapTokens = () => {
           type: "success",
         });
         setInfoAlertVisible(true);
+        setSwapSuccess(true);
         // Clear amounts after successful swap
         setPayAmount("");
         setReceiveAmount("");
@@ -670,6 +673,14 @@ const SwapTokens = () => {
           visible={infoAlertVisible}
           setVisible={setInfoAlertVisible}
           onDismiss={() => {
+            if (swapSucess) {
+              router.navigate({
+                pathname: "/(Views)/asset-history",
+                params: {
+                  symbol: toToken,
+                },
+              });
+            }
             //show success
           }}
         />
