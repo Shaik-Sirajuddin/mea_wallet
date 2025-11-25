@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
+import useLoan from "@/hooks/api/useLoan";
 
 export default function Loan() {
   const { t } = useTranslation();
-
+  const sync = async () => {
+    let data = await useLoan.getLoanHistory(1);
+    console.log("loan data", data);
+  };
+  useEffect(() => {
+    sync();
+  }, []);
   return (
     <View className="bg-black-1000">
       <View className="w-full h-full max-w-5xl mx-auto ">

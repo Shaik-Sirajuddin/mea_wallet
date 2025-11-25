@@ -78,127 +78,135 @@ export interface LoanHistoryResponse {
 
 export default {
   /** Fetch user's loan limits */
-  getLoanLimit: async (apikey: string): Promise<LoanLimit | string> => {
+  getLoanLimit: async (): Promise<LoanLimit | string> => {
+    const params = new URLSearchParams();
     return await networkRequest<LoanLimit & { status: string }>(
       `${apiBaseUrl}/api/loan-limit`,
-      {
-        method: "POST",
-        body: JSON.stringify({ apikey }),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Apply for a loan */
-  applyLoan: async (
-    payload: LoanApplicationPayload & { apikey: string }
-  ): Promise<any> => {
+  applyLoan: async (payload: LoanApplicationPayload): Promise<any> => {
+    const params = new URLSearchParams();
+    params.append("asset", payload.asset);
+    params.append("deposit_money", payload.deposit_money.toString());
+    params.append("otp_code", payload.otp_code);
+
     return await networkRequest<any>(`${apiBaseUrl}/api/loan-application`, {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: params.toString(),
     });
   },
 
   /** Fetch user's active loans overview */
   getLoanOverview: async (
-    page: number,
-    apikey: string
+    page: number
   ): Promise<LoanOverviewResponse | string> => {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+
     return await networkRequest<LoanOverviewResponse>(
       `${apiBaseUrl}/api/loan-overview`,
-      {
-        method: "POST",
-        body: JSON.stringify({ page, apikey }),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Fetch loan-add payment history */
-  getPaymentHistory: async (no: number, page: number, apikey: string) => {
+  getPaymentHistory: async (no: number, page: number) => {
+    const params = new URLSearchParams();
+    params.append("no", no.toString());
+    params.append("page", page.toString());
+
     return await networkRequest<LoanHistoryResponse>(
       `${apiBaseUrl}/api/loan-paymnet-loan-add-history`,
-      {
-        method: "POST",
-        body: JSON.stringify({ no, page, apikey }),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Fetch loan interest history */
-  getInterestHistory: async (no: number, page: number, apikey: string) => {
+  getInterestHistory: async (no: number, page: number) => {
+    const params = new URLSearchParams();
+    params.append("no", no.toString());
+    params.append("page", page.toString());
+
     return await networkRequest<LoanHistoryResponse>(
       `${apiBaseUrl}/api/loan-interest-history`,
-      {
-        method: "POST",
-        body: JSON.stringify({ no, page, apikey }),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Make additional collateral payment */
-  addCollateralPayment: async (params: {
+  addCollateralPayment: async (paramsObj: {
     no: number;
     AddPrice: string;
     otp_code: string;
-    apikey: string;
   }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("AddPrice", paramsObj.AddPrice);
+    params.append("otp_code", paramsObj.otp_code);
+
     return await networkRequest<any>(
       `${apiBaseUrl}/api/loan-additional-collateral-payments`,
-      {
-        method: "POST",
-        body: JSON.stringify(params),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Make additional loan payment */
-  addLoanPayment: async (params: {
+  addLoanPayment: async (paramsObj: {
     no: number;
     AddPrice: string;
     otp_code: string;
-    apikey: string;
   }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("AddPrice", paramsObj.AddPrice);
+    params.append("otp_code", paramsObj.otp_code);
+
     return await networkRequest<any>(
       `${apiBaseUrl}/api/loan-additional-payments`,
-      {
-        method: "POST",
-        body: JSON.stringify(params),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 
   /** Repay loan interest */
-  repayInterest: async (params: {
+  repayInterest: async (paramsObj: {
     no: number;
     interest: string;
     otp_code: string;
-    apikey: string;
   }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("interest", paramsObj.interest);
+    params.append("otp_code", paramsObj.otp_code);
+
     return await networkRequest<any>(`${apiBaseUrl}/api/loan-interest-repay`, {
       method: "POST",
-      body: JSON.stringify(params),
+      body: params.toString(),
     });
   },
 
   /** Repay principal */
-  repayPrincipal: async (params: {
-    no: number;
-    otp_code: string;
-    apikey: string;
-  }) => {
+  repayPrincipal: async (paramsObj: { no: number; otp_code: string }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("otp_code", paramsObj.otp_code);
+
     return await networkRequest<any>(`${apiBaseUrl}/api/loan-principal-repay`, {
       method: "POST",
-      body: JSON.stringify(params),
+      body: params.toString(),
     });
   },
 
   /** Fetch user's loan history */
-  getLoanHistory: async (page: number, apikey: string) => {
+  getLoanHistory: async (page: number) => {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+
     return await networkRequest<LoanHistoryResponse>(
       `${apiBaseUrl}/api/loan-history`,
-      {
-        method: "POST",
-        body: JSON.stringify({ page, apikey }),
-      }
+      { method: "POST", body: params.toString() }
     );
   },
 };

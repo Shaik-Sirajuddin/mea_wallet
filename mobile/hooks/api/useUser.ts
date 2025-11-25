@@ -1,169 +1,212 @@
-import { apiBaseUrl, imageBucket } from "@/lib/constants";
+import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
-import {
-  LockUpBalances,
-  TokenBalances,
-  TokenQuotes,
-} from "@/src/types/balance";
-import { BalanceResponseRaw } from "@/src/api/types/balance";
-import { trimTrailingZeros } from "@/utils/ui";
-import { TwoFADetails, UserDetails } from "@/src/api/types/user";
-import { StatusResponse } from "@/src/api/types/auth";
-import Decimal from "decimal.js";
 
-export interface DepositSettings {
-  minDeposit: Omit<TokenBalances, "usdt_savings">;
-  managerDepositAddresses: string[];
-  userDepositAddresses: string[];
+export interface LoanLimit {
+  loanMax: string; // "Y" / "N"
+  max_loan_amount: number;
+  loan_count: number;
 }
 
-export interface WithdrawSettings {
-  minWithdraw: TokenBalances;
-  withdrawFees: TokenBalances;
+export interface LoanApplicationPayload {
+  asset: string;
+  deposit_money: number;
+  otp_code: string;
 }
 
-export interface BalanceResult {
-  free: TokenBalances;
-  lockup: LockUpBalances;
+export interface LoanOverviewItem {
+  no: number;
+  startDate: string;
+  symbol: string;
+  quoteAtLoan: number;
+  quoteNow: number;
+  appliedAmount: number;
+  totalValueAtLoan: number;
+  loanCollateralLocked: number;
+  usdtPayment: number;
+  annualInterestUSDT: number;
+  annualInterestAsset: number;
+  monthlyInterestUSDT: number;
+  monthlyInterestAsset: number;
+  currentTotalCollateralQuantity: number;
+  collateralValueNow: number;
+  valueRatio: number;
+  adminSetStopRatio: number;
+  liquidationStopStatus: string;
+  interestPaymentDate: string;
+  nextInterestPaymentDate: string;
+  repaymentDate: string | null;
+  state: string;
+  stateStr: string;
+  latestQuote: number;
+  loanInterestUnconfirmedCount: number;
+  loanInterestFirstUnconfirmedSeqno: number;
+  loanInterestFirstUnconfirmedDate: string;
+  LoanAddPrice: string;
+  StopDate: string | null;
+  PrincipalConfirm: string;
+  AssetYield: number;
+  LoanYield: number;
+  monthlyRate: number;
+  intTotalCount: number;
+  delinquency_num: number;
 }
 
-interface UserInfoResponseRaw {
-  Thumbnail: string;
-  qr_reg: string;
-  stakingView: string;
-  swapView: string;
+export interface LoanOverviewResponse {
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: LoanOverviewItem[];
+}
+
+export interface LoanHistoryItem {
+  no: number;
+  symbol: string;
+  appliedAmount: number;
+  stateStr: string;
+  startDate: string;
+  repaymentDate?: string;
+}
+
+export interface LoanHistoryResponse {
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: LoanHistoryItem[];
 }
 
 export default {
-  getBalance: async (): Promise<BalanceResult | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
+  /** Fetch user's loan limits */
+  getLoanLimit: async (): Promise<LoanLimit | string> => {
+    const params = new URLSearchParams();
+    return await networkRequest<LoanLimit & { status: string }>(
+      `${apiBaseUrl}/api/loan-limit`,
+      { method: "POST", body: params.toString() }
     );
-
-    if (typeof raw === "string") return raw;
-    return {
-      free: {
-        mea: trimTrailingZeros(raw.mea_balance),
-        sol: trimTrailingZeros(raw.sol_balance),
-        fox9: trimTrailingZeros(raw.fox9_balance),
-        usdt: trimTrailingZeros(raw.usdt_balance),
-        usdt_savings: trimTrailingZeros(raw.usdt_temp_balance),
-      },
-      lockup: {
-        mea: trimTrailingZeros(raw.mea_lockup),
-        fox9: trimTrailingZeros(raw.fox9_lockup),
-      },
-    };
   },
-  getQuotes: async (): Promise<TokenQuotes | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
 
-    if (typeof raw === "string") return raw;
+  /** Apply for a loan */
+  applyLoan: async (payload: LoanApplicationPayload): Promise<any> => {
+    const params = new URLSearchParams();
+    params.append("asset", payload.asset);
+    params.append("deposit_money", payload.deposit_money.toString());
+    params.append("otp_code", payload.otp_code);
 
-    return {
-      mea: trimTrailingZeros(raw.mea_quote.toString()),
-      sol: trimTrailingZeros(raw.sol_quote.toString()),
-      fox9: trimTrailingZeros(raw.fox9_quote.toString()),
-      usd: trimTrailingZeros(raw.usd_quote.toString()),
-      usdt: trimTrailingZeros(raw.usdt_quote.toString()),
-      usdt_savings: trimTrailingZeros(raw.usdt_quote.toString()),
-    };
-  },
-  getWithdrawSettings: async (): Promise<WithdrawSettings | string> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
-
-    if (typeof raw === "string") return raw;
-
-    return {
-      minWithdraw: {
-        mea: trimTrailingZeros(raw.mea_min_withdraw_coin),
-        fox9: trimTrailingZeros(raw.fox9_min_withdraw_coin),
-        sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
-        usdt: trimTrailingZeros(raw.usdt_min_withdraw_coin),
-        usdt_savings: trimTrailingZeros(raw.usdt_temp_min_withdraw_coin),
-      },
-      withdrawFees: {
-        mea: trimTrailingZeros(raw.mea_WithdrawFee),
-        fox9: trimTrailingZeros(raw.fox9_WithdrawFee),
-        sol: trimTrailingZeros(raw.sol_WithdrawFee),
-        usdt: trimTrailingZeros(raw.usdt_WithdrawFee),
-        usdt_savings: "0",
-      },
-    };
-  },
-  getSwapFee: async (): Promise<string | Decimal> => {
-    const raw = await networkRequest<BalanceResponseRaw>(
-      `${apiBaseUrl}/api/balance-check`,
-      { method: "POST" }
-    );
-
-    if (typeof raw === "string") return raw;
-
-    let data = trimTrailingZeros(new Decimal(raw.swap_fee).toFixed(6));
-    return new Decimal(data);
-  },
-  getTwoFAData: async (): Promise<TwoFADetails | string> => {
-    const res = await networkRequest<any>(`${apiBaseUrl}/api/user-info`, {
+    return await networkRequest<any>(`${apiBaseUrl}/api/loan-application`, {
       method: "POST",
-    });
-
-    if (typeof res === "string") return res;
-
-    return {
-      qrUrl: atob(res.qrUrl),
-      secretCode: atob(res.SecretCode),
-      isRegistered: res.qr_reg === "Y",
-    };
-  },
-  validate2FABackup: async (otp_code: string) => {
-    return await networkRequest<StatusResponse>(`${apiBaseUrl}/api/qr-reg`, {
-      method: "POST",
-      body: new URLSearchParams({ otp_code }).toString(),
+      body: params.toString(),
     });
   },
-  getUserInfo: async (): Promise<UserDetails | string> => {
-    let raw = await networkRequest<UserInfoResponseRaw>(
-      `${apiBaseUrl}/api/user-info`,
-      {
-        method: "POST",
-        body: new URLSearchParams({}).toString(),
-      }
-    );
-    if (typeof raw === "string") return raw;
-    let data = {
-      image: raw.Thumbnail,
-      twoFACompleted: raw.qr_reg === "Y",
-      swapFeatureEnabled: raw.swapView === "Y",
-      stakingFeatureEnabled: raw.swapView === "Y",
-    };
-    return data;
-  },
-  updateProfileImage: async (
-    image: string
-  ): Promise<StatusResponse | string> => {
-    return await networkRequest<StatusResponse>(
-      `${apiBaseUrl}/api/edit-profile`,
-      {
-        method: "POST",
-        body: new URLSearchParams({ file: image }).toString(),
-      }
+
+  /** Fetch user's active loans overview */
+  getLoanOverview: async (
+    page: number
+  ): Promise<LoanOverviewResponse | string> => {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+
+    return await networkRequest<LoanOverviewResponse>(
+      `${apiBaseUrl}/api/loan-overview`,
+      { method: "POST", body: params.toString() }
     );
   },
 
-  updateAvatar: async (emojiCode: string): Promise<StatusResponse | string> => {
-    return await networkRequest<StatusResponse>(
-      `${apiBaseUrl}/api/edit-avatar`,
-      {
-        method: "POST",
-        body: new URLSearchParams({ file: emojiCode }).toString(),
-      }
+  /** Fetch loan-add payment history */
+  getPaymentHistory: async (no: number, page: number) => {
+    const params = new URLSearchParams();
+    params.append("no", no.toString());
+    params.append("page", page.toString());
+
+    return await networkRequest<LoanHistoryResponse>(
+      `${apiBaseUrl}/api/loan-paymnet-loan-add-history`,
+      { method: "POST", body: params.toString() }
+    );
+  },
+
+  /** Fetch loan interest history */
+  getInterestHistory: async (no: number, page: number) => {
+    const params = new URLSearchParams();
+    params.append("no", no.toString());
+    params.append("page", page.toString());
+
+    return await networkRequest<LoanHistoryResponse>(
+      `${apiBaseUrl}/api/loan-interest-history`,
+      { method: "POST", body: params.toString() }
+    );
+  },
+
+  /** Make additional collateral payment */
+  addCollateralPayment: async (paramsObj: {
+    no: number;
+    AddPrice: string;
+    otp_code: string;
+  }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("AddPrice", paramsObj.AddPrice);
+    params.append("otp_code", paramsObj.otp_code);
+
+    return await networkRequest<any>(
+      `${apiBaseUrl}/api/loan-additional-collateral-payments`,
+      { method: "POST", body: params.toString() }
+    );
+  },
+
+  /** Make additional loan payment */
+  addLoanPayment: async (paramsObj: {
+    no: number;
+    AddPrice: string;
+    otp_code: string;
+  }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("AddPrice", paramsObj.AddPrice);
+    params.append("otp_code", paramsObj.otp_code);
+
+    return await networkRequest<any>(
+      `${apiBaseUrl}/api/loan-additional-payments`,
+      { method: "POST", body: params.toString() }
+    );
+  },
+
+  /** Repay loan interest */
+  repayInterest: async (paramsObj: {
+    no: number;
+    interest: string;
+    otp_code: string;
+  }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("interest", paramsObj.interest);
+    params.append("otp_code", paramsObj.otp_code);
+
+    return await networkRequest<any>(`${apiBaseUrl}/api/loan-interest-repay`, {
+      method: "POST",
+      body: params.toString(),
+    });
+  },
+
+  /** Repay principal */
+  repayPrincipal: async (paramsObj: { no: number; otp_code: string }) => {
+    const params = new URLSearchParams();
+    params.append("no", paramsObj.no.toString());
+    params.append("otp_code", paramsObj.otp_code);
+
+    return await networkRequest<any>(`${apiBaseUrl}/api/loan-principal-repay`, {
+      method: "POST",
+      body: params.toString(),
+    });
+  },
+
+  /** Fetch user's loan history */
+  getLoanHistory: async (page: number) => {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+
+    return await networkRequest<LoanHistoryResponse>(
+      `${apiBaseUrl}/api/loan-history`,
+      { method: "POST", body: params.toString() }
     );
   },
 };
