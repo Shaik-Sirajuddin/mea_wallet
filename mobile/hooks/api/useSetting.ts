@@ -9,6 +9,7 @@ export interface SettingsResponse {
 
 export interface AppUpdateResponse {
   updateConfirm: string | null;
+  updateConfirmIOS: string | null;
   status: string;
 }
 
@@ -63,13 +64,13 @@ export default {
         body: new URLSearchParams({}).toString(), // empty body, apikey injected internally
       }
     );
-
     if (typeof raw === "string") {
       return raw; // could be an error message string
     }
 
     return {
-      minimumVersion: raw.updateConfirm ?? "3.0.4",
+      minimumVersion: raw.updateConfirm ?? "0.9",
+      minimumVersionIOS: raw.updateConfirmIOS ?? "0.9",
     };
   },
 
