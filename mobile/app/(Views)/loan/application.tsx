@@ -7,18 +7,23 @@ import {
   TextInput,
   ActivityIndicator,
   Image,
+  Modal,
 } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { BackButton } from "@/app/components/BackButton";
 import useLoan from "@/hooks/api/useLoan";
 import useUser from "@/hooks/api/useUser";
 import InfoAlert from "@/app/components/InfoAlert";
 import { Picker } from "@react-native-picker/picker";
-import { parseNumberForView, formatDecimal } from "@/utils/ui";
+import { parseNumberForView, formatDecimal, tokenImageMap } from "@/utils/ui";
+import { AppDispatch } from "@/src/store";
+import { showLoading, hideLoading } from "@/src/features/loadingSlice";
 
 const LoanApplication = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Form state
   const [asset, setAsset] = useState("MEA");
@@ -38,6 +43,24 @@ const LoanApplication = () => {
   const [alertText, setAlertText] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
   const [refreshTimer, setRefreshTimer] = useState(60);
+  const [termsVisible, setTermsVisible] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [terms, setTerms] = useState({
+    t1: false,
+    t2: false,
+    t3: false,
+    t4: false,
+    t5: false,
+    t6: false,
+    t7: false,
+    t8: false,
+    t9: false,
+    t10: false,
+    t11: false,
+    t12: false,
+    t13: false,
+    t14: false,
+  });
 
   useEffect(() => {
     fetchData();
@@ -83,8 +106,21 @@ const LoanApplication = () => {
   const safetyBufferQty = collateralQty * (lockedCollateralPercent / 100);
   const loanDisbursementAmount =
     collateralValuation * (collateralRatioPercent / 100);
-
+  const getTokenImage = (token: string) => {
+    const key = token.toLowerCase();
+    return tokenImageMap[key] || require("@/assets/images/coin-img.png");
+  };
   const handleSubmit = async () => {
+    if (!termsAccepted) {
+      setAlertType("error");
+      setAlertText(
+        t("loan.must_accept_terms") ||
+        "You must agree to all terms and conditions before applying for a loan."
+      );
+      setAlertVisible(true);
+      return;
+    }
+
     if (!collateralQuantity || collateralQty <= 0) {
       setAlertType("error");
       setAlertText(
@@ -111,32 +147,39 @@ const LoanApplication = () => {
     }
 
     setLoading(true);
-    const result = await useLoan.applyLoan({
-      asset,
-      deposit_money: collateralQty,
-      otp_code: otpCode,
-    });
+    dispatch(
+      showLoading(t("loan.loan_application") || t("common.loading") || "Loading...")
+    );
 
-    setLoading(false);
+    try {
+      const result = await useLoan.applyLoan({
+        asset,
+        deposit_money: collateralQty,
+        otp_code: otpCode,
+      });
 
-    if (typeof result === "string" || result.status !== "success") {
-      setAlertType("error");
-      setAlertText(
-        typeof result === "string"
-          ? result
-          : t("loan.application_failed") || "Loan application failed"
-      );
-      setAlertVisible(true);
-    } else {
-      setAlertType("success");
-      setAlertText(
-        t("loan.application_success") ||
+      if (typeof result === "string" || result.status !== "success") {
+        setAlertType("error");
+        setAlertText(
+          typeof result === "string"
+            ? result
+            : t("loan.application_failed") || "Loan application failed"
+        );
+        setAlertVisible(true);
+      } else {
+        setAlertType("success");
+        setAlertText(
+          t("loan.application_success") ||
           "Loan application submitted successfully"
-      );
-      setAlertVisible(true);
-      setTimeout(() => {
-        router.replace("/loan/overview");
-      }, 2000);
+        );
+        setAlertVisible(true);
+        setTimeout(() => {
+          router.replace("/loan/overview");
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
@@ -146,12 +189,12 @@ const LoanApplication = () => {
     unit: string = ""
   ) => (
     <View className="flex-row items-center justify-between bg-black-1200 rounded-[15px] p-4 mb-1">
-      <Text className="text-[12px] font-medium leading-[22px] tracking-[-0.34px] text-gray-1200">
+      <Text className="text-base font-medium leading-[22px] tracking-[-0.34px] text-gray-1200">
         {label}
       </Text>
       <View className="flex-row items-center">
         {typeof value === "string" ? (
-          <Text className="text-[12px] font-medium leading-[22px] tracking-[-0.34px] text-white">
+          <Text className="text-base font-medium leading-[22px] tracking-[-0.34px] text-white">
             {value}
           </Text>
         ) : (
@@ -164,6 +207,38 @@ const LoanApplication = () => {
     </View>
   );
 
+  const allChecked = Object.values(terms).every((v) => v);
+
+  const toggleAllTerms = () => {
+    const next = !allChecked;
+    setTerms({
+      t1: next,
+      t2: next,
+      t3: next,
+      t4: next,
+      t5: next,
+      t6: next,
+      t7: next,
+      t8: next,
+      t9: next,
+      t10: next,
+      t11: next,
+      t12: next,
+      t13: next,
+      t14: next,
+    });
+  };
+
+  const toggleTerm = (key: keyof typeof terms) => {
+    setTerms((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  useEffect(() => {
+    if (Object.values(terms).every((v) => v)) {
+      setTermsAccepted(true);
+    }
+  }, [terms]);
+
   return (
     <View className="bg-black-1000 flex-1">
       <View className="w-full max-w-3xl mx-auto pb-2">
@@ -175,31 +250,44 @@ const LoanApplication = () => {
         </View>
 
         <ScrollView
-          className="px-4"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          className=""
+          contentContainerStyle={{ paddingBottom: 50 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Asset Selection */}
           {renderRow(
             t("loan.asset"),
-            <View className="w-[160px]">
-              <View className="bg-black-1000 border border-gray-700 rounded px-3 py-2">
+            <View className="min-w-[180px]">
+              <View className="bg-black-1000 border border-gray-700 rounded flex-row items-center px-2"
+                style={{ height: 40 }}>
+
+                {/* Token Image */}
+                <Image
+                  source={getTokenImage(asset)}
+                  className="w-6 h-6 rounded-full mr-2"
+                />
+
+                {/* Picker */}
                 <Picker
                   selectedValue={asset}
                   onValueChange={(value) => {
                     setAsset(value);
                     setCollateralQuantity("");
                   }}
-                  style={{ color: "#fff", height: 38 }}
+                  style={{
+                    color: "#fff",
+                    flex: 1,        // ★ Allow picker to expand
+                    marginVertical: -8,
+                  }}
                   dropdownIconColor="#fff"
+                  mode="dropdown"
                 >
-                  <Picker.Item label="MEA" value="MEA" />
-                  <Picker.Item label="SOL" value="SOL" />
-                  <Picker.Item label="FOX9" value="FOX9" />
+                  <Picker.Item label="MEA" value="MEA" color="#ffffff" />
                 </Picker>
               </View>
+
             </View>
           )}
+
 
           {/* Balance */}
           {renderRow(t("loan.balance"), parseNumberForView(balance))}
@@ -299,20 +387,35 @@ const LoanApplication = () => {
             </View>
           </View>
 
-          {/* Submit Button */}
-          <TouchableOpacity
-            onPress={handleSubmit}
-            disabled={loading}
-            className="h-[44px] rounded-xl bg-blue-1100 border border-blue-1100 items-center justify-center mb-6"
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text className="text-white font-semibold">
-                {t("loan.loan_application") || "Loan application"}
+          {/* Submit & Cancel Buttons */}
+          <View className="flex-row gap-3 mb-6">
+            <TouchableOpacity
+              onPress={handleSubmit}
+              disabled={loading || !termsAccepted}
+              className={`flex-1 h-[44px] rounded-xl items-center justify-center border ${loading || !termsAccepted
+                ? "bg-pink-1100/50 border-blue-1100/50"
+                : "bg-pink-1100 border-blue-1100"
+                }`}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text className="text-white font-semibold">
+                  {t("loan.loan_application") || "Loan application"}
+                </Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => router.replace("/loan")}
+              disabled={loading}
+              className="flex-1 h-[44px] rounded-xl bg-black-1100 border border-gray-700 items-center justify-center"
+            >
+              <Text className="text-gray-200 font-semibold">
+                {t("common.cancel") || "Cancel"}
               </Text>
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
 
@@ -322,6 +425,336 @@ const LoanApplication = () => {
         text={alertText}
         type={alertType}
       />
+      <Modal
+        transparent
+        visible={termsVisible}
+        animationType="fade"
+        onRequestClose={() => {
+          if (!termsAccepted) {
+            router.replace("/loan");
+          }
+          setTermsVisible(false);
+        }}
+      >
+        <View className="flex-1 bg-black/60 justify-center items-center px-4">
+          <View className="w-full rounded-2xl bg-[#111318] border border-gray-700 p-6">
+            <Text className="text-xl font-bold text-white mb-4">
+              {t("loan.agree_terms") || "Agree to Terms and Conditions"}
+            </Text>
+
+            {/* Full agreement */}
+            <TouchableOpacity
+              className="flex-row items-center gap-3 mb-4"
+              onPress={toggleAllTerms}
+              activeOpacity={0.8}
+            >
+              <View
+                className={`w-5 h-5 rounded border ${allChecked ? "bg-pink-1100 border-pink-1100" : "border-gray-600"
+                  } items-center justify-center`}
+              >
+                {allChecked && (
+                  <View className="w-3 h-3 bg-white rounded-[4px]" />
+                )}
+              </View>
+              <Text className="text-white font-semibold">
+                {t("loan.full_agreement") || "Full agreement"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Terms list */}
+            <ScrollView
+              className="max-h-[45vh] pr-1"
+              showsVerticalScrollIndicator={true}
+            >
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t1")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t1 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t1 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_1")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t2")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t2 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t2 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_2")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t3")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t3 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t3 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_3")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t4")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t4 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t4 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_4")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t5")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t5 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t5 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_5")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t6")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t6 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t6 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_6")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t7")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t7 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t7 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_7")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t8")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t8 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t8 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_8")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t9")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t9 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t9 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_9")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t10")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t10 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t10 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_10")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t11")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t11 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t11 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_11")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t12")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t12 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t12 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_12")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t13")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t13 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t13 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_13")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-row items-start gap-3 mb-3"
+                onPress={() => toggleTerm("t14")}
+                activeOpacity={0.8}
+              >
+                <View
+                  className={`mt-1 w-4 h-4 rounded border ${terms.t14 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
+                    } items-center justify-center`}
+                >
+                  {terms.t14 && (
+                    <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-200 flex-1">
+                  {t("loan.term_14")}
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+
+            {/* Modal buttons */}
+            <View className="mt-6 flex-row gap-3">
+              <TouchableOpacity
+                disabled={!allChecked}
+                onPress={() => {
+                  setTermsAccepted(true);
+                  setTermsVisible(false);
+                }}
+                className={`
+                flex-1 h-[44px] rounded-xl items-center justify-center
+                ${allChecked
+                    ? "bg-pink-1100 border border-pink-1100"
+                    : "bg-gray-700 border border-gray-700 opacity-50"
+                  }
+              `}
+              >
+                <Text className="text-white font-semibold">
+                  {t("loan.loan_application") || "Loan application"}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-1 h-[44px] rounded-xl border border-gray-600 items-center justify-center"
+                onPress={() => {
+                  setTermsVisible(false);
+                  router.replace("/loan");
+                }}
+              >
+                <Text className="text-gray-200 font-semibold">
+                  {t("common.cancel") || "Cancel"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

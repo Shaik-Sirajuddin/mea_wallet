@@ -398,6 +398,7 @@
       "google_otp_code": "Google OTP Code"
     },
     "info": {
+      "info" : "Info",
       "otp_required": "Please enter a valid 6-digit Google OTP code.",
       "activity_details": "The activity details are as follows"
     }
@@ -566,14 +567,14 @@
     "transaction_history": "Transaction History",
     "start_date": "Start Date",
     "asset": "Asset",
-    "initial_collateral_reference_price": "Initial Collateral Reference Price",
+    "initial_collateral_reference_price": "Initial Collateral Ref Price",
     "collateral_amount": "Collateral Amount",
-    "collateral_valuation_at_loan_start": "Collateral Valuation at Loan Start",
+    "collateral_valuation_at_loan_start": "Collateral Valuation at Start",
     "locked_collateral": "Locked Collateral",
     "collateral_ratio": "Collateral ratio",
     "loan_amount": "Loan amount",
-    "annual_interest_usdt_equivalent": "Annual interest(USDT-Equivalent)",
-    "monthly_interest_asset_expected": "Monthly interest asset(Expected)",
+    "annual_interest_usdt_equivalent": "Annual interest",
+    "monthly_interest_asset_expected": "Monthly interest (Exp)",
     "monthly_interest_help_text": "Expected monthly interest payment in asset.",
     "current_collateral_quantity": "Current Collateral Quantity",
     "current_collateral_value": "Current Collateral Value",

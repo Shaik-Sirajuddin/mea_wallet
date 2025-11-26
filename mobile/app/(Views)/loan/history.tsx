@@ -125,7 +125,7 @@ const LoanHistory = () => {
           data={history}
           renderItem={renderItem}
           keyExtractor={(item, index) => `${item.no}-${index}`}
-          contentContainerStyle={{ paddingHorizontal: 0, paddingBottom: 100 }}
+          contentContainerStyle={{ paddingHorizontal: 0, paddingBottom: 120 }}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListEmptyComponent={

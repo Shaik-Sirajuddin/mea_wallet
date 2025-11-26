@@ -258,7 +258,7 @@ const LoanOverview = () => {
         `${formatDecimal(item.monthlyInterestAsset)} ${item.symbol.toUpperCase()}`,
         "",
         t("loan.monthly_interest_help_text") ||
-          "Expected monthly interest payment in asset."
+        "Expected monthly interest payment in asset."
       )}
       {renderRow(
         t("loan.current_collateral_quantity"),
@@ -273,7 +273,7 @@ const LoanOverview = () => {
         `${formatDecimal(item.valueRatio)} %`,
         "",
         t("loan.collateral_value_ratio_help_text") ||
-          "Current value of collateral relative to loan amount."
+        "Current value of collateral relative to loan amount."
       )}
       {renderRow(
         t("loan.liquidation_threshold_ratio"),
@@ -313,14 +313,14 @@ const LoanOverview = () => {
       )}
       {renderRow(
         t("loan.interest_payment_status"),
-        item.loanInterestUnconfirmedCount === 0 
+        item.loanInterestUnconfirmedCount === 0
           ? t("loan.payment_completed") || "Payment Completed"
           : t("loan.before_payment")
       )}
 
       <View className="w-full flex items-end gap-2 mt-2 mb-2">
         <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
-          {(item.state === "1" || item.stateStr?.toLowerCase().includes("active")) && (
+          {(item.loanInterestUnconfirmedCount !== 0 && item.stateStr?.toLowerCase().includes("active")) && (
             <TouchableOpacity
               onPress={() => handleAction("interest", item)}
               className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
@@ -342,22 +342,22 @@ const LoanOverview = () => {
       </View>
 
       {renderRow(t("loan.principal"), t("loan.before_payment"))}
-      
-      {(item.state === "1" || item.stateStr?.toLowerCase().includes("active")) && 
-       item.PrincipalConfirm === "N" && (
-        <View className="w-full flex items-end gap-2 mt-2 mb-2">
-          <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
-            <TouchableOpacity
-              onPress={() => handlePrincipalRepayment(item)}
-              className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
-            >
-              <Text className="text-purple-500 text-xs font-semibold">
-                {t("loan.principal_repayment") || "Principal Repayment"}
-              </Text>
-            </TouchableOpacity>
+
+      {(item.state === "1" || item.stateStr?.toLowerCase().includes("active")) &&
+        item.PrincipalConfirm === "N" && (
+          <View className="w-full flex items-end gap-2 mt-2 mb-2">
+            <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
+              <TouchableOpacity
+                onPress={() => handlePrincipalRepayment(item)}
+                className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
+              >
+                <Text className="text-purple-500 text-xs font-semibold">
+                  {t("loan.principal_repayment") || "Principal Repayment"}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
       {item.repaymentDate &&
         renderRow(
@@ -379,7 +379,7 @@ const LoanOverview = () => {
             <Text className="text-xl font-semibold text-white">
               {t("loan.overview")}
             </Text>
-            
+
           </View>
         </View>
 
@@ -400,7 +400,7 @@ const LoanOverview = () => {
           data={history}
           renderItem={renderItem}
           keyExtractor={(item) => item.no.toString()}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 100 }}
+          contentContainerStyle={{ paddingHorizontal: 0, paddingBottom: 120 }}
           ListEmptyComponent={
             !loading ? (
               <View className="flex items-center justify-center mt-20">
@@ -446,9 +446,9 @@ const LoanOverview = () => {
         initialData={
           selectedItem
             ? {
-                paymentDate: dayjs().format("YYYY-MM-DD"),
-                paymentAmount: `${formatDecimal(selectedItem.monthlyInterestAsset)} ${selectedItem.symbol}`,
-              }
+              paymentDate: dayjs().format("YYYY-MM-DD"),
+              paymentAmount: `${formatDecimal(selectedItem.monthlyInterestAsset)} ${selectedItem.symbol}`,
+            }
             : undefined
         }
       />
