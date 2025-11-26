@@ -13,6 +13,16 @@ export interface LoanApplicationPayload {
   otp_code: string;
 }
 
+export interface AppSettings {
+  status: string;
+  telegram: string; // base64 encoded
+  homepage: string;
+  min_loan_amount: string;
+  LoanYield: number;
+  AssetYield: number;
+  PriceDifference: number;
+}
+
 export interface LoanOverviewItem {
   no: number;
   startDate: string;
@@ -60,12 +70,26 @@ export interface LoanOverviewResponse {
 }
 
 export interface LoanHistoryItem {
-  no: number;
-  symbol: string;
-  appliedAmount: number;
-  stateStr: string;
-  startDate: string;
+  no?: number;
+  symbol?: string;
+  target?: string;
+  appliedAmount?: number;
+  stateStr?: string;
+  status?: string;
+  startDate?: string;
   repaymentDate?: string;
+  regDate?: string;
+  regdate?: string;
+  date?: string;
+  processDate?: string;
+  amount?: string | number;
+  price?: number;
+  category?: string;
+  gubn?: string;
+  prev?: number;
+  next?: number;
+  prev_amount?: string | number;
+  next_amount?: string | number;
 }
 
 export interface LoanHistoryResponse {
@@ -208,5 +232,14 @@ export default {
       `${apiBaseUrl}/api/loan-history`,
       { method: "POST", body: params.toString() }
     );
+  },
+  /** Fetch global app settings */
+  getSettings: async (): Promise<AppSettings | string> => {
+    const params = new URLSearchParams(); // empty
+
+    return await networkRequest<AppSettings>(`${apiBaseUrl}/api/setting`, {
+      method: "POST",
+      body: params.toString(),
+    });
   },
 };
