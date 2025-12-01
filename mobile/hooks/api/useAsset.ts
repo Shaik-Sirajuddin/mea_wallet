@@ -193,6 +193,7 @@ export default {
         toAddress: item.to_address,
         txHash: item.hash,
         memo: item.memo,
+        seqno : item.no
       })),
     };
 

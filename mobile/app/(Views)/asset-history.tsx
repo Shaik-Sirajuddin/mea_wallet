@@ -16,9 +16,19 @@ import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { TokenBalances } from "@/src/types/balance";
-import { getDisplaySymbol, parseNumberForView, truncateAddress } from "@/utils/ui";
+import {
+  getDisplaySymbol,
+  parseNumberForView,
+  truncateAddress,
+} from "@/utils/ui";
 import AssetHistoryList from "../components/AssetHistoryList";
 import { BackButton } from "../components/BackButton";
+import { useDispatch } from "react-redux";
+import useUser from "@/hooks/api/useUser";
+import {
+  setFreeBalances,
+  setLockupBalances,
+} from "@/src/features/balance/balanceSlice";
 
 const AssetHistory = () => {
   const { t } = useTranslation();
@@ -28,7 +38,7 @@ const AssetHistory = () => {
     (state: RootState) =>
       state.balance.free[symbol as keyof TokenBalances] || "0"
   );
-
+  const dispatch = useDispatch();
   const displaySymbol = useMemo(() => {
     return getDisplaySymbol(symbol);
   }, [symbol]);
@@ -42,6 +52,17 @@ const AssetHistory = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
+
+  const syncBalance = async () => {
+    const res = await useUser.getBalance();
+    if (typeof res === "string") {
+      console.log(res, "fetch balance");
+      return;
+    }
+    dispatch(setFreeBalances(res.free));
+    dispatch(setLockupBalances(res.lockup));
+  };
+
   const performCopy = async (data: string) => {
     await Clipboard.setStringAsync(data);
     setInfoAlertState({
@@ -74,6 +95,10 @@ const AssetHistory = () => {
   useEffect(() => {
     fetchHistory();
   }, [page, symbol]);
+
+  useEffect(() => {
+    syncBalance();
+  }, []);
 
   return (
     <View className="bg-black-1000 flex-1">
@@ -136,6 +161,20 @@ const AssetHistory = () => {
                       performCopy(value);
                     }}
                     page={page}
+                    onDepositStatusChange={(type, message) => {
+                      setInfoAlertState({
+                        type,
+                        text: message,
+                      });
+                      setInfoAlertVisible(true);
+
+                      // Refresh history after successful cancellation
+                      if (type === "success") {
+                        setTimeout(() => {
+                          fetchHistory();
+                        }, 1500);
+                      }
+                    }}
                   />
                 )}
               </View>
