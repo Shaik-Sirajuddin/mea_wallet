@@ -158,6 +158,18 @@ export default {
       ].filter((address) => address),
     };
   },
+  /**
+   * Cancels a deposit request by sequence number (mobile version)
+   */
+  cancelDeposit: async (seqno: number): Promise<string | StatusResponse> => {
+    return await networkRequest<StatusResponse>(
+      `${apiBaseUrl}/api/deposit-cancel`,
+      {
+        method: "POST",
+        body: new URLSearchParams({ seqno: seqno.toString() }).toString(),
+      }
+    );
+  },
   isAddressAvailable: async (depositAddress: string) => {
     return await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/address-check`,

@@ -28,14 +28,16 @@ export function useCheckForUpdates() {
         return;
       }
 
-      const latestRequiredVersion = requiredUpdateInfo.minimumVersion;
+      const latestRequiredVersion =
+        Platform.OS === "android"
+          ? requiredUpdateInfo.minimumVersion
+          : requiredUpdateInfo.minimumVersionIOS;
 
       // Compare versions to determine if an update is mandatory
       const isUpdateMandatory = compareVersions(
         currentAppVersion,
         latestRequiredVersion
       );
-      console.log(isUpdateMandatory, "j");
       if (isUpdateMandatory) {
         setIsUpdateRequired(true);
       }

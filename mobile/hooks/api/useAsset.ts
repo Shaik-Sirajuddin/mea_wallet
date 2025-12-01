@@ -96,24 +96,28 @@ export default {
   },
 
   swapTokens: async (payload: SwapPayload) => {
+    console.log("swap start ", Date.now());
+    const parsedPayload = new URLSearchParams({
+      buyCoin: payload.buyCoin, //to symbol
+      sel_coin: payload.sellCoin, //from symbol
+      fee: payload.platformFeePercent, //fee percentage
+      WithdrawFee: payload.adminComission, //admin commission receivable token absolute
+      amount: payload.sellAmount, //amount of from token
+      payment_coin: payload.expectedReceivableBeforeFee, //expected receivable token before fee
+      buy_coin: payload.expectedReceivable, //final receivable to token ( after fee)
+      quote: payload.toCurrencyPrice, //to currency price
+      quote2: payload.fromCurrencyPrice, //from currency price
+      min_deposit_coin: payload.minDepositAmount, //mimumum sell quantity of from token
+    }).toString();
+    console.log("parsed payload", parsedPayload);
     const raw = await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/swap-proc`,
       {
         method: "POST",
-        body: new URLSearchParams({
-          buyCoin: payload.buyCoin, //to symbol
-          sel_coin: payload.sellCoin, //from symbol
-          fee: payload.platformFeePercent, //fee percentage
-          WithdrawFee: payload.adminComission, //admin commission receivable token absolute
-          amount: payload.sellAmount, //amount of from token
-          payment_coin: payload.expectedReceivableBeforeFee, //expected receivable token before fee
-          buy_coin: payload.expectedReceivable, //final receivable to token ( after fee)
-          quote: payload.toCurrencyPrice, //to currency price
-          quote2: payload.fromCurrencyPrice, //from currency price
-          min_deposit_coin: payload.minDepositAmount, //mimumum sell quantity of from token
-        }).toString(),
+        body: parsedPayload,
       }
     );
+    console.log("swap end ", Date.now());
 
     if (typeof raw === "string") return raw;
   },
@@ -189,6 +193,7 @@ export default {
         toAddress: item.to_address,
         txHash: item.hash,
         memo: item.memo,
+        seqno : item.no
       })),
     };
 

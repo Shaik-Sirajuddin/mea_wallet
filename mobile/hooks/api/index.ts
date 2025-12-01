@@ -6,6 +6,13 @@ import { SupportedSymbol } from "./useChart";
  * Wrapper around fetch
  * Performs fetch request and returns parsed response
  */
+let bearerToken: string | null = null;
+
+const fetchAuthToken = async () => {
+  if (bearerToken) return;
+  const token = await storage.retreive(STORAGE_KEYS.AUTH.TOKEN);
+  bearerToken = token;
+};
 
 //todo : implement concurrency here
 const hasHeader = (init: RequestInit, headerName: string): boolean => {
@@ -25,8 +32,9 @@ export const networkRequestWithParser = async <T>(
   init?: RequestInit
 ): Promise<string | T> => {
   try {
+    console.log(input)
+    await fetchAuthToken()
     let headers = init?.headers;
-    const bearerToken = await storage.retreive(STORAGE_KEYS.AUTH.TOKEN);
     headers = {
       ...headers,
       authorization: "Bearer " + (bearerToken ?? ""),
