@@ -50,6 +50,7 @@ import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 import PrimaryButton from "../components/PrimaryButton";
 import InfoAlert, { InfoAlertProps } from "../components/InfoAlert";
 import SvgIcon from "../components/SvgIcon";
+import { router } from "expo-router";
 
 type TokenType = keyof TokenBalances;
 
@@ -81,9 +82,11 @@ const SwapTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [adminCommission, setAdminCommission] = useState("0");
-  const minDeposit = useSelector(
-    (state: RootState) => new Decimal(state.token.minDeposit[fromToken])
+  const rawMin = useSelector(
+    (state: RootState) => state.token.minDeposit[fromToken]
   );
+
+  const minDeposit = useMemo(() => new Decimal(rawMin), [rawMin]);
 
   // Modal states
   const [otpModalVisible, setOtpModalVisible] = useState(false);
@@ -91,6 +94,7 @@ const SwapTokens = () => {
   const [infoAlertState, setInfoAlertState] = useState<Partial<InfoAlertProps>>(
     {}
   );
+  const [swapSucess, setSwapSuccess] = useState(false);
 
   const syncDepositSettings = async () => {
     const res = await useDeposit.getDepositSettings();
@@ -147,10 +151,10 @@ const SwapTokens = () => {
   // Initial data fetch
   useEffect(() => {
     const initialFetch = async () => {
-      await fetchQuotes();
-      await fetchBalance();
-      await fetchSwapFee();
-      await syncDepositSettings();
+      syncDepositSettings();
+      fetchQuotes();
+      fetchBalance();
+      fetchSwapFee();
       setIsInitialLoading(false);
     };
     initialFetch();
@@ -161,7 +165,7 @@ const SwapTokens = () => {
       fetchQuotes();
       fetchBalance();
       fetchSwapFee();
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -316,6 +320,7 @@ const SwapTokens = () => {
           type: "success",
         });
         setInfoAlertVisible(true);
+        setSwapSuccess(true);
         // Clear amounts after successful swap
         setPayAmount("");
         setReceiveAmount("");
@@ -668,6 +673,14 @@ const SwapTokens = () => {
           visible={infoAlertVisible}
           setVisible={setInfoAlertVisible}
           onDismiss={() => {
+            if (swapSucess) {
+              router.navigate({
+                pathname: "/(Views)/asset-history",
+                params: {
+                  symbol: toToken,
+                },
+              });
+            }
             //show success
           }}
         />
