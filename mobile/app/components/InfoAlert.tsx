@@ -58,7 +58,10 @@ const InfoAlert = ({
 
   return (
     <Portal>
-      <View className="flex-1 items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full z-[100]" style={{ zIndex: 1000 }}>
+      <View
+        className="flex-1 items-center justify-center bg-[rgba(31,31,31,0.5)] px-3 absolute top-0 bottom-0 h-full w-full"
+        style={{ zIndex: 1000 }}
+      >
         <Animated.View
           style={{
             transform: [{ scale: scaleAnim }],

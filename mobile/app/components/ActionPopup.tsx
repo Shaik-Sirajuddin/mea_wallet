@@ -20,7 +20,7 @@ interface ActionPopupProps {
   onDismiss: () => void;
   title: string;
   mode: "topup" | "interest";
-  onSubmit: (values: { amount?: string; otp: string }) => Promise<void>;
+  onSubmit: (values: { amount?: string; otp: string }) => Promise<any>;
   initialData?: {
     paymentDate?: string;
     paymentAmount?: string;
@@ -49,7 +49,10 @@ const ActionPopup = ({
 
     setLoading(true);
     try {
-      await onSubmit({ amount, otp });
+      let res = await onSubmit({ amount, otp });
+      if (typeof res === "string") {
+        throw res;
+      }
       setAlertType("success");
       setAlertText(
         mode === "topup"
@@ -73,6 +76,7 @@ const ActionPopup = ({
       );
       setAlertVisible(true);
       // Don't close popup on failure
+      onDismiss();
     } finally {
       setLoading(false);
     }
@@ -93,12 +97,19 @@ const ActionPopup = ({
           <View className="flex-1 bg-black/80 justify-center items-center px-4">
             <View className="bg-black-1200 w-full max-w-md rounded-2xl p-6 border border-gray-800">
               <View className="flex-row justify-between items-center mb-6">
-                <Text className="text-white text-xl font-semibold">{title}</Text>
+                <Text className="text-white text-xl font-semibold">
+                  {title}
+                </Text>
                 <TouchableOpacity
                   onPress={onDismiss}
                   className="p-2 rounded-md hover:bg-black-1000"
                 >
-                  <SvgIcon name="crossIcon" width="18" height="18" color="#fff" />
+                  <SvgIcon
+                    name="crossIcon"
+                    width="18"
+                    height="18"
+                    color="#fff"
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -145,7 +156,9 @@ const ActionPopup = ({
                 )}
 
                 <View className="mb-6">
-                  <Text className="text-gray-400 mb-2">{t("loan.enter_otp")}</Text>
+                  <Text className="text-gray-400 mb-2">
+                    {t("loan.enter_otp")}
+                  </Text>
                   <TextInput
                     className="bg-black-1000 text-white p-4 rounded-xl border border-gray-800"
                     placeholder="123456"
@@ -188,6 +201,7 @@ const ActionPopup = ({
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
       <InfoAlert
         visible={alertVisible}
         setVisible={setAlertVisible}

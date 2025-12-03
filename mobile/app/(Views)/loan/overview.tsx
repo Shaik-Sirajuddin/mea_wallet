@@ -46,7 +46,9 @@ const LoanOverview = () => {
 
   // Principal Repayment Popup State
   const [principalPopupVisible, setPrincipalPopupVisible] = useState(false);
-  const [principalItem, setPrincipalItem] = useState<LoanOverviewItem | null>(null);
+  const [principalItem, setPrincipalItem] = useState<LoanOverviewItem | null>(
+    null
+  );
 
   const syncHistory = async (requestedPage = 1) => {
     setLoading(true);
@@ -84,10 +86,7 @@ const LoanOverview = () => {
     setPopupVisible(true);
   };
 
-  const handleAction = (
-    mode: "topup" | "interest",
-    item: LoanOverviewItem
-  ) => {
+  const handleAction = (mode: "topup" | "interest", item: LoanOverviewItem) => {
     setActionMode(mode);
     setSelectedItem(item);
     setActionPopupVisible(true);
@@ -99,37 +98,29 @@ const LoanOverview = () => {
   }) => {
     if (!selectedItem) return;
 
-    try {
-      if (actionMode === "topup") {
-        await useLoan.addCollateralPayment({
-          no: selectedItem.no,
-          AddPrice: values.amount || "0",
-          otp_code: values.otp,
-        });
-      } else {
-        await useLoan.repayInterest({
-          no: selectedItem.no,
-          interest: selectedItem.monthlyInterestAsset.toString(), // Assuming paying full monthly interest
-          otp_code: values.otp,
-        });
-      }
-      // Refresh list after action
+    if (actionMode === "topup") {
+      let res = await useLoan.addCollateralPayment({
+        no: selectedItem.no,
+        AddPrice: values.amount || "0",
+        otp_code: values.otp,
+      });
       syncHistory(1);
-    } catch (error) {
-      console.error("Action failed:", error);
-      // Handle error (show toast/alert)
+      return res;
+    } else {
+      let res = await useLoan.repayInterest({
+        no: selectedItem.loanInterestFirstUnconfirmedSeqno,
+        interest: selectedItem.monthlyInterestAsset.toString(), // Assuming paying full monthly interest
+        otp_code: values.otp,
+      });
+      syncHistory(1);
+      return res;
     }
   };
 
-  const showHistory = (
-    type: "topup" | "interest",
-    item: LoanOverviewItem
-  ) => {
+  const showHistory = (type: "topup" | "interest", item: LoanOverviewItem) => {
     setHistoryType(type);
     setHistoryTitle(
-      type === "topup"
-        ? t("loan.top_up_history")
-        : t("loan.interest_history")
+      type === "topup" ? t("loan.top_up_history") : t("loan.interest_history")
     );
     setHistoryFetchFn(() => (page: number) => {
       if (type === "topup") {
@@ -248,21 +239,28 @@ const LoanOverview = () => {
         t("loan.collateral_ratio"),
         `${((item.usdtPayment / item.totalValueAtLoan) * 100).toFixed(0)} %`
       )}
-      {renderRow(t("loan.loan_amount"), `${formatDecimal(item.usdtPayment)} USDT`)}
+      {renderRow(
+        t("loan.loan_amount"),
+        `${formatDecimal(item.usdtPayment)} USDT`
+      )}
       {renderRow(
         t("loan.annual_interest_usdt_equivalent"),
         `${formatDecimal(item.annualInterestUSDT)} USDT (12%)`
       )}
       {renderRow(
         t("loan.monthly_interest_asset_expected"),
-        `${formatDecimal(item.monthlyInterestAsset)} ${item.symbol.toUpperCase()}`,
+        `${formatDecimal(
+          item.monthlyInterestAsset
+        )} ${item.symbol.toUpperCase()}`,
         "",
         t("loan.monthly_interest_help_text") ||
-        "Expected monthly interest payment in asset."
+          "Expected monthly interest payment in asset."
       )}
       {renderRow(
         t("loan.current_collateral_quantity"),
-        `${formatDecimal(item.currentTotalCollateralQuantity)} ${item.symbol.toUpperCase()}`
+        `${formatDecimal(
+          item.currentTotalCollateralQuantity
+        )} ${item.symbol.toUpperCase()}`
       )}
       {renderRow(
         t("loan.current_collateral_value"),
@@ -273,7 +271,7 @@ const LoanOverview = () => {
         `${formatDecimal(item.valueRatio)} %`,
         "",
         t("loan.collateral_value_ratio_help_text") ||
-        "Current value of collateral relative to loan amount."
+          "Current value of collateral relative to loan amount."
       )}
       {renderRow(
         t("loan.liquidation_threshold_ratio"),
@@ -286,7 +284,8 @@ const LoanOverview = () => {
 
       <View className="w-full flex items-end gap-2 mt-2 mb-2">
         <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
-          {(item.state === "1" || item.stateStr?.toLowerCase().includes("active")) && (
+          {(item.state === "1" ||
+            item.stateStr?.toLowerCase().includes("active")) && (
             <TouchableOpacity
               onPress={() => handleAction("topup", item)}
               className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
@@ -320,16 +319,17 @@ const LoanOverview = () => {
 
       <View className="w-full flex items-end gap-2 mt-2 mb-2">
         <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
-          {(item.loanInterestUnconfirmedCount !== 0 && item.stateStr?.toLowerCase().includes("active")) && (
-            <TouchableOpacity
-              onPress={() => handleAction("interest", item)}
-              className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
-            >
-              <Text className="text-purple-500 text-xs font-semibold">
-                {t("loan.interest_payment")}
-              </Text>
-            </TouchableOpacity>
-          )}
+          {item.loanInterestUnconfirmedCount !== 0 &&
+            item.stateStr?.toLowerCase().includes("active") && (
+              <TouchableOpacity
+                onPress={() => handleAction("interest", item)}
+                className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
+              >
+                <Text className="text-purple-500 text-xs font-semibold">
+                  {t("loan.interest_payment")}
+                </Text>
+              </TouchableOpacity>
+            )}
           <TouchableOpacity
             onPress={() => showHistory("interest", item)}
             className="px-3 py-1 rounded-lg border border-purple-500 bg-black-1200"
@@ -343,7 +343,8 @@ const LoanOverview = () => {
 
       {renderRow(t("loan.principal"), t("loan.before_payment"))}
 
-      {(item.state === "1" || item.stateStr?.toLowerCase().includes("active")) &&
+      {(item.state === "1" ||
+        item.stateStr?.toLowerCase().includes("active")) &&
         item.PrincipalConfirm === "N" && (
           <View className="w-full flex items-end gap-2 mt-2 mb-2">
             <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">
@@ -379,7 +380,6 @@ const LoanOverview = () => {
             <Text className="text-xl font-semibold text-white">
               {t("loan.overview")}
             </Text>
-
           </View>
         </View>
 
@@ -446,9 +446,11 @@ const LoanOverview = () => {
         initialData={
           selectedItem
             ? {
-              paymentDate: dayjs().format("YYYY-MM-DD"),
-              paymentAmount: `${formatDecimal(selectedItem.monthlyInterestAsset)} ${selectedItem.symbol}`,
-            }
+                paymentDate: dayjs().format("YYYY-MM-DD"),
+                paymentAmount: `${formatDecimal(
+                  selectedItem.monthlyInterestAsset
+                )} ${selectedItem.symbol}`,
+              }
             : undefined
         }
       />
@@ -465,7 +467,11 @@ const LoanOverview = () => {
         visible={principalPopupVisible}
         onDismiss={() => setPrincipalPopupVisible(false)}
         onSubmit={handlePrincipalRepaymentSubmit}
-        paymentAmount={principalItem ? `${formatDecimal(principalItem.usdtPayment)} USDT` : "0 USDT"}
+        paymentAmount={
+          principalItem
+            ? `${formatDecimal(principalItem.usdtPayment)} USDT`
+            : "0 USDT"
+        }
       />
     </View>
   );

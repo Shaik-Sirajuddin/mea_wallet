@@ -42,6 +42,7 @@ const LoanApplication = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertText, setAlertText] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
+  const [loanSuccess, setLoanSuccess] = useState(true);
   const [refreshTimer, setRefreshTimer] = useState(60);
   const [termsVisible, setTermsVisible] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -115,7 +116,7 @@ const LoanApplication = () => {
       setAlertType("error");
       setAlertText(
         t("loan.must_accept_terms") ||
-        "You must agree to all terms and conditions before applying for a loan."
+          "You must agree to all terms and conditions before applying for a loan."
       );
       setAlertVisible(true);
       return;
@@ -148,7 +149,9 @@ const LoanApplication = () => {
 
     setLoading(true);
     dispatch(
-      showLoading(t("loan.loan_application") || t("common.loading") || "Loading...")
+      showLoading(
+        t("loan.loan_application") || t("common.loading") || "Loading..."
+      )
     );
 
     try {
@@ -158,7 +161,7 @@ const LoanApplication = () => {
         otp_code: otpCode,
       });
 
-      if (typeof result === "string" || result.status !== "success") {
+      if (typeof result === "string") {
         setAlertType("error");
         setAlertText(
           typeof result === "string"
@@ -170,12 +173,10 @@ const LoanApplication = () => {
         setAlertType("success");
         setAlertText(
           t("loan.application_success") ||
-          "Loan application submitted successfully"
+            "Loan application submitted successfully"
         );
         setAlertVisible(true);
-        setTimeout(() => {
-          router.replace("/loan/overview");
-        }, 2000);
+        setLoanSuccess(true);
       }
     } finally {
       setLoading(false);
@@ -257,9 +258,10 @@ const LoanApplication = () => {
           {renderRow(
             t("loan.asset"),
             <View className="min-w-[180px]">
-              <View className="bg-black-1000 border border-gray-700 rounded flex-row items-center px-2"
-                style={{ height: 40 }}>
-
+              <View
+                className="bg-black-1000 border border-gray-700 rounded flex-row items-center px-2"
+                style={{ height: 40 }}
+              >
                 {/* Token Image */}
                 <Image
                   source={getTokenImage(asset)}
@@ -275,7 +277,7 @@ const LoanApplication = () => {
                   }}
                   style={{
                     color: "#fff",
-                    flex: 1,        // ★ Allow picker to expand
+                    flex: 1, // ★ Allow picker to expand
                     marginVertical: -8,
                   }}
                   dropdownIconColor="#fff"
@@ -284,10 +286,8 @@ const LoanApplication = () => {
                   <Picker.Item label="MEA" value="MEA" color="#ffffff" />
                 </Picker>
               </View>
-
             </View>
           )}
-
 
           {/* Balance */}
           {renderRow(t("loan.balance"), parseNumberForView(balance))}
@@ -392,10 +392,11 @@ const LoanApplication = () => {
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={loading || !termsAccepted}
-              className={`flex-1 h-[44px] rounded-xl items-center justify-center border ${loading || !termsAccepted
-                ? "bg-pink-1100/50 border-blue-1100/50"
-                : "bg-pink-1100 border-blue-1100"
-                }`}
+              className={`flex-1 h-[44px] rounded-xl items-center justify-center border ${
+                loading || !termsAccepted
+                  ? "bg-pink-1100/50 border-blue-1100/50"
+                  : "bg-pink-1100 border-blue-1100"
+              }`}
             >
               {loading ? (
                 <ActivityIndicator color="#fff" />
@@ -424,6 +425,11 @@ const LoanApplication = () => {
         setVisible={setAlertVisible}
         text={alertText}
         type={alertType}
+        onDismiss={() => {
+          if (loanSuccess) {
+            router.replace("/loan/overview");
+          }
+        }}
       />
       <Modal
         transparent
@@ -449,8 +455,11 @@ const LoanApplication = () => {
               activeOpacity={0.8}
             >
               <View
-                className={`w-5 h-5 rounded border ${allChecked ? "bg-pink-1100 border-pink-1100" : "border-gray-600"
-                  } items-center justify-center`}
+                className={`w-5 h-5 rounded border ${
+                  allChecked
+                    ? "bg-pink-1100 border-pink-1100"
+                    : "border-gray-600"
+                } items-center justify-center`}
               >
                 {allChecked && (
                   <View className="w-3 h-3 bg-white rounded-[4px]" />
@@ -472,8 +481,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t1 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t1
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t1 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -490,8 +502,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t2 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t2
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t2 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -508,8 +523,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t3 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t3
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t3 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -526,8 +544,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t4 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t4
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t4 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -544,8 +565,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t5 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t5
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t5 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -562,8 +586,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t6 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t6
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t6 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -580,8 +607,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t7 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t7
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t7 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -598,8 +628,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t8 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t8
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t8 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -616,8 +649,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t9 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t9
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t9 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -634,8 +670,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t10 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t10
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t10 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -652,8 +691,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t11 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t11
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t11 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -670,8 +712,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t12 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t12
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t12 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -688,8 +733,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t13 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t13
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t13 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -706,8 +754,11 @@ const LoanApplication = () => {
                 activeOpacity={0.8}
               >
                 <View
-                  className={`mt-1 w-4 h-4 rounded border ${terms.t14 ? "bg-blue-1100 border-blue-1100" : "border-gray-600"
-                    } items-center justify-center`}
+                  className={`mt-1 w-4 h-4 rounded border ${
+                    terms.t14
+                      ? "bg-blue-1100 border-blue-1100"
+                      : "border-gray-600"
+                  } items-center justify-center`}
                 >
                   {terms.t14 && (
                     <View className="w-2.5 h-2.5 bg-white rounded-[4px]" />
@@ -729,10 +780,11 @@ const LoanApplication = () => {
                 }}
                 className={`
                 flex-1 h-[44px] rounded-xl items-center justify-center
-                ${allChecked
+                ${
+                  allChecked
                     ? "bg-pink-1100 border border-pink-1100"
                     : "bg-gray-700 border border-gray-700 opacity-50"
-                  }
+                }
               `}
               >
                 <Text className="text-white font-semibold">

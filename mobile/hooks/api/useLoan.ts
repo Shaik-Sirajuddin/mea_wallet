@@ -1,5 +1,6 @@
 import { apiBaseUrl } from "@/lib/constants";
 import { networkRequest } from ".";
+import { StatusResponse } from "@/src/api/types/auth";
 
 export interface LoanLimit {
   loanMax: string; // "Y" / "N"
@@ -11,6 +12,53 @@ export interface LoanApplicationPayload {
   asset: string;
   deposit_money: number;
   otp_code: string;
+}
+
+export interface LoanPrincipalRepayResponse {
+  status: "succ"; // or string if not always "succ"
+  loan_seqno: number;
+  target: string; // e.g., "btc"
+  usdt_paid: string; // numeric string
+  collateral_released: string; // numeric string
+
+  user_balance: {
+    prev: string;
+    next: string;
+  };
+
+  user_token_balance: {
+    prev: string;
+    next: string;
+    token: string; // e.g., "btc"
+  };
+
+  history_seqno: {
+    loan_transaction_history_out: number;
+    token_transaction_history_out: number;
+    loan_transaction_history_in: number;
+    token_transaction_history_in: number;
+  };
+
+  dedupe_keys: {
+    out: string;
+    in: string;
+  };
+}
+
+export interface LoanInterestRepayResponse {
+  status: string; // "succ" | "fail" etc.
+  loan_seqno: number;
+  target: string; // token symbol like "btc"
+  amount: number;
+  user_balance: {
+    prev: number;
+    next: number | string; // API sometimes returns string numbers
+  };
+  history_seqno: {
+    loan_transaction_history: number;
+    token_transaction_history: number;
+  };
+  dedupe_key: string;
 }
 
 export interface AppSettings {
@@ -171,7 +219,7 @@ export default {
     params.append("AddPrice", paramsObj.AddPrice);
     params.append("otp_code", paramsObj.otp_code);
 
-    return await networkRequest<any>(
+    return await networkRequest<StatusResponse>(
       `${apiBaseUrl}/api/loan-additional-collateral-payments`,
       { method: "POST", body: params.toString() }
     );
@@ -204,11 +252,14 @@ export default {
     params.append("no", paramsObj.no.toString());
     params.append("interest", paramsObj.interest);
     params.append("otp_code", paramsObj.otp_code);
-
-    return await networkRequest<any>(`${apiBaseUrl}/api/loan-interest-repay`, {
-      method: "POST",
-      body: params.toString(),
-    });
+    console.log(params, paramsObj, params.toString());
+    return await networkRequest<LoanInterestRepayResponse>(
+      `${apiBaseUrl}/api/loan-interest-repay`,
+      {
+        method: "POST",
+        body: params.toString(),
+      }
+    );
   },
 
   /** Repay principal */
@@ -217,10 +268,13 @@ export default {
     params.append("no", paramsObj.no.toString());
     params.append("otp_code", paramsObj.otp_code);
 
-    return await networkRequest<any>(`${apiBaseUrl}/api/loan-principal-repay`, {
-      method: "POST",
-      body: params.toString(),
-    });
+    return await networkRequest<LoanPrincipalRepayResponse>(
+      `${apiBaseUrl}/api/loan-principal-repay`,
+      {
+        method: "POST",
+        body: params.toString(),
+      }
+    );
   },
 
   /** Fetch user's loan history */
