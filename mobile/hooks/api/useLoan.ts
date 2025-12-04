@@ -116,6 +116,40 @@ export interface LoanOverviewResponse {
   total_block: number;
   data: LoanOverviewItem[];
 }
+export interface LoanTopupHistoryResponseRaw {
+  status: string;
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: LoanTopupHistoryItemRaw[];
+}
+export interface LoanTopupHistoryResponse {
+  status: string;
+  blockStart: number;
+  blockEnd: number;
+  blockNum: number;
+  totalBlock: number;
+  data: LoanTopupHistoryItem[];
+}
+
+export interface LoanTopupHistoryItemRaw {
+  regdate: string;
+  target: string;
+  gubn: string;
+  amount: string;
+  prev_amount: string;
+  next_amount: string;
+}
+
+export interface LoanTopupHistoryItem {
+  date: string; // regdate
+  symbol: string; // target
+  label: string; // gubn
+  amount: number;
+  prevAmount: number;
+  nextAmount: number;
+}
 
 export interface LoanHistoryItem {
   no?: number;
@@ -146,6 +180,24 @@ export interface LoanHistoryResponse {
   block_num: number;
   total_block: number;
   data: LoanHistoryItem[];
+}
+
+export interface LoanInterestHistoryItem {
+  seqno: number;
+  date: string; // "2026-01-02"
+  target: string; // "MEA"
+  interest: string; // "0.060000000"
+  processing_date: string; // "2025-12-03T10:57:18.000Z"
+  confirm: string; // "Payment Completed"
+}
+
+export interface LoanInterestHistoryResponse {
+  status: string; // "succ"
+  block_start: number;
+  block_end: number;
+  block_num: number;
+  total_block: number;
+  data: LoanInterestHistoryItem[];
 }
 
 export default {
@@ -185,15 +237,34 @@ export default {
   },
 
   /** Fetch loan-add payment history */
-  getPaymentHistory: async (no: number, page: number) => {
+  getTopUpHistory: async (
+    no: number,
+    page: number
+  ): Promise<LoanTopupHistoryResponse | string> => {
     const params = new URLSearchParams();
     params.append("no", no.toString());
     params.append("page", page.toString());
 
-    return await networkRequest<LoanHistoryResponse>(
+    const raw = await networkRequest<LoanTopupHistoryResponseRaw>(
       `${apiBaseUrl}/api/loan-paymnet-loan-add-history`,
       { method: "POST", body: params.toString() }
     );
+    if (typeof raw === "string") return raw;
+    return {
+      status: raw.status,
+      blockStart: raw.block_start,
+      blockEnd: raw.block_end,
+      blockNum: raw.block_num,
+      totalBlock: raw.total_block,
+      data: raw.data.map((item) => ({
+        date: item.regdate,
+        symbol: item.target,
+        label: item.gubn,
+        amount: Number(item.amount),
+        prevAmount: Number(item.prev_amount),
+        nextAmount: Number(item.next_amount),
+      })),
+    };
   },
 
   /** Fetch loan interest history */
@@ -202,7 +273,7 @@ export default {
     params.append("no", no.toString());
     params.append("page", page.toString());
 
-    return await networkRequest<LoanHistoryResponse>(
+    return await networkRequest<LoanInterestHistoryResponse>(
       `${apiBaseUrl}/api/loan-interest-history`,
       { method: "POST", body: params.toString() }
     );

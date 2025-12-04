@@ -662,6 +662,7 @@
     "safety_buffer_quantity": "Safety Buffer Quantity",
     "loan_disbursement_amount_usdt": "Loan Disbursement Amount(USDT)",
     "precautions_for_loan": "Precautions for Loan",
-    "price_refresh_notice": "The price is refreshed every minute based on real-time market price fluctuations."
+    "price_refresh_notice": "The price is refreshed every minute based on real-time market price fluctuations.",
+    "status" : "Status"
   }
 }

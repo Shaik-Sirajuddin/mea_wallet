@@ -124,7 +124,7 @@ const LoanOverview = () => {
     );
     setHistoryFetchFn(() => (page: number) => {
       if (type === "topup") {
-        return useLoan.getPaymentHistory(item.no, page);
+        return useLoan.getTopUpHistory(item.no, page);
       } else {
         return useLoan.getInterestHistory(item.no, page);
       }
@@ -341,10 +341,11 @@ const LoanOverview = () => {
         </View>
       </View>
 
-      {renderRow(t("loan.principal"), t("loan.before_payment"))}
+      {renderRow(t("loan.principal"), item.PrincipalConfirm === 'Y' ? t('loan.payment_completed') :  t("loan.before_payment"))}
 
-      {(item.state === "1" ||
+      {(item.state === "1" || 
         item.stateStr?.toLowerCase().includes("active")) &&
+        item.loanInterestUnconfirmedCount === 0 && 
         item.PrincipalConfirm === "N" && (
           <View className="w-full flex items-end gap-2 mt-2 mb-2">
             <View className="flex-row items-center gap-2 rounded-xl border border-purple-500/40 bg-black-1200/60 px-2 py-2 shadow-sm">

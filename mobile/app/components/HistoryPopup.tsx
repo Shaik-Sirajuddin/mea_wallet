@@ -10,12 +10,24 @@ import {
 import { useTranslation } from "react-i18next";
 import SvgIcon from "@/app/components/SvgIcon";
 import dayjs from "dayjs";
+import {
+  LoanInterestHistoryItem,
+  LoanInterestHistoryResponse,
+  LoanHistoryItem,
+  LoanHistoryResponse,
+  LoanTopupHistoryItem,
+} from "@/hooks/api/useLoan";
+
+// Union type for history items
+type HistoryItem = LoanInterestHistoryItem | LoanHistoryItem;
 
 interface HistoryPopupProps {
   visible: boolean;
   onDismiss: () => void;
   title: string;
-  fetchData: (page: number) => Promise<any>;
+  fetchData: (
+    page: number
+  ) => Promise<LoanInterestHistoryResponse | LoanHistoryResponse | string>;
   type: "interest" | "topup";
 }
 
@@ -27,7 +39,7 @@ const HistoryPopup = ({
   type,
 }: HistoryPopupProps) => {
   const { t } = useTranslation();
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<HistoryItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -44,7 +56,7 @@ const HistoryPopup = ({
     setLoading(true);
     try {
       const res = await fetchData(pageNum);
-      if (res && res.data) {
+      if (typeof res !== "string" && res && res.data) {
         if (pageNum === 1) {
           setData(res.data);
         } else {
@@ -88,40 +100,58 @@ const HistoryPopup = ({
     );
 
     if (type === "topup") {
+      const topupItem = item as LoanTopupHistoryItem;
       return (
         <View className="mb-2 border-b border-gray-700 pb-3">
           {renderRow(
             t("common.date"),
-            dayjs(item.regDate || item.date).format("YYYY. MM. DD.")
+            dayjs(topupItem.date).format("YYYY. MM. DD.")
           )}
-          {renderRow(t("loan.asset"), (item.symbol || "USDT").toUpperCase())}
-          {renderRow(t("loan.category"), item.category || "Additional Margin")}
-          {renderRow(t("common.amount"), `${item.amount || item.price || "0"}`)}
-          {renderRow(t("loan.prev"), `${item.prev || "0"}`)}
-          {renderRow(t("loan.next"), `${item.next || "0"}`)}
+          {renderRow(
+            t("loan.asset"),
+            (topupItem.symbol || "USDT").toUpperCase()
+          )}
+          {renderRow(
+            t("loan.category"),
+            topupItem.label || "Additional Margin"
+          )}
+          {renderRow(t("common.amount"), `${topupItem.amount || "0"}`)}
+          {renderRow(t("loan.prev"), `${topupItem.prevAmount || "0"}`)}
+          {renderRow(t("loan.next"), `${topupItem.nextAmount || "0"}`)}
         </View>
       );
     }
 
+    const interestItem = item as LoanInterestHistoryItem;
     return (
       <View className="mb-2 border-b border-gray-700 pb-3">
         {renderRow(
           t("common.date"),
-          dayjs(item.regDate || item.date).format("YYYY-MM-DD")
+          dayjs(interestItem.date).format("YYYY-MM-DD")
         )}
-        {renderRow(t("loan.asset"), (item.symbol || "USDT").toUpperCase())}
-        {renderRow(t("common.amount"), `${item.amount || item.price || "0"}`)}
+        {renderRow(
+          t("loan.asset"),
+          (interestItem.target || "USDT").toUpperCase()
+        )}
+        {renderRow(t("common.amount"), `${interestItem.interest || "0"}`)}
         {renderRow(
           t("loan.process_date") || "Proc. date",
-          item.processDate ? (
-            dayjs(item.processDate).format("YYYY-MM-DD")
+          interestItem.processing_date ? (
+            <Text className="text-white">
+              {dayjs(interestItem.processing_date).format("YYYY-MM-DD")}{" "}
+              <Text className="text-gray-400">|</Text>{" "}
+              <Text className="text-gray-400">
+                {dayjs(interestItem.processing_date).format("HH:mm:ss")}
+              </Text>
+            </Text>
           ) : (
             <Text className="text-gray-1200 text-sm">|</Text>
           )
         )}
+
         {renderRow(
           t("loan.status"),
-          item.stateStr || item.status || t("loan.before_payment")
+          interestItem.confirm || t("loan.before_payment")
         )}
       </View>
     );
