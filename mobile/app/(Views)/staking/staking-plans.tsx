@@ -90,7 +90,7 @@ const StakingPlans = () => {
       if (requestedPage === 1) {
         setPlans(res.plans);
       } else {
-        setPlans((prev) => [...prev, ...res.items]);
+        setPlans((prev) => [...prev, ...res.plans]);
       }
       setTotalPages(res.totalPages);
     }

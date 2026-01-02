@@ -18,7 +18,7 @@ const MeaAddress = () => {
   const qrRef = useRef<QRCode>(null);
   const displaySymbol = symbol.toUpperCase();
   const depositAddress = useSelector(
-    (state: RootState) => state.deposit.depositAddresses[0]
+    (state: RootState) => state.deposit.tokenDepositAddress[symbol]
   );
 
   const handleCopy = async () => {

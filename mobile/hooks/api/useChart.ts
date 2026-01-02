@@ -136,6 +136,27 @@ async function getChartData(
       }));
     }
 
+    if (apiSymbol === "AON" || apiSymbol === "ALTON") {
+      const params = new URLSearchParams();
+      params.append("gubn", apiPeriod);
+      params.append("token", apiSymbol.toLowerCase());
+
+      const raw = await networkRequest<any>(
+        `${apiBaseUrl}/api/token/chartData?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (typeof raw === "string") return raw;
+      if (!raw.data) return [];
+
+      return raw.data.map((item: any) => ({
+        date: new Date(item.time * 1000), // converting epoch seconds to JS Date
+        value: parseFloat(item.price),
+      }));
+    }
+
     throw new Error(`Unsupported symbol: ${symbol}`);
   } catch (error) {
     console.error("getChartData error:", error);
@@ -232,6 +253,22 @@ async function getTokenOverview(
       return {
         symbol: apiSymbol === "USDT" ? "USDT" : "usdt_savings",
         price: parseFloat(raw.usdPrice),
+        volume: 0,
+      };
+    }
+
+    if (apiSymbol === "AON" || apiSymbol === "ALTON") {
+      const raw = await networkRequest<any>(
+        `${apiBaseUrl}/api/${apiSymbol.toLowerCase()}/price`,
+        {
+          method: "GET",
+        }
+      );
+      if (typeof raw === "string") return raw;
+
+      return {
+        symbol: apiSymbol,
+        price: parseFloat(raw),
         volume: 0,
       };
     }

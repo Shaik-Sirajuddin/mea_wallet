@@ -23,6 +23,7 @@ import { RootState } from "@/src/store";
 import {
   setDepositAddresses,
   setRegisteredAddresses,
+  setTokenDepositAddress,
 } from "@/src/features/asset/depositSlice";
 import { parseNumberForView, updateIfValid } from "@/utils/ui";
 import { BackButton } from "../components/BackButton";
@@ -63,6 +64,7 @@ const Deposit = () => {
     dispatch(setMinDeposit(res.minDeposit));
     dispatch(setRegisteredAddresses(res.userDepositAddresses));
     dispatch(setDepositAddresses(res.managerDepositAddresses));
+    dispatch(setTokenDepositAddress(res.tokenDepositAddress));
   };
 
   const handleNext = () => {
@@ -80,7 +82,7 @@ const Deposit = () => {
 
     router.push({
       pathname: "/confirm-deposit",
-      params: { amount: depositAmount, symbol: displaySymbol },
+      params: { amount: depositAmount, symbol: symbol },
     });
   };
 

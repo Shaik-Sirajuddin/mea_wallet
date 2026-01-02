@@ -34,10 +34,13 @@ const AssetHistory = () => {
   const { t } = useTranslation();
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
 
-  const freeBalance = useSelector(
-    (state: RootState) =>
-      state.balance.free[symbol as keyof TokenBalances] || "0"
-  );
+  const freeBalances = useSelector((state: RootState) => state.balance.free);
+
+  const freeBalance = useMemo(() => {
+    console.log("balances data ", symbol, freeBalances);
+    return freeBalances[symbol as keyof TokenBalances] || "0";
+  }, [symbol, freeBalances]);
+
   const dispatch = useDispatch();
   const displaySymbol = useMemo(() => {
     return getDisplaySymbol(symbol);
@@ -59,6 +62,7 @@ const AssetHistory = () => {
       console.log(res, "fetch balance");
       return;
     }
+    console.log(res);
     dispatch(setFreeBalances(res.free));
     dispatch(setLockupBalances(res.lockup));
   };

@@ -5,14 +5,7 @@ import {
   TransferHistoryResponse,
   TransferHistoryResponseRaw,
 } from "@/src/api/types/earn/transfer";
-export interface TokenQuotes {
-  mea: string;
-  sol: string;
-  fox9: string;
-  usd: string;
-  usdt: string;
-  usdt_savings: string;
-}
+import { TokenQuotes } from "@/src/types/balance";
 
 export type EarnAssets = Pick<TokenQuotes, "usdt_savings">;
 export default {

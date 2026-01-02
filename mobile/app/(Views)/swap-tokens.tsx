@@ -45,6 +45,7 @@ import useDeposit from "@/hooks/api/useDeposit";
 import {
   setDepositAddresses,
   setRegisteredAddresses,
+  setTokenDepositAddress,
 } from "@/src/features/asset/depositSlice";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
 import PrimaryButton from "../components/PrimaryButton";
@@ -111,6 +112,7 @@ const SwapTokens = () => {
     dispatch(setMinDeposit(res.minDeposit));
     dispatch(setRegisteredAddresses(res.userDepositAddresses));
     dispatch(setDepositAddresses(res.managerDepositAddresses));
+    dispatch(setTokenDepositAddress(res.tokenDepositAddress));
   };
 
   // Available tokens

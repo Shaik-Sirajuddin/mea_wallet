@@ -36,14 +36,13 @@ const Deposit2 = () => {
   const registeredAddresses = useSelector(
     (state: RootState) => state.deposit.registeredAddresses
   );
-  const depositAddresses = useSelector(
-    (state: RootState) => state.deposit.depositAddresses
+  const tokenDepositAddress = useSelector(
+    (state: RootState) => state.deposit.tokenDepositAddress
   );
   const minDeposit = useSelector(
-    (state: RootState) => state.token.minDeposit[symbol]
+    (state: RootState) =>
+      state.token.minDeposit[symbol as keyof typeof state.token.minDeposit]
   );
-
-  const depositAddress = depositAddresses[0] || "No deposit address available";
 
   const [selectedWalletAddress, setSelectedWalletAddress] = useState("");
   const [txid, setTxid] = useState("");
@@ -75,9 +74,9 @@ const Deposit2 = () => {
     let result = await useDeposit.applyDeposit({
       amount,
       min_deposit_coin: minDeposit,
-      manager_deposit_address: depositAddress,
+      manager_deposit_address: tokenDepositAddress[symbol],
       wallet_address: selectedWalletAddress,
-      symbol,
+      symbol: displaySymbol,
       txid,
     });
     dispath(hideLoading());
@@ -131,7 +130,7 @@ const Deposit2 = () => {
                 </View>
                 <View className="relative">
                   <TextInput
-                    value={truncateAddress(depositAddress)}
+                    value={truncateAddress(tokenDepositAddress[symbol])}
                     editable={false}
                     selectTextOnFocus={true}
                     className="text-[15px] placeholder:text-gray-500 text-white font-medium px-8 border-2 border-gray-1200 w-full h-[71px] rounded-[15px]"
@@ -139,7 +138,7 @@ const Deposit2 = () => {
                   <TouchableOpacity
                     className="absolute top-1/2 -translate-y-1/2 right-5 bg-pink-1100 px-[13px] py-[5px] rounded-2xl"
                     onPress={() => {
-                      handleCopy(depositAddress);
+                      handleCopy(tokenDepositAddress[symbol]);
                     }}
                   >
                     <Text className="text-white text-[17px] font-medium leading-[22px]">

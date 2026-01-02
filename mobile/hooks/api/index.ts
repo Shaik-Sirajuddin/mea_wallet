@@ -32,8 +32,8 @@ export const networkRequestWithParser = async <T>(
   init?: RequestInit
 ): Promise<string | T> => {
   try {
-    console.log(input)
-    await fetchAuthToken()
+    console.log(input);
+    await fetchAuthToken();
     let headers = init?.headers;
     headers = {
       ...headers,
@@ -100,6 +100,10 @@ export const mapToApiSymbol = (symbol: SupportedSymbol): string => {
       return "FOX9";
     case "usdt_savings":
       return "USDT Savings";
+    case "aon":
+      return "AON";
+    case "alton":
+      return "ALTON";
     default:
       throw new Error(`Unsupported symbol: ${symbol}`);
   }

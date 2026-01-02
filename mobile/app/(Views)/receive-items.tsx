@@ -26,6 +26,7 @@ import useDeposit from "@/hooks/api/useDeposit";
 import {
   setDepositAddresses,
   setRegisteredAddresses,
+  setTokenDepositAddress,
 } from "@/src/features/asset/depositSlice";
 import { setMinDeposit } from "@/src/features/token/tokenSlice";
 import { t } from "i18next";
@@ -45,14 +46,9 @@ const ReceiveItems = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const insets = useSafeAreaInsets();
-  const _depositAddresses = useSelector(
-    (state: RootState) => state.deposit.depositAddresses
-  );
+
   const balances = useSelector((state: RootState) => state.balance.free);
   const quotes = useSelector((state: RootState) => state.token.quotes || {});
-  const depositAddress = useMemo(() => {
-    return _depositAddresses[0] ?? "";
-  }, [_depositAddresses]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -74,6 +70,7 @@ const ReceiveItems = () => {
     dispatch(setMinDeposit(res.minDeposit));
     dispatch(setRegisteredAddresses(res.userDepositAddresses));
     dispatch(setDepositAddresses(res.managerDepositAddresses));
+    dispatch(setTokenDepositAddress(res.tokenDepositAddress));
   };
 
   useEffect(() => {

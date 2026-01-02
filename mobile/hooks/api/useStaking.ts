@@ -59,6 +59,10 @@ let tokenBalance: TokenBalances = {
   fox9: "0",
   mea: "0",
   sol: "0",
+  usdt: "0",
+  usdt_savings: "0",
+  aon: "0",
+  alton: "0",
 };
 
 const TOKEN_SYMBOLS = Object.keys(tokenBalance) as (keyof TokenBalances)[];
@@ -202,7 +206,7 @@ export default {
       sort,
       gubn,
     };
-    console.log('started')
+    console.log("started");
     const raw = await networkRequest<StakingHistoryApiResponse>(
       `${apiBaseUrl}/api/staking-history`,
       {
@@ -210,7 +214,7 @@ export default {
         body: new URLSearchParams(payload).toString(),
       }
     );
-    console.log('awaitng')
+    console.log("awaitng");
 
     if (typeof raw === "string") return raw;
     const parsedItems: StakingHistoryItem[] = raw.data.map((item) => ({

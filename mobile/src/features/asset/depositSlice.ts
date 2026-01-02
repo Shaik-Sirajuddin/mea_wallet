@@ -1,7 +1,9 @@
+import { TokenType } from "@/src/types/balance";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface DepositState {
   depositAddresses: string[];
   registeredAddresses: string[];
+  tokenDepositAddress: Record<TokenType, string>;
   loading: boolean;
   error: string | null;
 }
@@ -11,6 +13,15 @@ const initialState: DepositState = {
     "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
     "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
   ],
+  tokenDepositAddress: {
+    aon: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    alton: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    fox9: "meo9SCFkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    mea: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    sol: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    usdt: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+    usdt_savings: "meo9SCkSiViD3qKvnY2fmGuW3Vi4PNhDKtswwTPVvbo",
+  },
   registeredAddresses: [],
   loading: false,
   error: null,
@@ -24,6 +35,12 @@ const depositSlice = createSlice({
       state.depositAddresses = action.payload;
       state.loading = false;
       state.error = null;
+    },
+    setTokenDepositAddress(
+      state,
+      action: PayloadAction<Record<TokenType, string>>
+    ) {
+      state.tokenDepositAddress = action.payload;
     },
     setRegisteredAddresses(state, action: PayloadAction<string[]>) {
       state.registeredAddresses = action.payload;
@@ -49,6 +66,7 @@ export const {
   setDepositError,
   clearDepositData,
   setRegisteredAddresses,
+  setTokenDepositAddress,
 } = depositSlice.actions;
 
 export default depositSlice.reducer;

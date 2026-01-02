@@ -14,6 +14,8 @@ export const tokenImageMap: Record<string, any> = {
   recon: require("@/assets/images/currency/recon.png"),
   fox9: require("@/assets/images/currency/fox9.png"),
   usdt: require("@/assets/images/currency/usdt.png"),
+  aon: require("@/assets/images/currency/aon.png"),
+  alton: require("@/assets/images/currency/alton.png"),
 };
 /**
  * Trims trailing zeroes from a decimal string (but retains it as a string).

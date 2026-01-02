@@ -4,6 +4,7 @@ import {
   LockUpBalances,
   TokenBalances,
   TokenQuotes,
+  TokenType,
 } from "@/src/types/balance";
 import { BalanceResponseRaw } from "@/src/api/types/balance";
 import { trimTrailingZeros } from "@/utils/ui";
@@ -15,6 +16,7 @@ export interface DepositSettings {
   minDeposit: Omit<TokenBalances, "usdt_savings">;
   managerDepositAddresses: string[];
   userDepositAddresses: string[];
+  tokenDepositAddress: Record<TokenType, string>;
 }
 
 export interface WithdrawSettings {
@@ -104,6 +106,8 @@ const parseBalanceResponse = (raw: BalanceResponseRaw) => {
       fox9: trimTrailingZeros(raw.fox9_balance),
       usdt: trimTrailingZeros(raw.usdt_balance),
       usdt_savings: trimTrailingZeros(raw.usdt_temp_balance),
+      aon: trimTrailingZeros(raw.aon_balance),
+      alton: trimTrailingZeros(raw.alton_balance),
     },
     lockup: {
       mea: trimTrailingZeros(raw.mea_lockup),
@@ -118,6 +122,8 @@ const parseBalanceResponse = (raw: BalanceResponseRaw) => {
     usd: trimTrailingZeros(raw.usd_quote.toString()),
     usdt: trimTrailingZeros(raw.usdt_quote.toString()),
     usdt_savings: trimTrailingZeros(raw.usdt_quote.toString()),
+    aon: trimTrailingZeros(raw.aon_quote.toString()),
+    alton: trimTrailingZeros(raw.alton_quote.toString()),
   };
 
   const withdrawSettings: WithdrawSettings = {
@@ -127,6 +133,8 @@ const parseBalanceResponse = (raw: BalanceResponseRaw) => {
       sol: trimTrailingZeros(raw.sol_min_withdraw_coin),
       usdt: trimTrailingZeros(raw.usdt_min_withdraw_coin),
       usdt_savings: trimTrailingZeros(raw.usdt_temp_min_withdraw_coin),
+      aon: trimTrailingZeros(raw.aon_min_withdraw_coin),
+      alton: trimTrailingZeros(raw.alton_min_withdraw_coin),
     },
     withdrawFees: {
       mea: trimTrailingZeros(raw.mea_WithdrawFee),
@@ -134,6 +142,8 @@ const parseBalanceResponse = (raw: BalanceResponseRaw) => {
       sol: trimTrailingZeros(raw.sol_WithdrawFee),
       usdt: trimTrailingZeros(raw.usdt_WithdrawFee),
       usdt_savings: "0",
+      aon: trimTrailingZeros(raw.aon_WithdrawFee),
+      alton: trimTrailingZeros(raw.alton_WithdrawFee),
     },
   };
 

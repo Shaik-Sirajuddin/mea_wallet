@@ -3,8 +3,13 @@ import DepositAddressList from "@/app/components/DepositAddressList";
 import InfoAlert, { InfoAlertProps } from "@/app/components/InfoAlert";
 import SvgIcon from "@/app/components/SvgIcon";
 import useDeposit from "@/hooks/api/useDeposit";
-import { setDepositAddresses } from "@/src/features/asset/depositSlice";
+import {
+  setDepositAddresses,
+  setRegisteredAddresses,
+  setTokenDepositAddress,
+} from "@/src/features/asset/depositSlice";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
+import { setUserDepositAddresses } from "@/src/features/settings/settingsSlice";
 import { RootState } from "@/src/store";
 import { useAppDispatch } from "@/src/store/hooks";
 import { truncateAddress } from "@/utils/ui";
@@ -35,9 +40,9 @@ const WalletAddress = () => {
   const [newAddress, setNewAddress] = useState("");
   const dispatch = useAppDispatch();
   const addWalletAddress = async () => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     let result = await useDeposit.registerAddress(newAddress);
-    dispatch(hideLoading())
+    dispatch(hideLoading());
     if (typeof result === "string") {
       //show error
       setModalState({
@@ -57,9 +62,9 @@ const WalletAddress = () => {
     syncWalletAddress();
   };
   const deleteAddress = async (index: number) => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     let result = await useDeposit.deleteAddress(index);
-    dispatch(hideLoading())
+    dispatch(hideLoading());
     if (typeof result === "string") {
       //show error
       setModalState({
@@ -95,7 +100,7 @@ const WalletAddress = () => {
       //show error
       return;
     }
-    dispatch(setDepositAddresses(result));
+    dispatch(setRegisteredAddresses(result));
   };
 
   useEffect(() => {

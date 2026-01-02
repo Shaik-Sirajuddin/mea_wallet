@@ -142,12 +142,16 @@ export default {
         fox9: trimTrailingZeros(raw.fox9_min_deposit_coin),
         sol: trimTrailingZeros(raw.sol_min_deposit_coin),
         usdt: trimTrailingZeros(raw.usdt_min_deposit_coin),
+        aon: trimTrailingZeros(raw.aon_min_deposit_coin),
+        alton: trimTrailingZeros(raw.alton_min_deposit_coin),
       },
       managerDepositAddresses: [
         raw.manager_deposit_address,
         raw.manager_deposit_address_2,
         raw.manager_deposit_address_3,
         raw.manager_deposit_address_4,
+        raw.manager_deposit_address_aon,
+        raw.manager_deposit_address_alton,
       ].filter((address) => address),
       userDepositAddresses: [
         raw.deposit_address,
@@ -156,6 +160,15 @@ export default {
         raw.deposit_address_4!,
         raw.deposit_address_5!,
       ].filter((address) => address),
+      tokenDepositAddress: {
+        aon: raw.manager_deposit_address_aon,
+        alton: raw.manager_deposit_address_alton,
+        fox9: raw.manager_deposit_address,
+        mea: raw.manager_deposit_address,
+        sol: raw.manager_deposit_address,
+        usdt: raw.manager_deposit_address,
+        usdt_savings: raw.manager_deposit_address,
+      },
     };
   },
   /**
