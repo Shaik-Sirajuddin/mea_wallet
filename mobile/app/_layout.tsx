@@ -14,6 +14,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { Provider as PaperProvider } from "react-native-paper";
 import LoadingOverlay from "./components/LoadingOverlay";
+import InfoOverlay from "./components/popup/InfoOverLay";
 
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
@@ -47,7 +48,7 @@ export default function RootLayout() {
     checkTokenExists();
   }, []);
 
-  useEffect(() => {}, [pathname]);
+  useEffect(() => { }, [pathname]);
   if (!fontsLoaded || isAuthenticated === null) {
     return null;
   }
@@ -84,6 +85,7 @@ export default function RootLayout() {
                 />
               </Stack>
               <LoadingOverlay />
+              <InfoOverlay />
               <Toast />
             </SafeAreaView>
           </SafeAreaProvider>

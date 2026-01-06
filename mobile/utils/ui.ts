@@ -168,3 +168,17 @@ export const getDisplaySymbol = (symbol: string) => {
   }
   return symbol?.toUpperCase() || "";
 };
+
+export const formatDecimal = (
+  value: string | number,
+  decimals: number = 6
+): string => {
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(num)) return "0";
+  
+  // Use toFixed to round/pad to decimals, then trim trailing zeros if desired
+  // But user asked to "round to last 6 digits", implying fixed precision might be wanted.
+  // However, usually "round to" means max decimals. 
+  // Let's use toFixed(6) and then trimTrailingZeros to be clean but precise.
+  return trimTrailingZeros(num.toFixed(decimals));
+};
