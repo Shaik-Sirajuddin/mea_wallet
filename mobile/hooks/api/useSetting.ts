@@ -5,6 +5,14 @@ export interface SettingsResponse {
   homepage: string;
   status: string;
   telegram: string;
+  loanEnabled: boolean;
+}
+
+export interface SettingsResponseRaw {
+  homepage: string;
+  status: string;
+  telegram: string;
+  loan: string;
 }
 
 export interface AppUpdateResponse {
@@ -38,7 +46,7 @@ export type MigrationStateResponse =
 
 export default {
   getSettings: async (): Promise<SettingsResponse | string> => {
-    let raw = await networkRequest<SettingsResponse>(
+    let raw = await networkRequest<SettingsResponseRaw>(
       `${apiBaseUrl}/api/setting`,
       {
         method: "POST",
@@ -52,7 +60,8 @@ export default {
     return {
       ...raw,
       telegram: atob(raw.telegram),
-    };
+      loanEnabled: raw.loan === "Y",
+    } as SettingsResponse;
   },
 
   requireLatestVersion: async () => {

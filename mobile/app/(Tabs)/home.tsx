@@ -39,6 +39,7 @@ import ReceiveInstant from "../components/earn/ReceiveInstant";
 import BalanceYieldGuide from "../components/BalanceYieldGuide";
 import useSetting from "@/hooks/api/useSetting";
 import LoanIcon from "@/assets/images/hand-dollar.svg";
+import { setSettings } from "@/src/features/settings/settingsSlice";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -67,9 +68,18 @@ export default function HomeScreen() {
     return true;
   });
 
+  const loandEnabled = useSelector((state: RootState) => {
+    return state.settings.settings?.loanEnabled || false;
+  });
+
   const syncData = async () => {
     setRefreshing(true);
-    await Promise.all([fetchBalance(), fetchQuotes(), fetchProfile()]);
+    await Promise.all([
+      fetchBalance(),
+      fetchQuotes(),
+      fetchProfile(),
+      fetchSettings(),
+    ]);
     setRefreshing(false);
   };
 
@@ -80,6 +90,15 @@ export default function HomeScreen() {
       return;
     }
     dispatch(setQuotes(res));
+  };
+
+  const fetchSettings = async () => {
+    const _settings = await useSetting.getSettings();
+    if (typeof _settings === "string") {
+      console.log("error at fetch", _settings);
+      return;
+    }
+    dispatch(setSettings(_settings));
   };
 
   const fetchBalance = async () => {
@@ -269,7 +288,7 @@ export default function HomeScreen() {
                   </Pressable>
                 </View>
               )}
-              {featuresEnabled && (
+              {featuresEnabled && loandEnabled && (
                 <View className="bg-black-1300 rounded-2xl items-center flex-1">
                   <Pressable
                     onPress={() => {
