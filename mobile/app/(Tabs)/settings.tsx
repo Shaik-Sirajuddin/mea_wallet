@@ -9,6 +9,7 @@ import { STORAGE_KEYS } from "@/storage/keys";
 import useAuth from "@/hooks/api/useAuth";
 import { DeleteIcon, UserX } from "lucide-react-native";
 import Constants from "expo-constants";
+import { resetAuthToken } from "@/hooks/api";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function SettingsScreen() {
     try {
       const result = await useAuth.logout();
       await storage.delete(STORAGE_KEYS.AUTH.TOKEN);
-
+      resetAuthToken();
       if (typeof result === "string") {
         console.log("Logout failed:", result);
         return;

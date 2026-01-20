@@ -29,7 +29,6 @@ export default function TabLayout() {
 
   const checkAuthenticated = async () => {
     const result = await useAuth.loginStatus();
-    console.log("auth result", result);
     if (typeof result === "string" || !result.loggedIn) {
       console.log(result);
       setPopUpVisible(true);

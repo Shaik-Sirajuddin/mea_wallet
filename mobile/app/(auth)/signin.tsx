@@ -19,6 +19,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "@/src/features/loadingSlice";
+import { resetAuthToken } from "@/hooks/api";
 
 enum ErrorType {
   INVALID_EMAIL,
@@ -74,6 +75,8 @@ const Signin: React.FC = () => {
       Alert.alert(t("auth.signin.login_error"), result);
       return;
     }
+    //remove auth token from memory 
+    resetAuthToken();
     await storage.save(STORAGE_KEYS.AUTH.TOKEN, result.token);
     if (router.canDismiss()) {
       router.dismissAll();

@@ -193,7 +193,6 @@ const Signup: React.FC = () => {
       setInfoAlertVisible(true);
       return;
     }
-    // await storage.save(STORAGE_KEYS.AUTH.TOKEN, result.token);
     setRegistrationSuccess(true);
     setInfoAlertState({
       ...infoAlertState,

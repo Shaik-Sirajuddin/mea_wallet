@@ -74,6 +74,7 @@ const GoogleSignUp: React.FC = () => {
         typeof signUpResult === "string" ? signUpResult : signUpResult.status;
 
       if (response === "succ" && typeof signUpResult !== "string") {
+        
         await storage.save(STORAGE_KEYS.AUTH.TOKEN, signUpResult.token);
         if (router.canDismiss()) {
           router.dismissAll();

@@ -9,6 +9,7 @@ import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { resetAuthToken } from "@/hooks/api";
 
 const GoogleSSOButton = () => {
   const [popupVisible, setPopUpVisible] = useState(false);
@@ -29,7 +30,7 @@ const GoogleSSOButton = () => {
       //try login
       let loginInResult = await useAuth.signInWithGoogle(
         token,
-        Platform.OS === "android" ? "android" : "ios"
+        Platform.OS === "android" ? "android" : "ios",
       );
       console.log("error here", loginInResult);
       let response =
@@ -38,6 +39,7 @@ const GoogleSSOButton = () => {
           : loginInResult.status;
 
       if (response === "succ" && typeof loginInResult !== "string") {
+        resetAuthToken();
         await storage.save(STORAGE_KEYS.AUTH.TOKEN, loginInResult.token);
         if (router.canDismiss()) {
           router.dismissAll();
@@ -49,7 +51,7 @@ const GoogleSSOButton = () => {
       if (response === "need_link") {
         setPopUpVisible(true);
         setPopupText(
-          "Account uses email login , please continue with email login"
+          "Account uses email login , please continue with email login",
         );
         return;
       }

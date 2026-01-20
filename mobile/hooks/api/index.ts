@@ -14,12 +14,16 @@ const fetchAuthToken = async () => {
   bearerToken = token;
 };
 
+export const resetAuthToken = () => {
+  bearerToken = null;
+};
+
 //todo : implement concurrency here
 const hasHeader = (init: RequestInit, headerName: string): boolean => {
   if (!init.headers) return false;
   // Case 3: headers is a plain object
   return Object.keys(init.headers).some(
-    (key) => key.toLowerCase() === headerName.toLowerCase()
+    (key) => key.toLowerCase() === headerName.toLowerCase(),
   );
 };
 /**
@@ -29,7 +33,7 @@ const hasHeader = (init: RequestInit, headerName: string): boolean => {
  */
 export const networkRequestWithParser = async <T>(
   input: string | URL | globalThis.Request,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<string | T> => {
   try {
     console.log(input);
@@ -62,7 +66,7 @@ export const networkRequestWithParser = async <T>(
 
 export const networkRequest = async <T>(
   input: string | URL | globalThis.Request,
-  init?: RequestInit
+  init?: RequestInit,
 ) => {
   //pre request
 
