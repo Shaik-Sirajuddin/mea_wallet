@@ -25,6 +25,7 @@ import { isValidPublicKey } from "@/utils/web3";
 import useAuth from "@/hooks/api/useAuth";
 import storage from "@/storage";
 import { STORAGE_KEYS } from "@/storage/keys";
+import { resetAuthToken } from "@/hooks/api";
 
 enum ErrorType {
   INVALID_ADDRESS,
@@ -74,7 +75,7 @@ const GoogleSignUp: React.FC = () => {
         typeof signUpResult === "string" ? signUpResult : signUpResult.status;
 
       if (response === "succ" && typeof signUpResult !== "string") {
-        
+        resetAuthToken()
         await storage.save(STORAGE_KEYS.AUTH.TOKEN, signUpResult.token);
         if (router.canDismiss()) {
           router.dismissAll();
